@@ -1,4 +1,5 @@
-remotes::install_github("sizespectrum/mizer")
+install.packages("mizer")
+library(remotes)
 remotes::install_github("sizespectrum/mizerExperimental")
 
 library(mizerExperimental)
