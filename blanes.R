@@ -76,3 +76,48 @@ params <- readRDS("params250520.rds")
 catch <- readRDS("catch.rds")
 
 tuneParams(params, catch = catch, controls = controls)
+
+params <- steady(params, tol=1e-5)
+sim <- project(params)
+plotBiomass(sim)
+
+source("dynamics.R")
+
+# Set dynamic resources ----
+rates <- mizerRates(params,
+                    n = params@initial_n,
+                    n_pp = params@initial_n_pp,
+                    n_other = params@initial_n_other,
+                    effort = params@initial_effort,
+                    rates_fns = lapply(params@rates_funcs, get)
+                    )
+# detritus
+consumption <- getConsumptionByFish(params, "detritus",
+                                    params@initial_n, rates)
+params@other_params$detritus$proportion <- 0.5
+inflow <-
+    params@other_params$detritus$proportion *
+    sum((rates$feeding_level * params@intake_max *
+             params@initial_n) %*% params@dw)
+params@other_params$detritus$external <-
+    consumption * params@initial_n_other$detritus - inflow
+params@other_dynamics$detritus <- "detritus_dynamics"
+
+#carrion
+consumption <- getConsumptionByFish(params, "carrion",
+                                    params@initial_n, rates)
+inflow <- 0
+params@other_params$carrion$external <-
+    consumption * params@initial_n_other$carrion - inflow
+params@other_dynamics$carrion <- "carrion_dynamics"
+
+sim <- project(params)
+plotBiomass(sim)
+plotSpectra(sim)
+saveRDS(params, file = "params250620.rds")
+
+p2@gear_params$l25[19]<-15
+p2@gear_params$l50[19]<-15.2
+p2<- setFishing(p2)
+sim2 <- project(p2)
+plotBiomass(sim2)
