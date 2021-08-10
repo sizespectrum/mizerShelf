@@ -3,6 +3,7 @@ library(remotes)
 remotes::install_github("sizespectrum/mizerExperimental")
 
 library(mizerExperimental)
+source("dynamics.R")
 
 setRho <- function(params) {
     params@other_params$detritus$rho <-
@@ -12,14 +13,6 @@ setRho <- function(params) {
         outer(params@species_params$rho_carrion,
               params@w^params@resource_params$n)
     params
-}
-
-encounter_contribution <- function(params, n_other, component, ...) {
-    params@other_params[[component]]$rho * n_other[[component]]
-}
-
-constant_dynamics <- function(params, n_other, component, ...) {
-    n_other[[component]]
 }
 
 rhoControlUI <- function(p, sp) {
@@ -80,8 +73,6 @@ tuneParams(params, catch = catch, controls = controls)
 params <- steady(params, tol=1e-5)
 sim <- project(params)
 plotBiomass(sim)
-
-source("dynamics.R")
 
 # Set dynamic resources ----
 rates <- mizerRates(params,

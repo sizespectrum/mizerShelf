@@ -1,55 +1,122 @@
 library(shiny)
 library(shinyBS)
 library(ggplot2)
-library(mizer)
+library(plotly)
+library(mizerExperimental)
 library(progress)
+source("dynamics.R")
+
+fishingControlUI <- function(p, sp) {
+    # If there are several gears, we only use the effort for the first.
+    # If this is changed by the user, all efforts will be set the same.
+    effort <- p@initial_effort[[1]]
+    gp <- p@gear_params[p@gear_params$species == sp$species, ]
+    if (nrow(gp) != 1) {
+        showModal(modalDialog(
+            title = "Invalid gear specification",
+            HTML(paste0("Currently you can only use models where each ",
+                        "species is caught by only one gear. In this model ",
+                        input$sp, " is caught by ", nrow(gp), " gears.")),
+            easyClose = TRUE
+        ))
+    }
+    # heading
+    l1 <- tagList(tags$h4(tags$a(id = sp$species), sp$species))
+    # controls depending on selectivity function
+    if (gp$sel_func == "knife_edge") {
+        l1 <- c(l1, list(
+            sliderInput(paste0(sp$species, "_knife_edge_size"),
+                        "knife_edge_size",
+                        value = gp$knife_edge_size,
+                        min = 1,
+                        max = signif(gp$knife_edge_size * 2, 2),
+                        step = 0.1)))
+    } else if (gp$sel_func == "sigmoid_length") {
+        l1 <- c(l1, list(
+            sliderInput(paste0(sp$species, "_l50"), "L50",
+                        value = gp$l50,
+                        min = 1,
+                        max = signif(gp$l50 * 2, 2),
+                        step = 0.1),
+            sliderInput(paste0(sp$species, "_ldiff"), "L50-L25",
+                        value = gp$l50 - gp$l25,
+                        min = 0.1,
+                        max = signif(gp$l50 / 4, 2),
+                        step = 0.1)))
+    } else if (gp$sel_func == "double_sigmoid_length") {
+        l1 <- c(l1, list(
+            sliderInput(paste0(sp$species, "_l50"), "L50",
+                        value = gp$l50,
+                        min = 1,
+                        max = signif(gp$l50 * 2, 2),
+                        step = 0.1),
+            sliderInput(paste0(sp$species, "_ldiff"), "L50-L25",
+                        value = gp$l50 - gp$l25,
+                        min = 0.1,
+                        max = signif(gp$l50 / 4, 2),
+                        step = 0.1),
+            sliderInput(paste0(sp$species, "_l50_right"), "L50 right",
+                        value = gp$l50_right,
+                        min = 1,
+                        max = signif(sp$l50_right * 2, 2),
+                        step = 0.1),
+            sliderInput(paste0(sp$species, "_ldiff_right"), "L50-L25 right",
+                        value = gp$l25_right - gp$l50_right,
+                        min = 0.1,
+                        max = signif(gp$l50_right / 4, 2),
+                        step = 0.1)
+        ))
+    }
+    l1
+}
 
 #### Server ####
 server <- function(input, output, session) {
 
-    # Show Introduction
-    #toggleModal(session, "Intro", toggle = "open")
-
-    # Gear parameters from Francesc Maynou
-    l50 <- c(16.6, 15.48, 20.5, 15.85)
-    names(l50) <- c("hake_old", "mullet_old", "hake_new", "mullet_new")
-    sd <- c(0.462, 2.10, 0.331, 2.05)
-    l25 = l50 - log(3) * sd
-
-    # Load previously calculated simulation of hake_mullet system with old gear
-    #p_old <- readRDS(file = "params250620.rds")
-    p_old <- readRDS(file = "hmp.rds")
-    p_old@initial_effort <- 0.4
+    # Load params and create sim
+    p_old <- readRDS(file = "params250620.rds")
     sim_old <- project(p_old, t_max = 0.1, t_save = 0.1)
 
+    sp_sel <- c("Hake", "Red mullet", "Angler fish", "Poor cod",
+                "Horse mackerel", "Blue whiting")
+    sp_idx <- which(p_old@species_params$species %in% sp_sel)
+    sp_bgrd <- setdiff(p_old@species_params$species, sp_sel)
+    p_old <- markBackground(p_old, species = sp_bgrd)
+
     # Data frame for yield plot
-    no_sp <- nrow(p_old@species_params)
     ym_old <- data.frame(
-        "Year" = rep(c(2018, 2033), each = no_sp),
-        "Species" = rep(p_old@species_params$species, times = 2),
-        "Yield" = rep(getYield(sim_old)[1, ], times = 2),
+        "Year" = rep(c(2020, 2035), each = length(sp_sel)),
+        "Species" = rep(sp_sel, times = 2),
+        "Yield" = rep(getYield(sim_old)[1, sp_sel], times = 2),
         "Gear" = "Current"
     )
-    ym_old <- subset(ym_old, ym_old$Yield > 0)
 
     # Data frame for SSB plot
     bm_old <- data.frame(
-        "Year" = rep(c(2018, 2033), each = 2),
-        "Species" = rep(p_old@species_params$species[11:12], times = 2),
-        "SSB" = rep(getSSB(sim_old)[1, 11:12], times = 2),
+        "Year" = rep(c(2020, 2035), each = length(sp_sel)),
+        "Species" = rep(sp_sel, times = 2),
+        "SSB" = rep(getSSB(sim_old)[1, sp_sel], times = 2),
         "Gear" = "Current"
     )
+
+    # Create controls ####
+    output$fishing <- renderUI({
+        lapply(sp_sel, function(sp_name) {
+            fishingControlUI(p_old, p_old@species_params[sp_name, ])
+            })
+    })
 
     # Set params ####
     params <- reactive({
         p <- p_old
 
-        # Set new gear for hake
-        p@gear_params$l50[12] <- input$l50_hake
-        p@species_params$l25[12] <- input$l25_hake
-        # Set new gear for mullet
-        p@gear_params$l50[11] <- input$l50_mullet
-        p@species_params$l25[11] <- input$l25_mullet
+        # Set new gears
+        for (i in sp_idx) {
+            l50_var <- paste0("l50_", p@species_params$species[[i]])
+            l25_var <- paste0("l25_", p@species_params$species[[i]])
+            p@gear_params$l50[i] <- input[[l50_var]]
+            p@gear_params$l25[i] <- input[[l25_var]]
+        }
 
         setFishing(p)
     })
@@ -60,8 +127,8 @@ server <- function(input, output, session) {
         progress <- shiny::Progress$new(session)
         on.exit(progress$close())
 
-        project(params(), t_max = 15, t_save = 0.1,
-                progress_bar = progress)
+        project(params(), t_max = 15, t_save = 1)#,
+                #progress_bar = progress)
     })
 
     # Plot yield ####
@@ -69,9 +136,9 @@ server <- function(input, output, session) {
         y <- getYield(sim())
         ym <- reshape2::melt(y, varnames = c("Year", "Species"),
                              value.name = "Yield")
-        ym <- subset(ym, ym$Yield > 0)
+        ym <- subset(ym, ym$Species %in% sp_sel)
         ym$Gear <- "Modified"
-        ym$Year <- ym$Year + 2018
+        ym$Year <- ym$Year + 2020
         ym <- rbind(ym_old, ym)
         ggplot(ym) +
             geom_line(aes(x = Year, y = Yield, colour = Species, linetype = Gear)) +
@@ -83,11 +150,12 @@ server <- function(input, output, session) {
 
     # Plot SSB ####
     output$plotSSB <- renderPlot({
-        b <- getSSB(sim())[, 11:12]
+        b <- getSSB(sim())[, c(19,17)]
         bm <- reshape2::melt(b, varnames = c("Year", "Species"),
                              value.name = "SSB")
+        bm <- subset(bm, bm$Species %in% sp_sel)
         bm$Gear <- "Modified"
-        bm$Year <- bm$Year + 2018
+        bm$Year <- bm$Year + 2020
         bm <- rbind(bm_old, bm)
         ggplot(bm) +
             geom_line(aes(x = Year, y = SSB, colour = Species, linetype = Gear)) +
@@ -102,11 +170,11 @@ server <- function(input, output, session) {
         # Plot changes in abundance
         s2 <- sim()
         p <- params()
-        year <- input$change_year - 2018
+        year <- input$change_year - 2020
         no_w <- length(p@w)
         w_sel <- seq.int(1, no_w, by = floor(no_w/50))
         w <- p@w[w_sel]
-        change <- s2@n[10*year+1, ,w_sel]/s2@n[1, ,w_sel] - 1
+        change <- s2@n[year+1, sp_sel, w_sel]/s2@n[1, sp_sel, w_sel] - 1
         # change_total <- colSums(s2@n[10*year+1, ,w_sel], na.rm = TRUE) /
         #                      colSums(s2@n[1, ,w_sel], na.rm = TRUE) - 1
         # ch <- rbind(change, "Total" = change_total)
@@ -114,19 +182,18 @@ server <- function(input, output, session) {
         cf <- reshape2::melt(change)
         cf <- subset(cf, !is.nan(value))
         cf$Species <- as.character(cf$sp)
-        cf$Species[cf$Species %in% 1:10] <- "Background"
 
         # data frame for special points
-        w_mat <- p@species_params$w_mat[11:12]
-        w50 <- p@species_params$a[11:12] *
-            (p@species_params$l50[11:12])^p@species_params$b[11:12]
+        w_mat <- p@species_params$w_mat[c(19,17)]
+        w50 <- p@species_params$a[c(19,17)] *
+            (p@gear_params$l50[c(19,17)])^p@species_params$b[c(19,17)]
         sp <- data.frame("w" = c(w_mat, w50),
                          "y" = c(change[11, which.min(w < w_mat[1])],
                                  change[12, which.min(w < w_mat[2])],
                                  change[11, which.min(w < w50[1])],
                                  change[12, which.min(w < w50[2])]),
                          "Points" = c("Maturity", "Maturity", "L50", "L50"),
-                         "Species" = p@species_params$species[11:12])
+                         "Species" = p@species_params$species[c(19,17)])
 
         ggplot(cf, aes(x = w, y = value)) +
             geom_line(aes(colour = Species, linetype = Species, group = sp)) +
@@ -139,7 +206,7 @@ server <- function(input, output, session) {
             scale_linetype_manual(values = p@linetype) +
             theme(text = element_text(size = 14)) +
             geom_point(aes(x = w, y = y, colour = Species, shape = Points),
-                       data = sp, size=3)
+                       data = sp, size = 3)
     })
 
     # Plot selectivity curves ####
@@ -147,19 +214,19 @@ server <- function(input, output, session) {
         p <- params()
         w_min_idx <- sum(p@w < 0.5)
         w_max_idx <- which.min(p@w < 200)
-        w_sel <- seq(w_min_idx, w_max_idx, by = floor((w_max_idx-w_min_idx)/50))
+        w_sel <- seq(w_min_idx, w_max_idx, by = ceiling((w_max_idx-w_min_idx)/50))
         w <- p@w[w_sel]
-        selectivity <- p@selectivity[2, , w_sel]
+        selectivity <- p@selectivity[1, sp_sel, w_sel]
         sf <- reshape2::melt(selectivity)
         sf$Gear <- "Modfied"
-        selectivity_old <- p_old@selectivity[2, , w_sel]
+        selectivity_old <- p_old@selectivity[1, sp_sel, w_sel]
         sf_old <- reshape2::melt(selectivity_old)
         sf_old$Gear <- "Current"
         sf <- rbind(sf, sf_old)
         names(sf)[1] <- "Species"
         sf <- subset(sf, value > 0)
         if (input$selectivity_x == "Weight") {
-            ggplot(sf, aes(x = w, y = value)) +
+            gg <- ggplot(sf, aes(x = w, y = value)) +
                 geom_line(aes(colour = Species, linetype = Gear)) +
                 scale_x_continuous(name = "Size [g]", labels = prettyNum) +
                 scale_y_continuous(name = "Selectivity",
@@ -171,7 +238,7 @@ server <- function(input, output, session) {
             names(a) <- p@species_params$species
             b <- p@species_params$b
             names(b) <- p@species_params$species
-            ggplot(sf, aes(x = (w/a[Species])^(1/b[Species]), y = value)) +
+            gg <- ggplot(sf, aes(x = (w/a[Species])^(1/b[Species]), y = value)) +
                 geom_line(aes(colour = Species, linetype = Gear)) +
                 scale_x_continuous(name = "Length [cm]", labels = prettyNum) +
                 scale_y_continuous(name = "Selectivity",
@@ -179,22 +246,23 @@ server <- function(input, output, session) {
                 scale_colour_manual(values = p@linecolour) +
                 theme(text = element_text(size = 18))
         }
+        gg
     })
 
     # Plot catch by size ####
     output$plotCatch <- renderPlot({
-        year <- input$catch_year - 2018
+        year <- input$catch_year - 2020
         s2 <- sim()
         p <- params()
         w_min_idx <- sum(p@w < 4)
         w_max_idx <- which.min(p@w < 200)
         w_sel <- seq(w_min_idx, w_max_idx, by = 1)
         w <- p@w[w_sel]
-        catch_old <- p_old@selectivity[2, 11:12, w_sel] *
-            sim_old@n[2, 11:12, w_sel] * p@initial_effort * rep(w, each = 2)
+        catch_old <- p_old@selectivity[1, sp_sel, w_sel] *
+            sim_old@n[2, sp_sel, w_sel] * p@initial_effort * rep(w, each = 2)
         catchf_old <- reshape2::melt(catch_old)
         catchf_old$Gear <- "Current"
-        catch <- p@selectivity[2, 11:12, w_sel] * s2@n[10*year+1, 11:12,w_sel] *
+        catch <- p@selectivity[1, sp_sel, w_sel] * s2@n[year+1, sp_sel,w_sel] *
             p@initial_effort * rep(w, each = 2)
         catchf <- reshape2::melt(catch)
         catchf$Gear <- "Modified"
@@ -210,10 +278,10 @@ server <- function(input, output, session) {
                                                  "Modified" = "solid")) +
                 theme(text = element_text(size = 18))
         } else {
-            a <- p@species_params$a[11:12]
-            names(a) <- p@species_params$species[11:12]
-            b <- p@species_params$b[11:12]
-            names(b) <- p@species_params$species[11:12]
+            a <- p@species_params$a
+            names(a) <- p@species_params$species
+            b <- p@species_params$b
+            names(b) <- p@species_params$species
             ggplot(catchf, aes(x = (w/a[Species])^(1/b[Species]), y = value)) +
                 geom_line(aes(colour = Species, linetype = Gear)) +
                 scale_x_continuous(name = "Length [cm]", labels = prettyNum) +
@@ -226,8 +294,8 @@ server <- function(input, output, session) {
     })
 
     # Plot size spectrum ####
-    output$plotSpectrum <- renderPlot({
-        plotSpectra(sim(), time_range = input$spectrum_year - 2018)
+    output$plotSpectrum <- renderPlotly({
+        animateSpectra(sim(), resource = FALSE)
     })
 
     # Constraints on sliders ####
@@ -256,46 +324,6 @@ ui <- fluidPage(
 
     titlePanel("Gear modification: target species and the background ecosystem"),
 
-    bsModal("Intro", "Welcome", "introBut", size = "large",
-            p("When we change fishing on target species, we alter the ecosystems
-          in which the target species are embedded.  The ecosystem-based
-          approach to fisheries management recognises this, and tools are
-          needed to learn about these changes."),
-            p("This web page is a tool for looking at these ecosystem effects.
-          It is an example based on Geographical SubArea GSA06 (Northern Spain),
-          an extension to a study by Maynou (2018). Specifically, we embed
-          chosen target species into a generic background ecosystem of multiple species,
-          allowing the target and background species to interact. The target
-          species of special importance in GSA06 are hake and red mullet.
-          A European discards ban on these two species is proposed, and we need
-          to understand the consequences of changing fishing gear in the
-          ecosystem context."),
-            p("Calculations start in 2018 with the bottom-trawl fishing gear
-          currently in use, as given by Maynou (2018), and average abundances
-          given by the corresponding steady state.  This gear is called
-          'current' in the graphs.  At the start, a new fishing gear is chosen,
-          and an integration is run for a number of years.  As time goes on,
-          abundance and yield of the target species change: (a) directly through
-          the choice of fishing gear, and (b) indirectly through feedbacks with
-          other species."),
-            p("Default settings of a new gear are those of a T90 extension net to
-          reduce the catches of undersize hake and red mullet (Maynou 2018).
-          Beyond this, there is flexibility for you to investigate the effect
-          of gears with different selectivities."),
-            p("The engine that drives the calculations is an updated version of
-          mizer, a software package for the dynamics of multispecies size
-          spectra.  This deals explicitly with the dynamics of marine species
-          that interact by feeding on each other.  We have modified mizer to
-          allow species with chosen life cycles to be inserted into a background
-          ecosystem comprising a an assemblage of multiple species."),
-            p("This is a tool for you to explore effects of new kinds of fishing
-          gear.  The tool is in its early stages of development and is not,
-          at the moment, appropriate for making specific management decisions.
-          Like a weather forecast, prediction becomes more uncertain as you go
-          further into the future.  We welcome your feedback for improvements;
-          please contact: gustav.delius@york.ac.uk")
-    ),
-
     sidebarLayout(
 
         sidebarPanel(
@@ -303,18 +331,19 @@ ui <- fluidPage(
             # sliderInput("effort", "Effort",
             #             value=0.4, min=0.3, max=0.5),
             # bsTooltip("effort", "Explanation of this slider", "right"),
-            h4("Hake selectivity"),
-            sliderInput("l50_hake", "L50", post = "cm",
-                        value=20.5, min=12, max=22, step = 0.01),
-            sliderInput("l25_hake", "L25", post = "cm",
-                        value=20.1, min=12, max=22, step = 0.01),
-            h4("Mullet selectivity"),
-            sliderInput("l50_mullet", "L50", post = "cm",
-                        value=15.8, min=12, max=22, step = 0.01),
-            sliderInput("l25_mullet", "L25", post = "cm",
-                        value=13.6, min=12, max=22, step = 0.01),
-            img(src = "logo_minouw_blue.png", width = "200px"),
-            actionButton("introBut", "View Introduction again")
+            uiOutput("fishing")
+            # h4("Hake selectivity"),
+            # sliderInput("l50_hake", "L50", post = "cm",
+            #             value=20.5, min=12, max=22, step = 0.01),
+            # sliderInput("l25_hake", "L25", post = "cm",
+            #             value=20.1, min=12, max=22, step = 0.01),
+            # h4("Mullet selectivity"),
+            # sliderInput("l50_mullet", "L50", post = "cm",
+            #             value=15.8, min=12, max=22, step = 0.01),
+            # sliderInput("l25_mullet", "L25", post = "cm",
+            #             value=13.6, min=12, max=22, step = 0.01),
+            # img(src = "logo_minouw_blue.png", width = "200px"),
+            # actionButton("introBut", "View Introduction again")
         ),  # endsidebarpanel
 
         mainPanel(
@@ -348,31 +377,7 @@ ui <- fluidPage(
                 ),
                 tabPanel(
                     "Spectrum",
-                    br(),
-                    p("Abundance of species at a chosen time."),
-                    wellPanel(
-                        sliderInput("spectrum_year", "Year",
-                                    value = 2023, min = 2018,
-                                    max = 2033, step = 1,
-                                    animate = TRUE, sep = "")
-                    ),
-                    plotOutput("plotSpectrum"),
-                    p("This unpacks a bit of the underlying mizer model of
-                      multispecies dynamics.  The grey lines are background
-                      species, each with its own dynamics;  the green line is a
-                      resource resource spectrum without which the whole fish
-                      assemblage would go to extinction.  The target species
-                      both eat, and are eaten by, the background species."),
-                    p("In 2018, the system is at the steady state under
-                      current fishing. At this time, your chosen fishing
-                      mortality is imposed on the target species
-                      (background species retain the old fishing).  As
-                      time goes on, the target species adjust to the new
-                      fishing. This adjustment leads to changes in the
-                      abundance of background species.  Since the species
-                      are coupled by predation, changes in the background
-                      species feed back to the target species.",
-                      "bottom")
+                    plotlyOutput("plotSpectrum")
                 ),
                 tabPanel(
                     "% Change",
@@ -381,8 +386,8 @@ ui <- fluidPage(
                       'modified' gear over time"),
                     wellPanel(
                         sliderInput("change_year", "Year",
-                                    value = 2023, min = 2018,
-                                    max = 2033, step = 1,
+                                    value = 2023, min = 2020,
+                                    max = 2035, step = 1,
                                     animate = TRUE, sep = "")
                     ),
                     plotOutput("plotChange"),
@@ -407,8 +412,8 @@ ui <- fluidPage(
                       to consist of larger fish."),
                     wellPanel(
                         sliderInput("catch_year", "Year",
-                                    value = 2023, min = 2018,
-                                    max = 2033, step = 1,
+                                    value = 2023, min = 2020,
+                                    max = 2035, step = 1,
                                     animate = TRUE, sep = "")
                     ),
                     plotOutput("plotCatch"),
