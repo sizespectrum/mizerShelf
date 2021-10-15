@@ -68,7 +68,7 @@ rhoControl <- function(input, output, session, params, flags, ...) {
         ignoreInit = TRUE)
 }
 
-controls <- list("egg", "predation", "rho", "fishing", "reproduction", "other",
+controls <- list("abundance", "predation", "rho", "fishing", "reproduction", "other",
                  "interaction")
 
 params <- readRDS("params250520.rds")
