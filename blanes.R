@@ -1,5 +1,4 @@
-install.packages("mizer")
-library(remotes)
+
 remotes::install_github("sizespectrum/mizerExperimental")
 
 library(mizerExperimental)
@@ -38,7 +37,7 @@ rhoControlUI <- function(p, sp) {
     )
 }
 
-rhoControl <- function(input, output, session, params, flags) {
+rhoControl <- function(input, output, session, params, flags, ...) {
     observeEvent(
         list(input$rho_detritus, input$rho_carrion),
         {
