@@ -2,76 +2,41 @@
 remotes::install_github("sizespectrum/mizerExperimental")
 
 library(mizerExperimental)
+source("components.R")
+source("rhoControl.R")
+source("helpers.R")
 
-setRho <- function(params) {
-    params@other_params$detritus$rho <-
-        outer(params@species_params$rho_detritus,
-              params@w^params@resource_params$n)
-    params@other_params$carrion$rho <-
-        outer(params@species_params$rho_carrion,
-              params@w^params@resource_params$n)
-    params
-}
-
-encounter_contribution <- function(params, n_other, component, ...) {
-    params@other_params[[component]]$rho * n_other[[component]]
-}
-
-constant_dynamics <- function(params, n_other, component, ...) {
-    n_other[[component]]
-}
-
-rhoControlUI <- function(p, sp) {
-    tagList(
-        tags$h3(tags$a(id = "rho"), "rho"),
-        sliderInput("rho_detritus", "rho_detritus", value = sp$rho_detritus,
-                    min = 0,
-                    max = signif(ifelse(sp$rho_detritus > 0,
-                                        sp$rho_detritus * 2,
-                                        0.001), 2)),
-        sliderInput("rho_carrion", "rho_carrion", value = sp$rho_carrion,
-                    min = 0,
-                    max = signif(ifelse(sp$rho_carrion > 0,
-                                        sp$rho_carrion * 2,
-                                        0.001), 2))
-    )
-}
-
-rhoControl <- function(input, output, session, params, flags, ...) {
-    observeEvent(
-        list(input$rho_detritus, input$rho_carrion),
-        {
-            p <- params()
-            sp <- input$sp
-            if (!identical(sp, flags$sp_old_rho)) {
-                flags$sp_old_rho <- sp
-                return()
-            }
-            # Update slider min/max so that they are a fixed proportion of the
-            # parameter value
-            updateSliderInput(session, "rho_detritus",
-                              min = 0,
-                              max = signif(ifelse(input$rho_detritus > 0,
-                                                  input$rho_detritus * 2,
-                                                  0.001), 2))
-            updateSliderInput(session, "rho_carrion",
-                              min = 0,
-                              max = signif(ifelse(input$rho_carrion > 0,
-                                                  input$rho_carrion * 2,
-                                                  0.001), 2))
-
-            p@species_params[sp, "rho_detritus"]   <- input$rho_detritus
-            p@species_params[sp, "rho_carrion"]   <- input$rho_carrion
-            p <- setRho(p)
-            tuneParams_update_species(sp, p, params)
-        },
-        ignoreInit = TRUE)
-}
-
-controls <- list("abundance", "predation", "rho", "fishing", "reproduction", "other",
-                 "interaction")
-
-params <- readRDS("params250520.rds")
+params <- readRDS("params.rds")
 catch <- readRDS("catch.rds")
 
-tuneParams(params, catch = catch, controls = controls)
+# Study steady state ----
+controls <- list("abundance", "predation", "rho", "fishing", "reproduction", "other",
+                 "interaction")
+params <- tuneParams(params, catch = catch, controls = controls)
+
+# Set component dynamics ----
+
+n <- initialN(params)
+rates <- getRates(params)
+
+params@other_params[["carrion"]]$discard <- 0.15
+params@other_params[["carrion"]]$external <- 
+    params@initial_n_other[["carrion"]] * 
+    getLoss(params, n = n, rates = rates, component = "carrion") -
+    getInflow(params, n = n, rates = rates, component = "carrion")
+params@other_dynamics[["carrion"]] <- "component_dynamics"
+
+params@other_params[["detritus"]]$external <- 
+    params@initial_n_other[["detritus"]] * 
+    getLoss(params, n = n, rates = rates, component = "detritus") -
+    getInflow(params, n = n, rates = rates, component = "detritus")
+params@other_dynamics[["detritus"]] <- "component_dynamics"
+
+sim <- project(params, t_max = 10)
+plotBiomass(sim)
+
+# Sensitivity to fishing ----
+params <- setBevertonHolt(params, reproduction_level = 0.5)
+sim <- project(params, t_max = 100, effort = 1.1)
+plotBiomass(sim)
+
