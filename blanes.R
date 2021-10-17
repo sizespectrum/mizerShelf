@@ -5,6 +5,7 @@ library(mizerExperimental)
 source("components.R")
 source("rhoControl.R")
 source("helpers.R")
+source("plots.R")
 
 params <- readRDS("params.rds")
 catch <- readRDS("catch.rds")
@@ -33,10 +34,10 @@ params@other_params[["detritus"]]$external <-
 params@other_dynamics[["detritus"]] <- "component_dynamics"
 
 sim <- project(params, t_max = 10)
-plotBiomass(sim)
+plotlyBiomass(sim)
 
 # Sensitivity to fishing ----
 params <- setBevertonHolt(params, reproduction_level = 0.5)
 sim <- project(params, t_max = 100, effort = 1.1)
-plotBiomass(sim)
+plotlyBiomass(sim)
 
