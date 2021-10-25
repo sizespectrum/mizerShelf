@@ -6,6 +6,9 @@ rhoControlUI <- function(p, sp) {
                     max = signif(ifelse(sp$rho_detritus > 0,
                                         sp$rho_detritus * 2,
                                         0.001), 2)),
+        sliderInput("n_detritus", "n_detritus", value = sp$n_detritus,
+                    min = -.5,
+                    max = .75, step = .05),
         sliderInput("rho_carrion", "rho_carrion", value = sp$rho_carrion,
                     min = 0,
                     max = signif(ifelse(sp$rho_carrion > 0,
@@ -14,9 +17,9 @@ rhoControlUI <- function(p, sp) {
     )
 }
 
-rhoControl <- function(input, output, session, params, flags, ...) {
+rhoControl <- function(input, output, session, params, params_old, flags, ...) {
     observeEvent(
-        list(input$rho_detritus, input$rho_carrion),
+        list(input$rho_detritus, input$rho_carrion, input$n_detritus),
         {
             p <- params()
             sp <- input$sp
@@ -38,17 +41,20 @@ rhoControl <- function(input, output, session, params, flags, ...) {
                                                   0.001), 2))
             
             p@species_params[sp, "rho_detritus"]   <- input$rho_detritus
+            p@species_params[sp, "n_detritus"]   <- input$n_detritus
             p@species_params[sp, "rho_carrion"]   <- input$rho_carrion
             p <- setRho(p)
-            tuneParams_update_species(sp, p, params)
+            mizerExperimental:::tuneParams_update_species(sp, p, params, params_old)
         },
         ignoreInit = TRUE)
 }
 
 setRho <- function(params) {
-    params@other_params$detritus$rho <-
-        outer(params@species_params$rho_detritus,
-              params@w^params@resource_params$n)
+    rho <- t(outer(params@w, params@species_params$n_detritus, "^"))
+    rho <- sweep(rho, 1, params@species_params$rho_detritus, "*")
+    # rho[, params@w > 0.01] <- 0
+    params@other_params$detritus$rho <- rho
+    
     params@other_params$carrion$rho <-
         outer(params@species_params$rho_carrion,
               params@w^params@resource_params$n)
