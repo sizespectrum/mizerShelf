@@ -2,6 +2,7 @@ library(dplyr)
 library(tidyr)
 library(googlesheets4)
 library(waldo)
+library(mizerExperimental)
 params <- readRDS("params.rds")
 sp <- species_params(params)
 
@@ -10,7 +11,7 @@ sp <- species_params(params)
 sp_sheet <- read_sheet("https://docs.google.com/spreadsheets/d/1mT3JkzooBmkHHNL0B_z9Bhwa__kyt0nnP8xiENVAPRY/edit#gid=201538411")
 
 # Reorder species and species 15: Mediterranean scaldfish
-sp_sheet <- sp_sheet[c(1:13, 16:27, 14), ]
+sp_sheet <- sp_sheet[c(1:4, 7, 5:6, 8:13, 16:24, 27, 25:26, 14), ]
 compare(sp$species, sp_sheet$species)
 compare(sp$latin.name, sp_sheet$`latin name`)
 
@@ -56,6 +57,8 @@ plot_diff(sp$alpha, sp_sheet$alpha)
 
 compare(sp$rho_carrion > 0, sp_sheet$scavQ > 0)
 compare(sp$rho_detritus > 0, sp_sheet$detQ > 0)
+data.frame(scav = sp_sheet$scavQ, sp$rho_carrion, 
+           detr = sp_sheet$detQ, sp$rho_detritus)
 
 gp <- gear_params(params)
 plot_diff(gp$l50, sp_sheet$l50)
