@@ -119,3 +119,89 @@ plotlyBiomass <- function(sim,
     ggplotly(do.call("plotBiomass", argg),
              tooltip = c("Species", "Year", "Biomass"))
 }
+
+plotDeath <- function(object, species = NULL, proportion = TRUE, return_data = FALSE)
+{
+    if (is(object, "MizerSim")) {
+        params <- object@params
+        params <- setInitialValues(params, object)
+    } else if (is(object, "MizerParams")) {
+        params <- validParams(object)
+    }
+    # TODO: Remove this fix once core mizer makes sure a default is set
+    if (!"External" %in% names(getColours(params))) {
+        params <- setColours(params, c(External = "grey"))
+    }
+    if (!"Fishing" %in% names(getColours(params))) {
+        params <- setColours(params, c(Fishing = "red"))
+    }
+    if (!"Gear" %in% names(getColours(params))) {
+        params <- setColours(params, c(Gear = "brown"))
+    }
+    
+    species <- valid_species_arg(params, species)
+    
+    pred_rate <- getPredRate(params)
+    f_mort <- getFMort(params)
+    gear_mort <- gearMort(params, f_mort)
+    mort <- getMort(params)
+    plot_dat <- NULL
+    for (iSpecies in species)
+    {
+        fish_idx_full <- (params@w_full >= params@species_params[iSpecies, "w_min"]) &
+            (params@w_full <= params@species_params[iSpecies, "w_inf"])
+        fish_idx <- (params@w >= params@species_params[iSpecies, "w_min"]) &
+            (params@w <= params@species_params[iSpecies, "w_inf"])
+        predation <- params@interaction[, iSpecies] *
+            pred_rate[, fish_idx_full]
+        fishing <- f_mort[iSpecies, fish_idx]
+        external <- ext_mort(params)[iSpecies, fish_idx]
+        gear <- gear_mort[iSpecies, fish_idx]
+        total <- mort[iSpecies, fish_idx]
+        ylab <- "Death rate [1/year]"
+        if (proportion) {
+            predation <- predation / rep(total, each = dim(predation)[[1]])
+            external <- external / total
+            fishing <- fishing / total
+            gear <- gear / total
+            ylab <- "Proportion of all death"
+        }
+        # Make data.frame for plot
+        plot_dat <-
+            rbind(plot_dat,
+                  data.frame(w = params@w[fish_idx],
+                             value = external,
+                             Cause = "External",
+                             Prey = iSpecies),
+                  data.frame(w = params@w[fish_idx],
+                             value = fishing,
+                             Cause = "Fishing",
+                             Prey = iSpecies),
+                  data.frame(w = params@w[fish_idx],
+                             value = gear,
+                             Cause = "Gear",
+                             Prey = iSpecies),
+                  data.frame(w = rep(params@w[fish_idx], each = dim(predation)[[1]]),
+                             value = c(predation),
+                             Cause = params@species_params$species,
+                             Prey = iSpecies)
+            )
+    }
+    
+    if (return_data) return(plot_dat)
+    
+    plotDataFrame(plot_dat, params, style = "area", xtrans = "log10", wrap_var = "Prey",
+                  wrap_scale = "free_x", xlab = "Size [g]", ylab = ylab)
+}
+
+
+#' @rdname plotDeath
+#' @export
+plotlyDeath <- function(object,
+                        species = NULL,
+                        proportion = TRUE,
+                        ...) {
+    argg <- c(as.list(environment()), list(...))
+    ggplotly(do.call("plotDeath", argg),
+             tooltip = c("value", "Cause", "w"))
+}
