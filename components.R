@@ -79,7 +79,7 @@ getInflow <- function(params, n, rates, component) {
         inflow <-
             sum((params@mu_b * n) %*% (params@w * params@dw)) +
             sum(((rates$f_mort * n) %*% (params@w * params@dw)) *
-                    params@other_params[["carrion"]]$discard)
+                    params@species_params$discard)
         #TODO: Implement gear death
     }
     inflow
