@@ -20,7 +20,7 @@ params <- tuneParams(params, catch = catch, controls = controls)
 n <- initialN(params)
 rates <- getRates(params)
 
-params@other_params[["carrion"]]$discard <- 0.15
+params@species_params$discard <- 0.15
 params@other_params[["carrion"]]$external <- 
     params@initial_n_other[["carrion"]] * 
     getLoss(params, n = n, rates = rates, component = "carrion") -
