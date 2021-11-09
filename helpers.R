@@ -21,3 +21,20 @@ scaleModel <- function(params, factor) {
         params@other_params[["detritus"]]$rho / factor
     mizer::scaleModel(params)
 }
+
+
+plot_diff <- function(x1, x2) {
+    wc <- compare(x1, x2, max_diffs = Inf)
+    if (length(wc)) {
+        barplot((x1 - x2) / x2, names.arg = 1:length(x1), horiz = TRUE)
+    }
+    wc
+}
+
+l <- function(w) {
+    (w / sp$a) ^ (1 / sp$b)
+}
+
+w <- function(l) {
+    sp$a * l ^ sp$b
+}
