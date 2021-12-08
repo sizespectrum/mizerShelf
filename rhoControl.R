@@ -1,4 +1,5 @@
-rhoControlUI <- function(p, sp) {
+rhoControlUI <- function(p, input) {
+    sp <- p@species_params[input$sp, ]
     tagList(
         tags$h3(tags$a(id = "rho"), "rho"),
         # sliderInput("rho_detritus", "rho_detritus", value = sp$rho_detritus,
