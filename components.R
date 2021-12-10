@@ -77,7 +77,8 @@ getInflow <- function(params, n, rates, component) {
                     (1 - params@species_params$alpha))
     } else if (component == "carrion") {
         inflow <-
-            sum(((params@mu_b + gearMort(params, rates$f_mort)) * n) %*% 
+            # Only include carrion from starfish down
+            sum(((params@mu_b + gearMort(params, rates$f_mort)) * n)[8:26, ] %*% 
                      (params@w * params@dw)) +
             sum(((rates$f_mort * n) %*% (params@w * params@dw)) *
                     params@species_params$discard)
