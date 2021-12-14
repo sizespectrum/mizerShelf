@@ -47,43 +47,31 @@ encounter_contribution <- function(params, n_other, component, ...) {
 #' @return A single number giving the component biomass at next time step
 #' @export
 #' @md
-component_dynamics <-
-    function(params, n, n_pp, n_other, rates, dt, component, ...) {
+carrion_dynamics <-
+    function(params, n, n_other, rates, dt, ...) {
         
-        loss <- getLoss(params, n, rates, component)
-            
-        external <- params@other_params[[component]]$external
-        
-        inflow <- getInflow(params, n, rates, component)
+        loss <- getLoss(params, n, rates)
+        inflow <- getInflow(params, n, rates)
         
         if (loss) {
             et <- exp(-loss * dt)
-            return(n_other[[component]] * et +
-                       (inflow  + external) / loss  * (1 - et))
+            return(n_other$carrion * et + inflow / loss  * (1 - et))
         }
-        return(n_other[[component]] + (inflow  + external) * dt)
+        return(n_other$carrion + inflow * dt)
     }
 
-getLoss <- function(params, n, rates, component) {
-    sum((params@other_params[[component]]$rho * n *
+getLoss <- function(params, n, rates) {
+    sum((params@other_params$carrion$rho * n *
              (1 - rates$feeding_level)) %*% 
-            params@dw)
+            params@dw) +
+        params@other_params$carrion$decompose
 }
 
-getInflow <- function(params, n, rates, component) {
-    if (component == "detritus") {
-        inflow <-
-            sum(((rates$feeding_level * params@intake_max * n) %*% params@dw) *
-                    (1 - params@species_params$alpha))
-    } else if (component == "carrion") {
-        inflow <-
-            # Only include carrion from starfish down
-            sum(((params@mu_b + gearMort(params, rates$f_mort)) * n)[8:26, ] %*% 
-                     (params@w * params@dw)) +
-            sum(((rates$f_mort * n) %*% (params@w * params@dw)) *
-                    params@species_params$discard)
-    }
-    inflow
+getInflow <- function(params, n, rates) {
+    sum(((params@mu_b + gearMort(params, rates$f_mort)) * n) %*% 
+            (params@w * params@dw)) +
+        sum(((rates$f_mort * n) %*% (params@w * params@dw)) *
+                params@species_params$discard)
 }
 
 constant_dynamics <- function(params, n_other, component, ...) {
