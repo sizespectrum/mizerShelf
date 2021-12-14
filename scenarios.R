@@ -1,10 +1,4 @@
-remotes::install_github("sizespectrum/mizerExperimental")
-
-library(mizerExperimental)
-source("components.R")
-source("helpers.R")
-source("plots.R")
-params <- readRDS("params.rds")
+source("init.R")
 
 # set some density dependence in reproduction
 params <- setBevertonHolt(params, reproduction_level = 0.25)
