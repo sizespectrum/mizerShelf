@@ -53,8 +53,8 @@ plotBiomass <- function(sim, species = NULL,
                         total = FALSE, background = TRUE, 
                         highlight = NULL, return_data = FALSE,
                         ...) {
-    # If there is no detritus component then call the mizer function
-    if (is.null(getComponent(params, "detritus"))) {
+    # If there is no carrion component then call the mizer function
+    if (is.null(getComponent(params, "carrion"))) {
         return(mizer::plotBiomass(sim, species = species,
                                   start_time = start_time, end_time = end_time,
                                   y_ticks = y_ticks, ylim = ylim,
