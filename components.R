@@ -36,12 +36,9 @@ encounter_contribution <- function(params, n_other, component, ...) {
 #'
 #' @param params A [MizerParams] object
 #' @param n A matrix of current species abundances (species x size)
-#' @param n_pp A vector of current plankton abundance by size
 #' @param n_other List of abundances of other dynamic components
 #' @param rates A list of rates as returned by [getRates()]
-#' @param t Current time
 #' @param dt Time step size
-#' @param component 
 #' @param ... Unused
 #'
 #' @return A single number giving the component biomass at next time step
@@ -50,8 +47,8 @@ encounter_contribution <- function(params, n_other, component, ...) {
 carrion_dynamics <-
     function(params, n, n_other, rates, dt, ...) {
         
-        loss <- getLoss(params, n, rates)
-        inflow <- getInflow(params, n, rates)
+        loss <- carrion_loss(params, n, rates)
+        inflow <- carrion_biomass_inflow(params, n, rates)
         
         if (loss) {
             et <- exp(-loss * dt)
@@ -60,14 +57,14 @@ carrion_dynamics <-
         return(n_other$carrion + inflow * dt)
     }
 
-getLoss <- function(params, n, rates) {
+carrion_loss <- function(params, n, rates) {
     sum((params@other_params$carrion$rho * n *
              (1 - rates$feeding_level)) %*% 
             params@dw) +
         params@other_params$carrion$decompose
 }
 
-getInflow <- function(params, n, rates) {
+carrion_biomass_inflow <- function(params, n, rates) {
     sum(((params@mu_b + gearMort(params, rates$f_mort)) * n) %*% 
             (params@w * params@dw)) +
         sum(((rates$f_mort * n) %*% (params@w * params@dw)) *
@@ -76,4 +73,33 @@ getInflow <- function(params, n, rates) {
 
 constant_dynamics <- function(params, n_other, component, ...) {
     n_other[[component]]
+}
+
+detritus_dynamics <- function(params, n, n_pp, n_other, rates, dt, ...) {
+    current_biomass <- 
+        sum(n_pp * params@dw_full * params@w_full)
+    
+    loss <- detritus_biomass_loss(params, n_pp, rates) / current_biomass
+    inflow <- detritus_biomass_inflow(params, n, n_other, rates)
+    
+    if (loss) {
+        et <- exp(-loss * dt)
+        next_biomass <- current_biomass * et + inflow / loss  * (1 - et)
+    } else {
+        next_biomass <- current_biomass + inflow * dt
+    }
+    n_pp * next_biomass / current_biomass
+}
+
+detritus_biomass_loss <- function(params, n_pp, rates) {
+    sum(rates$resource_mort * n_pp * params@w_full * params@dw_full)
+}
+
+detritus_biomass_inflow <- function(params, n, n_other, rates) {
+    consumption <- sweep((1 - rates$feeding_level) * rates$encounter * n, 2,
+                         params@dw, "*", check.margin = FALSE)
+    feces <- sweep(consumption, 1, (1 - params@species_params$alpha), "*", 
+                      check.margin = FALSE)
+    carrion <- params@other_params$carrion$decompose * n_other$carrion
+    sum(feces) + carrion + params@other_params$detritus$external
 }
