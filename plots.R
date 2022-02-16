@@ -80,6 +80,21 @@ plotBiomass <- function(sim, species = NULL,
         stop("start_time must be less than end_time")
     }
     
+    # detritus
+    d_biomass <- rowSums(sweep(sim@n_pp, 2, params@dw_full * params@w_full, "*"))
+    times <- as.numeric(names(d_biomass))
+    sel_times <- (times >= start_time) & (times <= end_time)
+    br <- data.frame(Year = times[sel_times],
+                     Biomass = d_biomass[sel_times],
+                     Species = "Detritus")
+    # Implement ylim and a minimal cutoff
+    min_value <- 1e-20
+    br <- br[br$Biomass >= min_value &
+                 (is.na(ylim[1]) | br$Biomass >= ylim[1]) &
+                 (is.na(ylim[2]) | br$Biomass <= ylim[2]), c(1, 2, 3)]
+    br$Legend <- br$Species
+    
+    # other components
     bc <- unlist(sim@n_other)
     dim(bc) <- dim(sim@n_other)
     dimnames(bc) <- dimnames(sim@n_other)
@@ -94,7 +109,7 @@ plotBiomass <- function(sim, species = NULL,
     names(bc) <- c("Year", "Biomass", "Species")
     bc$Legend <- bc$Species
     
-    plot_dat <- rbind(df, bc)
+    plot_dat <- rbind(df, bc, br)
     if (return_data) return(plot_dat) 
     
     plotDataFrame(plot_dat, params, xlab = "Year", ylab = "Biomass [g]",
