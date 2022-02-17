@@ -44,6 +44,12 @@ encounter_contribution <- function(params, n_other, component, ...) {
 #' @return A single number giving the component biomass at next time step
 #' @export
 #' @md
+#' 
+
+carrion_biomass <- function(params) {
+    params@initial_n_other$carrion
+}
+
 carrion_dynamics <-
     function(params, n, n_other, rates, dt, ...) {
         
@@ -75,10 +81,12 @@ constant_dynamics <- function(params, n_other, component, ...) {
     n_other[[component]]
 }
 
+detritus_biomass <- function(params, n_pp = params@initial_n_pp) {
+    sum(n_pp * params@dw_full * params@w_full)
+}
+
 detritus_dynamics <- function(params, n, n_pp, n_other, rates, dt, ...) {
-    current_biomass <- 
-        sum(n_pp * params@dw_full * params@w_full)
-    
+    current_biomass <- detritus_biomass(params, n_pp = n_pp)
     loss <- detritus_biomass_loss(params, n_pp, rates) / current_biomass
     inflow <- detritus_biomass_inflow(params, n, n_other, rates)
     
@@ -102,4 +110,58 @@ detritus_biomass_inflow <- function(params, n, n_other, rates) {
                       check.margin = FALSE)
     carrion <- params@other_params$carrion$decompose * n_other$carrion
     sum(feces) + carrion + params@other_params$detritus$external
+}
+
+carrion_lifetime <- function(params) {
+    params@initial_n_other$carrion / 
+        carrion_loss(params, n = params@initial_n, 
+                     rates = getRates(params))
+}
+
+`carrion_lifetime<-` <- function(params, value) {
+    rescale_carrion(params, value / carrion_lifetime(params))
+}
+
+detritus_lifetime <- function(params) {
+    current_biomass <- 
+        sum(params@initial_n_pp * params@dw_full * params@w_full)
+    current_biomass /
+        detritus_biomass_loss(params, 
+                              n_pp = params@initial_n_pp, 
+                              rates = getRates(params))
+}
+
+`detritus_lifetime<-` <- function(params, value) {
+    rescale_detritus(params, value / detritus_lifetime(params))
+}
+
+rescale_carrion <- function(params, factor) {
+    params@initial_n_other[["carrion"]] <- 
+        params@initial_n_other[["carrion"]] * factor
+    params@species_params$rho_carrion <- 
+        params@species_params$rho_carrion / factor
+    params@other_params[["carrion"]]$rho <- 
+        params@other_params[["carrion"]]$rho / factor
+    params@other_params$carrion$decompose <-
+        params@other_params$carrion$decompose / factor
+    params
+}
+
+rescale_detritus <- function(params, factor) {
+    params@initial_n_pp <- params@initial_n_pp * factor
+    params@species_params$interaction_resource <-
+        params@species_params$interaction_resource / factor
+    params
+}
+
+rescaleComponents <- function(params, carrion_factor = 1, detritus_factor = 1) {
+    rescale_carrion(rescale_detritus(params, detritus_factor),
+                    carrion_factor)
+}
+
+
+scaleModel <- function(params, factor) {
+    params@other_params[["carrion"]]$rho <- 
+        params@other_params[["carrion"]]$rho / factor
+    mizer::scaleModel(params)
 }
