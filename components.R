@@ -77,6 +77,18 @@ carrion_biomass_inflow <- function(params, n, rates) {
                 params@species_params$discard)
 }
 
+carrion_biomass_inflow_detail <- function(params) {
+    n <- params@initial_n
+    rates <- getRates(params)
+    list(
+        mu_b = sum((params@mu_b * n) %*% (params@w * params@dw)),
+        gear_mort = sum((gearMort(params, rates$f_mort) * n) %*% 
+                            (params@w * params@dw)),
+        discards = sum(((rates$f_mort * n) %*% (params@w * params@dw)) *
+                           params@species_params$discard)
+    )
+}
+
 constant_dynamics <- function(params, n_other, component, ...) {
     n_other[[component]]
 }
@@ -110,6 +122,22 @@ detritus_biomass_inflow <- function(params, n, n_other, rates) {
                       check.margin = FALSE)
     carrion <- params@other_params$carrion$decompose * n_other$carrion
     sum(feces) + carrion + params@other_params$detritus$external
+}
+
+detritus_biomass_inflow_detail <- function(params) {
+    n <- params@initial_n
+    n_other <- params@initial_n_other
+    rates <- getRates(params)
+    consumption <- sweep((1 - rates$feeding_level) * rates$encounter * n, 2,
+                         params@dw, "*", check.margin = FALSE)
+    feces <- sweep(consumption, 1, (1 - params@species_params$alpha), "*", 
+                   check.margin = FALSE)
+    carrion <- params@other_params$carrion$decompose * n_other$carrion
+    list(
+        feces = sum(feces),
+        carrion = carrion,
+        external = params@other_params$detritus$external
+    )
 }
 
 carrion_lifetime <- function(params) {
