@@ -54,7 +54,7 @@ carrion_dynamics <-
     function(params, n, n_other, rates, dt, ...) {
         
         loss <- carrion_loss(params, n, rates)
-        inflow <- carrion_biomass_inflow(params, n, rates)
+        inflow <- sum(carrion_biomass_inflow(params, n, rates))
         
         if (loss) {
             et <- exp(-loss * dt)
@@ -63,29 +63,21 @@ carrion_dynamics <-
         return(n_other$carrion + inflow * dt)
     }
 
-carrion_loss <- function(params, n, rates) {
+carrion_loss <- function(params, n = params@initial_n, 
+                         rates = getRates(params)) {
     sum((params@other_params$carrion$rho * n *
              (1 - rates$feeding_level)) %*% 
             params@dw) +
         params@other_params$carrion$decompose
 }
 
-carrion_biomass_inflow <- function(params, n, rates) {
-    sum(((params@mu_b + gearMort(params, rates$f_mort)) * n) %*% 
-            (params@w * params@dw)) +
-        sum(((rates$f_mort * n) %*% (params@w * params@dw)) *
-                params@species_params$discard)
-}
-
-carrion_biomass_inflow_detail <- function(params) {
-    n <- params@initial_n
-    rates <- getRates(params)
-    list(
-        mu_b = sum((params@mu_b * n) %*% (params@w * params@dw)),
-        gear_mort = sum((gearMort(params, rates$f_mort) * n) %*% 
-                            (params@w * params@dw)),
-        discards = sum(((rates$f_mort * n) %*% (params@w * params@dw)) *
-                           params@species_params$discard)
+carrion_biomass_inflow <- function(params, n = params@initial_n, 
+                                          rates = getRates(params)) {
+    c(mu_b = sum((params@mu_b * n) %*% (params@w * params@dw)),
+      gear_mort = sum((gearMort(params, rates$f_mort) * n) %*% 
+                          (params@w * params@dw)),
+      discards = sum(((rates$f_mort * n) %*% (params@w * params@dw)) *
+                         params@species_params$discard)
     )
 }
 
@@ -100,7 +92,7 @@ detritus_biomass <- function(params, n_pp = params@initial_n_pp) {
 detritus_dynamics <- function(params, n, n_pp, n_other, rates, dt, ...) {
     current_biomass <- detritus_biomass(params, n_pp = n_pp)
     loss <- detritus_biomass_loss(params, n_pp, rates) / current_biomass
-    inflow <- detritus_biomass_inflow(params, n, n_other, rates)
+    inflow <- sum(detritus_biomass_inflow(params, n, n_other, rates))
     
     if (loss) {
         et <- exp(-loss * dt)
@@ -111,39 +103,27 @@ detritus_dynamics <- function(params, n, n_pp, n_other, rates, dt, ...) {
     n_pp * next_biomass / current_biomass
 }
 
-detritus_biomass_loss <- function(params, n_pp, rates) {
+detritus_biomass_loss <- function(params, n_pp = params@initial_n_pp, 
+                                  rates = getRates(params)) {
     sum(rates$resource_mort * n_pp * params@w_full * params@dw_full)
 }
 
-detritus_biomass_inflow <- function(params, n, n_other, rates) {
-    consumption <- sweep((1 - rates$feeding_level) * rates$encounter * n, 2,
-                         params@dw, "*", check.margin = FALSE)
-    feces <- sweep(consumption, 1, (1 - params@species_params$alpha), "*", 
-                      check.margin = FALSE)
-    carrion <- params@other_params$carrion$decompose * n_other$carrion
-    sum(feces) + carrion + params@other_params$detritus$external
-}
-
-detritus_biomass_inflow_detail <- function(params) {
-    n <- params@initial_n
-    n_other <- params@initial_n_other
-    rates <- getRates(params)
+detritus_biomass_inflow <- function(params, n = params@initial_n,
+                                    n_other = params@initial_n_other,
+                                    rates = getRates(params)) {
     consumption <- sweep((1 - rates$feeding_level) * rates$encounter * n, 2,
                          params@dw, "*", check.margin = FALSE)
     feces <- sweep(consumption, 1, (1 - params@species_params$alpha), "*", 
                    check.margin = FALSE)
     carrion <- params@other_params$carrion$decompose * n_other$carrion
-    list(
-        feces = sum(feces),
-        carrion = carrion,
-        external = params@other_params$detritus$external
+    c(feces = sum(feces),
+      carrion = carrion,
+      external = params@other_params$detritus$external
     )
 }
 
 carrion_lifetime <- function(params) {
-    params@initial_n_other$carrion / 
-        carrion_loss(params, n = params@initial_n, 
-                     rates = getRates(params))
+    1 / carrion_loss(params)
 }
 
 `carrion_lifetime<-` <- function(params, value) {
