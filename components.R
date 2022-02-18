@@ -73,7 +73,8 @@ carrion_loss <- function(params, n = params@initial_n,
 
 carrion_biomass_inflow <- function(params, n = params@initial_n, 
                                           rates = getRates(params)) {
-    c(mu_b = sum((params@mu_b * n) %*% (params@w * params@dw)),
+    c(mu_b = sum((params@mu_b * n) %*% (params@w * params@dw)) *
+          params@other_params$carrion$ext_prop,
       gear_mort = sum((gearMort(params, rates$f_mort) * n) %*% 
                           (params@w * params@dw)),
       discards = sum(((rates$f_mort * n) %*% (params@w * params@dw)) *
@@ -143,6 +144,28 @@ detritus_lifetime <- function(params) {
     rescale_detritus(params, value / detritus_lifetime(params))
 }
 
+carrion_human_origin <- function(params) {
+    inflow <- carrion_biomass_inflow(params)
+    (inflow[["gear_mort"]] + inflow[["discards"]]) / sum(inflow)
+}
+
+`carrion_human_origin<-` <- function(params, value) {
+    lifetime <- carrion_lifetime(params)
+    inflow <- carrion_biomass_inflow(params)
+    human <- inflow[["gear_mort"]] + inflow[["discards"]]
+    natural <- inflow[["mu_b"]]
+    factor <- (1 / value - 1) * human / natural
+    ext_prop <- params@other_params$carrion$ext_prop * factor
+    if (ext_prop > 1) {
+        warning("I am setting the proportion of human carrion production to the maximal possible value.")
+        ext_prop <- 1
+    }
+    params@other_params$carrion$ext_prop <- ext_prop
+    params <- tune_carrion_detritus(params)
+    carrion_lifetime(params) <- lifetime
+    params
+}
+
 rescale_carrion <- function(params, factor) {
     params@initial_n_other[["carrion"]] <- 
         params@initial_n_other[["carrion"]] * factor
@@ -167,6 +190,22 @@ rescaleComponents <- function(params, carrion_factor = 1, detritus_factor = 1) {
                     carrion_factor)
 }
 
+tune_carrion_detritus <- function(params) {
+    # carrion
+    params@other_params$carrion$decompose <- 0
+    cin <- sum(carrion_biomass_inflow(params)) / params@initial_n_other$carrion
+    cout <- carrion_loss(params)
+    if (cin < cout) {
+        stop("There is not enough carrion production.")
+    }
+    params@other_params$carrion$decompose <- cin - cout
+    # detritus
+    params@other_params$detritus$external <- 0
+    inflow <- sum(detritus_biomass_inflow(params))
+    outflow <- detritus_biomass_loss(params)
+    params@other_params$detritus$external <- outflow - inflow
+    params
+}
 
 scaleModel <- function(params, factor) {
     params@other_params[["carrion"]]$rho <- 
