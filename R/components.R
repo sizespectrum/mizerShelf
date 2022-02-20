@@ -5,6 +5,7 @@
 #' @param component Name of component whose contribution is requested
 #'
 #' @return Array species x size
+#' @export
 encounter_contribution <- function(params, n_other, component, ...) {
     params@other_params[[component]]$rho * n_other[[component]]
 }
@@ -13,6 +14,7 @@ encounter_contribution <- function(params, n_other, component, ...) {
 #' 
 #' @param params MizerParams
 #' @return The carrion biomass in grams
+#' @export
 carrion_biomass <- function(params) {
     params@initial_n_other$carrion
 }
@@ -43,6 +45,7 @@ carrion_biomass <- function(params) {
 #'
 #' @param params A [MizerParams] object
 #' @param n A matrix of current species abundances (species x size)
+#' @param n_other Other dynamic components. Only `n_other$carrion` is used.
 #' @param rates A list of rates as returned by [getRates()]
 #' @param dt Time step size
 #' @param ... Unused
@@ -50,7 +53,7 @@ carrion_biomass <- function(params) {
 #' @return A single number giving the component biomass at next time step
 #' @export
 carrion_dynamics <-
-    function(params, n, rates, dt, ...) {
+    function(params, n, n_other, rates, dt, ...) {
         
         consumption <- carrion_consumption_ms(params, n, rates)
         production <- sum(carrion_production(params, n, rates))
@@ -73,6 +76,7 @@ carrion_dynamics <-
 #' @param rates A list of rates as returned by [getRates()]
 #' 
 #' @return A number giving the mass-specific consumption rate in grams per year.
+#' @export
 carrion_consumption_ms <- function(params, n = params@initial_n, 
                          rates = getRates(params)) {
     sum((params@other_params$carrion$rho * n *
@@ -100,6 +104,7 @@ carrion_consumption_ms <- function(params, n = params@initial_n,
 #' @return A vector with named entries "external",
 #' "gear_mort" and "discards", each given the rate at which carrion biomass
 #' is produced by these sources in grams per year.
+#' @export
 carrion_production <- function(params, n = params@initial_n, 
                                           rates = getRates(params)) {
     c(mu_b = sum((params@mu_b * n) %*% (params@w * params@dw)) *
@@ -120,6 +125,7 @@ carrion_production <- function(params, n = params@initial_n,
 #' 
 #' @param params MizerParams
 #' @return The detritus biomass in grams
+#' @export
 detritus_biomass <- function(params, n_pp = params@initial_n_pp) {
     sum(n_pp * params@dw_full * params@w_full)
 }
@@ -188,6 +194,7 @@ detritus_dynamics <- function(params, n, n_pp, n_other, rates, dt, ...) {
 #' @param rates A list of rates as returned by [getRates()]
 #' 
 #' @return A number giving the consumption rate in grams per year.
+#' @export
 detritus_biomass_consumption <- function(params, n_pp = params@initial_n_pp, 
                                   rates = getRates(params)) {
     sum(rates$resource_mort * n_pp * params@w_full * params@dw_full)
@@ -213,6 +220,7 @@ detritus_biomass_consumption <- function(params, n_pp = params@initial_n_pp,
 #' @return A vector with named entries "external",
 #' "feces" and "carrion", each given the rate at which carrion biomass
 #' is produced by these sources in grams per year.
+#' @export
 detritus_production <- function(params, n = params@initial_n,
                                     n_other = params@initial_n_other,
                                     rates = getRates(params)) {
@@ -223,18 +231,21 @@ detritus_production <- function(params, n = params@initial_n,
     carrion <- params@other_params$carrion$decompose * n_other$carrion
     c(external = params@other_params$detritus$external,
       feces = sum(feces),
-      carrion = carrion,
+      carrion = carrion
     )
 }
 
+#' @export
 carrion_lifetime <- function(params) {
     1 / carrion_consumption_ms(params)
 }
 
+#' @export
 `carrion_lifetime<-` <- function(params, value) {
     rescale_carrion(params, value / carrion_lifetime(params))
 }
 
+#' @export
 detritus_lifetime <- function(params) {
     current_biomass <- 
         sum(params@initial_n_pp * params@dw_full * params@w_full)
@@ -244,15 +255,18 @@ detritus_lifetime <- function(params) {
                               rates = getRates(params))
 }
 
+#' @export
 `detritus_lifetime<-` <- function(params, value) {
     rescale_detritus(params, value / detritus_lifetime(params))
 }
 
+#' @export
 carrion_human_origin <- function(params) {
     production <- carrion_production(params)
     (production[["gear_mort"]] + production[["discards"]]) / sum(production)
 }
 
+#' @export
 `carrion_human_origin<-` <- function(params, value) {
     lifetime <- carrion_lifetime(params)
     production <- carrion_production(params)
@@ -270,6 +284,7 @@ carrion_human_origin <- function(params) {
     params
 }
 
+#' @export
 rescale_carrion <- function(params, factor) {
     params@initial_n_other[["carrion"]] <- 
         params@initial_n_other[["carrion"]] * factor
@@ -282,6 +297,7 @@ rescale_carrion <- function(params, factor) {
     params
 }
 
+#' @export
 rescale_detritus <- function(params, factor) {
     params@initial_n_pp <- params@initial_n_pp * factor
     params@species_params$interaction_resource <-
@@ -289,11 +305,13 @@ rescale_detritus <- function(params, factor) {
     params
 }
 
+#' @export
 rescaleComponents <- function(params, carrion_factor = 1, detritus_factor = 1) {
     rescale_carrion(rescale_detritus(params, detritus_factor),
                     carrion_factor)
 }
 
+#' @export
 tune_carrion_detritus <- function(params) {
     # carrion
     params@other_params$carrion$decompose <- 0
@@ -311,12 +329,14 @@ tune_carrion_detritus <- function(params) {
     params
 }
 
+#' @export
 scaleModel <- function(params, factor) {
     params@other_params[["carrion"]]$rho <- 
         params@other_params[["carrion"]]$rho / factor
     mizer::scaleModel(params, factor)
 }
 
+#' @export
 constant_dynamics <- function(params, n_other, component, ...) {
     n_other[[component]]
 }

@@ -30,11 +30,13 @@ library(plotly)
 #' @param return_data A boolean value that determines whether the formatted data
 #'   used for the plot is returned instead of the plot itself. Default value is
 #'   FALSE
-#' @inheritDotParams get_size_range_array -params
+# #' @inheritDotParams get_size_range_array -params
 #'
 #' @return A ggplot2 object, unless `return_data = TRUE`, in which case a data
 #'   frame with the four variables 'Year', 'Biomass', 'Species', 'Legend' is
 #'   returned.
+#'   
+#' @import ggplot2
 #' @export
 #' @family plotting functions
 #' @examples
@@ -135,6 +137,10 @@ plotlyBiomass <- function(sim,
              tooltip = c("Species", "Year", "Biomass"))
 }
 
+#' Plot Death
+#' 
+#' @import ggplot2
+#' @export
 plotDeath <- function(object, species = NULL, proportion = TRUE, return_data = FALSE)
 {
     if (is(object, "MizerSim")) {
@@ -211,6 +217,7 @@ plotDeath <- function(object, species = NULL, proportion = TRUE, return_data = F
 
 
 #' @rdname plotDeath
+#' @importFrom plotly ggplotly
 #' @export
 plotlyDeath <- function(object,
                         species = NULL,
