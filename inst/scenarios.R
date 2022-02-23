@@ -1,9 +1,14 @@
-source("init.R")
+# If you have built the mizerNWMed package you can use
+# library(mizerNWMed)
+# otherwise use
+source("inst/init.R")
 
-# set some density dependence in reproduction
+# set some parameters that control the sensitivity of the system
 params <- setBevertonHolt(params, reproduction_level = 0.25)
 carrion_lifetime(params) <- 1/365
-detritus_lifetime(params) <- 1/12
+detritus_lifetime(params) <- 1
+carrion_human_origin(params) <- 0.2
+
 params_original <- params
 
 # Change selectivity ----
@@ -18,7 +23,7 @@ plotlyYield(sim)
 # Change discards ----
 params <- params_original
 species_params(params)["Hake", "discard"]
-species_params(params)["Hake", "discard"] <- 0.3
+species_params(params)[, "discard"] <- 0
 
 sim <- project(params, t_max = 50)
 plotlyBiomass(sim)
