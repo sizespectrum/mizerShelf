@@ -1,3 +1,4 @@
+#' @export
 rhoControlUI <- function(p, input) {
     sp <- p@species_params[input$sp, ]
     tagList(
@@ -18,6 +19,7 @@ rhoControlUI <- function(p, input) {
     )
 }
 
+#' @export
 rhoControl <- function(input, output, session, params, params_old, flags, ...) {
     observeEvent(
         list(input$rho_detritus, input$rho_carrion, input$n_detritus),
@@ -50,6 +52,7 @@ rhoControl <- function(input, output, session, params, params_old, flags, ...) {
         ignoreInit = TRUE)
 }
 
+#' @export
 setRho <- function(params) {
     # rho <- t(outer(params@w, params@species_params$n_detritus, "^"))
     # rho <- sweep(rho, 1, params@species_params$rho_detritus, "*")

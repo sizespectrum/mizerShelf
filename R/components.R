@@ -56,7 +56,7 @@ carrion_dynamics <-
     function(params, n, n_other, rates, dt, ...) {
         
         consumption <- carrion_consumption_ms(params, n, rates)
-        production <- sum(carrion_production(params, n, rates))
+        production <- sum(getCarrionProduction(params, n, rates))
         
         if (consumption) {
             et <- exp(-consumption * dt)
@@ -85,12 +85,49 @@ carrion_consumption_ms <- function(params, n = params@initial_n,
         params@other_params$carrion$decompose
 }
 
+#' Get carrion consumption rates
+#' 
+#' @param params MizerParams
+#' @return A named vector with the consumption rates from all species and
+#'   decomposition.
+#' @export
+getCarrionConsumption <- function(params) {
+    # consumption by consumers
+    feeding_level <- getFeedingLevel(params)
+    consumption <- (params@other_params$carrion$rho * params@initial_n *
+        (1 - feeding_level)) %*% params@dw
+    names(consumption) <- params@species_params$species
+    # add decomposition
+    consumption <- c(consumption, 
+                     decompose = params@other_params$carrion$decompose)
+    # Convert from mass specific rate to total rates
+    consumption <- consumption * params@initial_n_other$carrion
+    
+    return(consumption)
+}
+
+#' Plot carrion consumption rates
+#' 
+#' @param params MizerParams
+#' @return A pie chart.
+#' @export
+plotCarrionConsumption <- function(params) {
+    consumption <- getCarrionConsumption(params)
+    total <- sum(consumption)
+    consumption <- consumption[consumption > total/100]
+    df <- data.frame(Consumer = names(consumption),
+                     Rate = consumption)
+    ggplot(df, aes(x = "", y = Rate, fill = Consumer)) +
+        geom_bar(stat = "identity", width = 1) +
+        coord_polar("y", start = 0)
+}
+
 #' Carrion production rate
 #' 
 #' This is the rate at which the rest of the system produces carrion
 #' biomass. The production comes from three sources:
 #' 
-#' 1. animals that have died by natural causes other than predation ("external"),
+#' 1. animals that have died by natural causes other than predation ("ext_mort"),
 #' 2. animals killed by the fishing gear ("gear_mort"),  
 #' 3. discards from fishing ("discards").
 #' 
@@ -105,15 +142,30 @@ carrion_consumption_ms <- function(params, n = params@initial_n,
 #' "gear_mort" and "discards", each given the rate at which carrion biomass
 #' is produced by these sources in grams per year.
 #' @export
-carrion_production <- function(params, n = params@initial_n, 
+getCarrionProduction <- function(params, n = params@initial_n, 
                                           rates = getRates(params)) {
-    c(mu_b = sum((params@mu_b * n) %*% (params@w * params@dw)) *
+    c(ext_mort = sum((params@mu_b * n) %*% (params@w * params@dw)) *
           params@other_params$carrion$ext_prop,
       gear_mort = sum((gearMort(params, rates$f_mort) * n) %*% 
                           (params@w * params@dw)),
       discards = sum(((rates$f_mort * n) %*% (params@w * params@dw)) *
                          params@species_params$discard)
     )
+}
+
+
+#' Plot carrion production rates
+#' 
+#' @param params MizerParams
+#' @return A pie chart.
+#' @export
+plotCarrionProduction <- function(params) {
+    production <- getCarrionProduction(params)
+    df <- data.frame(Producer = names(production),
+                     Rate = production)
+    ggplot(df, aes(x = "", y = Rate, fill = Producer)) +
+        geom_bar(stat = "identity", width = 1) +
+        coord_polar("y", start = 0)
 }
 
 #' Detritus biomass
@@ -176,7 +228,7 @@ detritus_biomass <- function(params, n_pp = params@initial_n_pp) {
 detritus_dynamics <- function(params, n, n_pp, n_other, rates, dt, ...) {
     current_biomass <- detritus_biomass(params, n_pp = n_pp)
     consumption <- detritus_biomass_consumption(params, n_pp, rates) / current_biomass
-    production <- sum(detritus_production(params, n, n_other, rates))
+    production <- sum(getDetritusProduction(params, n, n_other, rates))
     
     if (consumption) {
         et <- exp(-consumption * dt)
@@ -200,6 +252,38 @@ detritus_biomass_consumption <- function(params, n_pp = params@initial_n_pp,
     sum(rates$resource_mort * n_pp * params@w_full * params@dw_full)
 }
 
+#' Get detritus consumption rates
+#' 
+#' @param params MizerParams
+#' @return A named vector with the consumption rates from all species
+#' @export
+getDetritusConsumption <- function(params) {
+    pred_rate <- getPredRate(params)
+    consumption <- sweep(pred_rate, 1, 
+                         params@species_params$interaction_resource,
+                         "*")
+    consumption <- consumption %*% 
+        (params@initial_n_pp * params@w_full * params@dw_full)
+    
+    return(consumption[, 1])
+}
+
+#' Plot carrion consumption rates
+#' 
+#' @param params MizerParams
+#' @return A pie chart.
+#' @export
+plotDetritusConsumption <- function(params) {
+    consumption <- getDetritusConsumption(params)
+    total <- sum(consumption)
+    consumption <- consumption[consumption > total/100]
+    df <- data.frame(Consumer = names(consumption),
+                     Rate = consumption)
+    ggplot(df, aes(x = "", y = Rate, fill = Consumer)) +
+        geom_bar(stat = "identity", width = 1) +
+        coord_polar("y", start = 0)
+}
+
 
 #' Detritus production rate
 #' 
@@ -221,7 +305,7 @@ detritus_biomass_consumption <- function(params, n_pp = params@initial_n_pp,
 #' "feces" and "carrion", each given the rate at which carrion biomass
 #' is produced by these sources in grams per year.
 #' @export
-detritus_production <- function(params, n = params@initial_n,
+getDetritusProduction <- function(params, n = params@initial_n,
                                     n_other = params@initial_n_other,
                                     rates = getRates(params)) {
     consumption <- sweep((1 - rates$feeding_level) * rates$encounter * n, 2,
@@ -233,6 +317,20 @@ detritus_production <- function(params, n = params@initial_n,
       feces = sum(feces),
       carrion = carrion
     )
+}
+
+#' Plot detritus production rates
+#' 
+#' @param params MizerParams
+#' @return A pie chart.
+#' @export
+plotDetritusProduction <- function(params) {
+    production <- getDetritusProduction(params)
+    df <- data.frame(Producer = names(production),
+                     Rate = production)
+    ggplot(df, aes(x = "", y = Rate, fill = Producer)) +
+        geom_bar(stat = "identity", width = 1) +
+        coord_polar("y", start = 0)
 }
 
 #' @export
@@ -262,16 +360,16 @@ detritus_lifetime <- function(params) {
 
 #' @export
 carrion_human_origin <- function(params) {
-    production <- carrion_production(params)
+    production <- getCarrionProduction(params)
     (production[["gear_mort"]] + production[["discards"]]) / sum(production)
 }
 
 #' @export
 `carrion_human_origin<-` <- function(params, value) {
     lifetime <- carrion_lifetime(params)
-    production <- carrion_production(params)
+    production <- getCarrionProduction(params)
     human <- production[["gear_mort"]] + production[["discards"]]
-    natural <- production[["mu_b"]]
+    natural <- production[["ext_mort"]]
     factor <- (1 / value - 1) * human / natural
     ext_prop <- params@other_params$carrion$ext_prop * factor
     if (ext_prop > 1) {
@@ -315,7 +413,7 @@ rescaleComponents <- function(params, carrion_factor = 1, detritus_factor = 1) {
 tune_carrion_detritus <- function(params) {
     # carrion
     params@other_params$carrion$decompose <- 0
-    cin <- sum(carrion_production(params)) / params@initial_n_other$carrion
+    cin <- sum(getCarrionProduction(params)) / params@initial_n_other$carrion
     cout <- carrion_consumption_ms(params)
     if (cin < cout) {
         stop("There is not enough carrion production.")
@@ -323,7 +421,7 @@ tune_carrion_detritus <- function(params) {
     params@other_params$carrion$decompose <- cin - cout
     # detritus
     params@other_params$detritus$external <- 0
-    production <- sum(detritus_production(params))
+    production <- sum(getDetritusProduction(params))
     outflow <- detritus_biomass_consumption(params)
     params@other_params$detritus$external <- outflow - production
     params

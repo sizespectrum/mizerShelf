@@ -24,3 +24,10 @@ Imports:
     ggplot2,
     plotly
 VignetteBuilder: knitr
+Collate:
+    components.R
+    helpers.R
+    plots.R
+    rates.R
+    rhoControl.R
+    steady.R
