@@ -119,7 +119,9 @@ plotCarrionConsumption <- function(params) {
                      Rate = consumption)
     ggplot(df, aes(x = "", y = Rate, fill = Consumer)) +
         geom_bar(stat = "identity", width = 1) +
-        coord_polar("y", start = 0)
+        coord_polar("y", start = 0) +
+        labs(title = "Carrion consumption rate [g/year]",
+             x = "", y = "")
 }
 
 #' Carrion production rate
@@ -165,7 +167,9 @@ plotCarrionProduction <- function(params) {
                      Rate = production)
     ggplot(df, aes(x = "", y = Rate, fill = Producer)) +
         geom_bar(stat = "identity", width = 1) +
-        coord_polar("y", start = 0)
+        coord_polar("y", start = 0) +
+        labs(title = "Carrion production rate [g/year]",
+             x = "", y = "")
 }
 
 #' Detritus biomass
@@ -281,7 +285,9 @@ plotDetritusConsumption <- function(params) {
                      Rate = consumption)
     ggplot(df, aes(x = "", y = Rate, fill = Consumer)) +
         geom_bar(stat = "identity", width = 1) +
-        coord_polar("y", start = 0)
+        coord_polar("y", start = 0) +
+        labs(title = "Detritus consumption rate [g/year]",
+             x = "", y = "")
 }
 
 
@@ -330,7 +336,9 @@ plotDetritusProduction <- function(params) {
                      Rate = production)
     ggplot(df, aes(x = "", y = Rate, fill = Producer)) +
         geom_bar(stat = "identity", width = 1) +
-        coord_polar("y", start = 0)
+        coord_polar("y", start = 0) +
+        labs(title = "Detritus production rate [g/year]",
+             x = "", y = "")
 }
 
 #' @export
