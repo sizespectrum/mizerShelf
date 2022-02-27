@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Detritus production rate — detritus_production • mizerNWMed</title>
+<title>Plot carrion production rates — plotCarrionProduction • mizerNWMed</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,8 @@
 
 
 
-<meta property="og:title" content="Detritus production rate — detritus_production" />
-<meta property="og:description" content="This is the rate at which the rest of the system produces detritus
-biomass. The production comes from three sources:" />
+<meta property="og:title" content="Plot carrion production rates — plotCarrionProduction" />
+<meta property="og:description" content="Plot carrion production rates" />
 
 
 
@@ -88,6 +87,18 @@ biomass. The production comes from three sources:" />
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/model_description.html">Model Description</a>
+    </li>
+  </ul>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -104,22 +115,16 @@ biomass. The production comes from three sources:" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Detritus production rate</h1>
+    <h1>Plot carrion production rates</h1>
     
-    <div class="hidden name"><code>detritus_production.Rd</code></div>
+    <div class="hidden name"><code>plotCarrionProduction.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This is the rate at which the rest of the system produces detritus
-biomass. The production comes from three sources:</p>
+    <p>Plot carrion production rates</p>
     </div>
 
-    <pre class="usage"><span class='fu'>detritus_production</span><span class='op'>(</span>
-  <span class='va'>params</span>,
-  n <span class='op'>=</span> <span class='va'>params</span><span class='op'>@</span><span class='va'>initial_n</span>,
-  n_other <span class='op'>=</span> <span class='va'>params</span><span class='op'>@</span><span class='va'>initial_n_other</span>,
-  rates <span class='op'>=</span> <span class='fu'>getRates</span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>plotCarrionProduction</span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -128,32 +133,11 @@ biomass. The production comes from three sources:</p>
       <th>params</th>
       <td><p>MizerParams</p></td>
     </tr>
-    <tr>
-      <th>n</th>
-      <td><p>A matrix of current species abundances (species x size)</p></td>
-    </tr>
-    <tr>
-      <th>rates</th>
-      <td><p>A list of rates as returned by <code>getRates()</code></p></td>
-    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A vector with named entries "external",
-"feces" and "carrion", each given the rate at which carrion biomass
-is produced by these sources in grams per year.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    
-<ol>
-<li><p>biomass not assimilated by predators ("feces"),</p></li>
-<li><p>decomposing carrion ("carrion"),</p></li>
-<li><p>the pelagic zone ("external").</p></li>
-</ol>
-
-<p>The function returns a vector with the individual contributions. These
-can be summed with <code><a href='https://rdrr.io/r/base/sum.html'>sum()</a></code> to get the total production rate.</p>
+    <p>A pie chart.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

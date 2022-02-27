@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Authors • mizerNWMed</title>
+<title>Detritus production rate — getDetritusProduction • mizerNWMed</title>
 
 
 <!-- jquery -->
@@ -18,8 +18,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
 <!-- bootstrap-toc -->
-<link rel="stylesheet" href="bootstrap-toc.css">
-<script src="bootstrap-toc.js"></script>
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
@@ -33,13 +33,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
-<link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script>
+<link href="../pkgdown.css" rel="stylesheet">
+<script src="../pkgdown.js"></script>
 
 
 
 
-<meta property="og:title" content="Authors" />
+<meta property="og:title" content="Detritus production rate — getDetritusProduction" />
+<meta property="og:description" content="This is the rate at which the rest of the system produces detritus
+biomass. The production comes from three sources:" />
 
 
 
@@ -58,7 +60,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-authors">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -70,7 +72,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">mizerNWMed</a>
+        <a class="navbar-link" href="../index.html">mizerNWMed</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
       </span>
     </div>
@@ -78,13 +80,13 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">
+  <a href="../index.html">
     <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
-  <a href="reference/index.html">Reference</a>
+  <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -94,7 +96,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="articles/model_description.html">Model Description</a>
+      <a href="../articles/model_description.html">Model Description</a>
     </li>
   </ul>
 </li>
@@ -112,22 +114,66 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Authors</h1>
+    <h1>Detritus production rate</h1>
+    
+    <div class="hidden name"><code>getDetritusProduction.Rd</code></div>
     </div>
 
-    <ul class="list-unstyled">
-      <li>
-        <p><strong>Gustav Delius</strong>. Maintainer, author, copyright holder. <a href='https://orcid.org/0000-0003-4092-8228' target='orcid.widget' aria-label='ORCID'><span class='fab fa-orcid orcid' aria-hidden='true'></span></a>
-        </p>
-      </li>
-    </ul>
+    <div class="ref-description">
+    <p>This is the rate at which the rest of the system produces detritus
+biomass. The production comes from three sources:</p>
+    </div>
+
+    <pre class="usage"><span class='fu'>getDetritusProduction</span><span class='op'>(</span>
+  <span class='va'>params</span>,
+  n <span class='op'>=</span> <span class='va'>params</span><span class='op'>@</span><span class='va'>initial_n</span>,
+  n_other <span class='op'>=</span> <span class='va'>params</span><span class='op'>@</span><span class='va'>initial_n_other</span>,
+  rates <span class='op'>=</span> <span class='fu'>getRates</span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span>
+<span class='op'>)</span></pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>params</th>
+      <td><p>MizerParams</p></td>
+    </tr>
+    <tr>
+      <th>n</th>
+      <td><p>A matrix of current species abundances (species x size)</p></td>
+    </tr>
+    <tr>
+      <th>rates</th>
+      <td><p>A list of rates as returned by <code>getRates()</code></p></td>
+    </tr>
+    </table>
+
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A vector with named entries "external",
+"feces" and "carrion", each given the rate at which carrion biomass
+is produced by these sources in grams per year.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    
+<ol>
+<li><p>biomass not assimilated by predators ("feces"),</p></li>
+<li><p>decomposing carrion ("carrion"),</p></li>
+<li><p>the pelagic zone ("external").</p></li>
+</ol>
+
+<p>The function returns a vector with the individual contributions. These
+can be summed with <code><a href='https://rdrr.io/r/base/sum.html'>sum()</a></code> to get the total production rate.</p>
 
   </div>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
+  </div>
 </div>
-
 
 
       <footer>
