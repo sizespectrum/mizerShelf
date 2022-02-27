@@ -47,15 +47,8 @@ new_steady <- function(params, t_max = 100, t_per = 1.5, dt = 0.1,
     n_other <- params@initial_n_other
     rates <- getRates(params)
     
-    params@other_params$carrion$decompose <- 0
-    cin <- carrion_biomass_inflow(params, n, rates) / n_other$carrion
-    cout <- carrion_loss(params, n, rates)
-    params@other_params$carrion$decompose <- cin - cout
-    
-    params@other_params$detritus$external <- 0
-    inflow <- detritus_biomass_inflow(params, n = n, n_other = n_other, rates = rates)
-    outflow <- detritus_biomass_loss(params, n_pp = n_pp, rates = rates)
-    params@other_params$detritus$external <- outflow - inflow
+    params <- tune_carrion_detritus(params)
+    print("Hello")
     
     if (preserve == "reproduction_level") {
         params <- setBevertonHolt(params, 
