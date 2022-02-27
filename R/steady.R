@@ -48,7 +48,6 @@ new_steady <- function(params, t_max = 100, t_per = 1.5, dt = 0.1,
     rates <- getRates(params)
     
     params <- tune_carrion_detritus(params)
-    print("Hello")
     
     if (preserve == "reproduction_level") {
         params <- setBevertonHolt(params, 
