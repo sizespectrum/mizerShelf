@@ -163,31 +163,21 @@ total detritus biomass.</p>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A single number giving the component biomass at next time step</p>
+    <p>A vector giving the detritus spectrum at the next time step.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The equation for the time evolution of the detritus biomass \(B\) is
-assumed to be of the form
+    <p>The time evolution of the detritus biomass \(B\) is described by
 $$dB/dt = \tt{production} - \tt{consumption} * B + \tt{external}$$
 where</p><ul>
-<li><p><code>consumption</code> is the mass-specific rate of consumption due to consumption.</p></li>
-<li><p><code>external</code> is an influx from external sources. It can be negative in which
-case it represents a consumption to external sources. It is specified by
-<code>params@other_params$detritus$external</code>.</p></li>
-<li><p><code>production</code> is the rate at which the rest of the system produces biomass that
-enters this component. Its calculation depends on the type of component:</p><ul>
-<li><p>For detritus it comes from feces and is calculated as a proportion
-<code>params@other_params[["detritus"]]$proportion</code> of the biomass consumption
-rate of all consumers.</p></li>
-<li><p>For carrion (corpses) the production comes from three sources: 1) animals
-killed by the fishing gear, 2) animals that have died by natural causes
-other than predation, 3) discards from fishing.</p></li>
-</ul></li>
+<li><p><code>consumption</code> is the mass-specific rate of consumption,
+calculated by <code><a href='getDetritusConsumption.html'>getDetritusConsumption()</a></code>.</p></li>
+<li><p><code>production</code> is the rate at which the rest of the system produces
+detritus biomass.</p></li>
 </ul>
 
 <p>The dynamical equation is solved analytically to
 $$B(t+dt) = B(t)\exp(-\tt{consumption} \cdot dt)
-  +\frac{\tt{production} + \tt{external}}{\tt{consumption}}
+  +\frac{\tt{production}}{\tt{consumption}}
   (1-\exp(-\tt{consumption} \cdot dt)).$$
 This avoids the stability problems that would arise if we used the Euler
 method to solve the equation numerically.</p>

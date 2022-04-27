@@ -18,6 +18,15 @@ A number giving the mass-specific consumption rate in grams per year.
 }
 \description{
 This includes both the consumption by fish and the decomposition by smaller
-organisms. The latter rate is given by the parameter
+organisms.
+}
+\details{
+This mass-specific consumption rate is used in \code{carrion_dynamics()} to
+calculate the carrion biomass at the next time step. To get the
+non-mass-specific consumption rate, use \code{getCarrionConsumption()}.
+
+The consumption rate by fish is determined by
+\code{params@other_params$carrion$rho}
+and the decomposition rate is given by
 \code{params@other_params$carrion$decompose}.
 }

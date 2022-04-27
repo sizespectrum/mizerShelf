@@ -24,7 +24,7 @@ biomass. The production comes from three sources:
 }
 \details{
 \enumerate{
-\item animals that have died by natural causes other than predation ("external"),
+\item animals that have died by natural causes other than predation ("ext_mort"),
 \item animals killed by the fishing gear ("gear_mort"),
 \item discards from fishing ("discards").
 }

@@ -159,19 +159,17 @@ carrion biomass.</p>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A single number giving the component biomass at next time step</p>
+    <p>A single number giving the carrion biomass at next time step</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The equation for the time evolution of the carrion biomass \(B\) is
-assumed to be of the form
+    <p>The time evolution of the carrion biomass \(B\) is
+described by
 $$dB/dt = \tt{production} - \tt{consumption} * B$$
 where</p><ul>
-<li><p><code>consumption</code> is the mass-specific rate of consumption due to consumption, where the
-encounter rate is specified by <code>params@other_params[[component]]$rho</code>.</p></li>
+<li><p><code>consumption</code> is the mass-specific rate of consumption due to consumption
+calculated with <code><a href='carrion_consumption_ms.html'>carrion_consumption_ms()</a></code>,</p></li>
 <li><p><code>production</code> is the rate at which the rest of the system produces carrion
-biomass. The production comes from three sources: 1) animals
-killed by the fishing gear, 2) animals that have died by natural causes
-other than predation, 3) discards from fishing.</p></li>
+biomass, calculated with <code><a href='getCarrionProduction.html'>getCarrionProduction()</a></code>.</p></li>
 </ul>
 
 <p>The dynamical equation is solved analytically to

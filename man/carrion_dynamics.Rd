@@ -20,24 +20,22 @@ carrion_dynamics(params, n, n_other, rates, dt, ...)
 \item{...}{Unused}
 }
 \value{
-A single number giving the component biomass at next time step
+A single number giving the carrion biomass at next time step
 }
 \description{
 Calculates the carrion biomass at the next timestep from the current
 carrion biomass.
 }
 \details{
-The equation for the time evolution of the carrion biomass \eqn{B} is
-assumed to be of the form
+The time evolution of the carrion biomass \eqn{B} is
+described by
 \deqn{dB/dt = \tt{production} - \tt{consumption} * B}{dB/dt = production - consumption * B}
 where
 \itemize{
-\item \code{consumption} is the mass-specific rate of consumption due to consumption, where the
-encounter rate is specified by \code{params@other_params[[component]]$rho}.
+\item \code{consumption} is the mass-specific rate of consumption due to consumption
+calculated with \code{carrion_consumption_ms()},
 \item \code{production} is the rate at which the rest of the system produces carrion
-biomass. The production comes from three sources: 1) animals
-killed by the fishing gear, 2) animals that have died by natural causes
-other than predation, 3) discards from fishing.
+biomass, calculated with \code{getCarrionProduction()}.
 }
 
 The dynamical equation is solved analytically to

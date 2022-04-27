@@ -24,16 +24,15 @@ A vector with named entries "external",
 is produced by these sources in grams per year.
 }
 \description{
-This is the rate at which the rest of the system produces detritus
-biomass. The production comes from three sources:
-}
-\details{
+Gives a named vector with the rates at which different components of the
+ecosystem produce detritus:
 \enumerate{
 \item biomass not assimilated by predators ("feces"),
 \item decomposing carrion ("carrion"),
 \item the pelagic zone ("external").
 }
-
+}
+\details{
 The function returns a vector with the individual contributions. These
 can be summed with \code{sum()} to get the total production rate.
 }

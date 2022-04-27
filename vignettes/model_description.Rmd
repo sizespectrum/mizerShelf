@@ -342,7 +342,7 @@ $$c_C = \sum_i\,d_i\int\rho_i\, w^n N_i(w) (1-f_i(w))\,dw.$$
 The rate of change in the total carrion biomass is simply the difference
 between the rate at which carrion biomass is produced and the rate at which
 it is consumed, so
-$$\frac{dB_C}{dt}=p_C - c_C\,B_c.$$
+$$\frac{dB_C}{dt}=p_C - c_C\,B_C.$$
 
 ## Detritus
 

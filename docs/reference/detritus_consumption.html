@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Mass-specific carrion consumption rate — carrion_consumption_ms • mizerNWMed</title>
+<title>Detritus consumption rate — detritus_consumption • mizerNWMed</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,8 @@
 
 
 
-<meta property="og:title" content="Mass-specific carrion consumption rate — carrion_consumption_ms" />
-<meta property="og:description" content="This includes both the consumption by fish and the decomposition by smaller
-organisms." />
+<meta property="og:title" content="Detritus consumption rate — detritus_consumption" />
+<meta property="og:description" content="Detritus consumption rate" />
 
 
 
@@ -116,17 +115,20 @@ organisms." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Mass-specific carrion consumption rate</h1>
+    <h1>Detritus consumption rate</h1>
     
-    <div class="hidden name"><code>carrion_consumption_ms.Rd</code></div>
+    <div class="hidden name"><code>detritus_consumption.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This includes both the consumption by fish and the decomposition by smaller
-organisms.</p>
+    <p>Detritus consumption rate</p>
     </div>
 
-    <pre class="usage"><span class='fu'>carrion_consumption_ms</span><span class='op'>(</span><span class='va'>params</span>, n <span class='op'>=</span> <span class='va'>params</span><span class='op'>@</span><span class='va'>initial_n</span>, rates <span class='op'>=</span> <span class='fu'>getRates</span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>detritus_consumption</span><span class='op'>(</span>
+  <span class='va'>params</span>,
+  n_pp <span class='op'>=</span> <span class='va'>params</span><span class='op'>@</span><span class='va'>initial_n_pp</span>,
+  rates <span class='op'>=</span> <span class='fu'>getRates</span><span class='op'>(</span><span class='va'>params</span><span class='op'>)</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -136,27 +138,18 @@ organisms.</p>
       <td><p>MizerParams</p></td>
     </tr>
     <tr>
-      <th>n</th>
-      <td><p>A matrix of current species abundances (species x size)</p></td>
-    </tr>
-    <tr>
       <th>rates</th>
       <td><p>A list of rates as returned by <code>getRates()</code></p></td>
+    </tr>
+    <tr>
+      <th>n</th>
+      <td><p>A matrix of current species abundances (species x size)</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A number giving the mass-specific consumption rate in grams per year.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>This mass-specific consumption rate is used in <code><a href='carrion_dynamics.html'>carrion_dynamics()</a></code> to
-calculate the carrion biomass at the next time step. To get the
-non-mass-specific comsumption rate, use <code><a href='getCarrionConsumption.html'>getCarrionConsumption()</a></code>.</p>
-<p>The consumption rate by fish is determined by
-<code>params@other_params$carrion$rho</code>
-and the decomposition rate is given by
-<code>params@other_params$carrion$decompose</code>.</p>
+    <p>A number giving the consumption rate in grams per year.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

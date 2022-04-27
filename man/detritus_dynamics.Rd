@@ -20,7 +20,7 @@ detritus_dynamics(params, n, n_pp, n_other, rates, dt, ...)
 \item{...}{Unused}
 }
 \value{
-A single number giving the component biomass at next time step
+A vector giving the detritus spectrum at the next time step.
 }
 \description{
 Calculates the detritus size spectrum at the next time step from the current
@@ -29,33 +29,21 @@ same exponent -- only the intercept is dynamical to reflect the change in
 total detritus biomass.
 }
 \details{
-The equation for the time evolution of the detritus biomass \eqn{B} is
-assumed to be of the form
+The time evolution of the detritus biomass \eqn{B} is described by
 \deqn{dB/dt = \tt{production} - \tt{consumption} * B + \tt{external}}{dB/dt = production - consumption * B + external}
 where
 \itemize{
-\item \code{consumption} is the mass-specific rate of consumption due to consumption.
-\item \code{external} is an influx from external sources. It can be negative in which
-case it represents a consumption to external sources. It is specified by
-\code{params@other_params$detritus$external}.
-\item \code{production} is the rate at which the rest of the system produces biomass that
-enters this component. Its calculation depends on the type of component:
-\itemize{
-\item For detritus it comes from feces and is calculated as a proportion
-\code{params@other_params[["detritus"]]$proportion} of the biomass consumption
-rate of all consumers.
-\item For carrion (corpses) the production comes from three sources: 1) animals
-killed by the fishing gear, 2) animals that have died by natural causes
-other than predation, 3) discards from fishing.
-}
+\item \code{consumption} is the mass-specific rate of consumption.
+\item \code{production} is the rate at which the rest of the system produces
+detritus biomass.
 }
 
 The dynamical equation is solved analytically to
 \deqn{B(t+dt) = B(t)\exp(-\tt{consumption} \cdot dt)
-  +\frac{\tt{production} + \tt{external}}{\tt{consumption}}
+  +\frac{\tt{production}}{\tt{consumption}}
   (1-\exp(-\tt{consumption} \cdot dt)).}{B(t+dt)
   = B(t) exp(-consumption * dt)
-  +(production + external)/(consumption) * (1 - exp(-consumption * dt)).}
+  +production/consumption * (1 - exp(-consumption * dt)).}
 This avoids the stability problems that would arise if we used the Euler
 method to solve the equation numerically.
 }

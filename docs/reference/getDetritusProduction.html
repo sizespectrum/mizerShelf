@@ -41,7 +41,14 @@
 
 <meta property="og:title" content="Detritus production rate — getDetritusProduction" />
 <meta property="og:description" content="This is the rate at which the rest of the system produces detritus
-biomass. The production comes from three sources:" />
+biomass. The production comes from three sources:
+biomass not assimilated by predators (&quot;feces&quot;),
+decomposing carrion (&quot;carrion&quot;),
+the pelagic zone (&quot;external&quot;).
+The function returns a vector with the individual contributions. These
+can be summed with sum() to get the total production rate.
+
+" />
 
 
 
@@ -123,7 +130,14 @@ biomass. The production comes from three sources:" />
 
     <div class="ref-description">
     <p>This is the rate at which the rest of the system produces detritus
-biomass. The production comes from three sources:</p>
+biomass. The production comes from three sources:</p><ol>
+<li><p>biomass not assimilated by predators ("feces"),</p></li>
+<li><p>decomposing carrion ("carrion"),</p></li>
+<li><p>the pelagic zone ("external").
+The function returns a vector with the individual contributions. These
+can be summed with <code><a href='https://rdrr.io/r/base/sum.html'>sum()</a></code> to get the total production rate.</p></li>
+</ol>
+
     </div>
 
     <pre class="usage"><span class='fu'>getDetritusProduction</span><span class='op'>(</span>
@@ -155,17 +169,6 @@ biomass. The production comes from three sources:</p>
     <p>A vector with named entries "external",
 "feces" and "carrion", each given the rate at which carrion biomass
 is produced by these sources in grams per year.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    
-<ol>
-<li><p>biomass not assimilated by predators ("feces"),</p></li>
-<li><p>decomposing carrion ("carrion"),</p></li>
-<li><p>the pelagic zone ("external").</p></li>
-</ol>
-
-<p>The function returns a vector with the individual contributions. These
-can be summed with <code><a href='https://rdrr.io/r/base/sum.html'>sum()</a></code> to get the total production rate.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
