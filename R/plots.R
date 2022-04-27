@@ -227,3 +227,62 @@ plotlyDeath <- function(object,
     ggplotly(do.call("plotDeath", argg),
              tooltip = c("value", "Cause", "w"))
 }
+
+plotYieldMinusDiscards <- function(sim, sim2,
+                      species = NULL,
+                      total = FALSE, log = TRUE,
+                      highlight = NULL, return_data = FALSE,
+                      ...) {
+    params <- sim@params
+    species <- valid_species_arg(sim, species)
+    if (missing(sim2)) {
+        y <- getYield(sim, ...)
+        y <- sweep(y, 2, 1 - sim@params@species_params$discard, "*")
+        y_total <- rowSums(y)
+        y <- y[, (as.character(dimnames(y)[[2]]) %in% species),
+               drop = FALSE]
+        if (total) {
+            # Include total
+            y <- cbind(y, "Total" = y_total)
+        }
+        plot_dat <- reshape2::melt(y, varnames = c("Year", "Species"),
+                                   value.name = "Yield")
+        plot_dat <- subset(plot_dat, plot_dat$Yield > 0)
+        # plotDataFrame() needs the columns in a particular order
+        plot_dat <- plot_dat[, c(1, 3, 2)]
+        
+        if (nrow(plot_dat) == 0) {
+            warning("There is no yield to include.")
+        }
+        if (return_data) return(plot_dat)
+        
+        plotDataFrame(plot_dat, params,
+                      ylab = "Yield [g/year]",
+                      ytrans = ifelse(log, "log10", "identity"),
+                      highlight = highlight)
+    } else {
+        # We need to combine two plots
+        if (!all(dimnames(sim@n)$time == dimnames(sim2@n)$time)) {
+            stop("The two simulations do not have the same times")
+        }
+        ym <- plotYield(sim, species = species,
+                        total = total, log = log,
+                        highlight = highlight, return_data = TRUE, ...)
+        ym <- sweep(ym, 2, 1 - sim@params@species_params$discard, "*")
+        ym2 <- plotYield(sim2, species = species,
+                         total = total, log = log,
+                         highlight = highlight, return_data = TRUE, ...)
+        ym2 <- sweep(ym2, 2, 1 - sim@params@species_params$discard, "*")
+        ym$Simulation <- rep(1, nrow(ym)) # We don't use recycling because that
+        # fails when there are zero rows.
+        ym2$Simulation <- rep(2, nrow(ym2))
+        ym <- rbind(ym, ym2)
+        
+        if (return_data) return(ym)
+        
+        plotDataFrame(ym, params,
+                      ylab = "Yield [g/year]",
+                      ytrans = ifelse(log, "log10", "identity"),
+                      highlight = highlight, wrap_var = "Simulation")
+    }
+}
