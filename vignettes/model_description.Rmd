@@ -391,7 +391,7 @@ mortality rate of an individual imposed by the fishing gear. The part of
 this gear mortality that is not fishing mortality (i.e., the part where the
 individuals are not taken up to the fishing vessel but left dead in the sea)
 we denote as the excess gear mortality.
-$$\mu_{g.i} = \max{\left(\rm{gear\_mort}_i - \mu_{f.i}(w), 0\right)}
+$$\mu_{g.i} = \max{\left(\tt{gear\_mort}_i - \mu_{f.i}(w), 0\right)}
 $$
 
 This excess gear mortality contributes to the carrion production.
@@ -497,7 +497,7 @@ $p_{C.ext}$ comes from animals that have died by natural causes other than preda
   are not explicitly modelled, for example mammals or sea birds. Thus only
   a proportion of the external mortality produces carrion.
   This is given by a carrion parameter `ext_prop`. So
-  $$p_{C.ext} = \rm{ext\_prop}\,\sum_i\int\mu_{ext.i}(w)N_i(w)w\,dw.$$
+  $$p_{C.ext} = {\tt ext\_prop}\,\sum_i\int\mu_{ext.i}(w)N_i(w)w\,dw.$$
 
 <details>
 <summary>Parameter values</summary>
@@ -550,8 +550,8 @@ where $d_C$ is the mass-specific rate of decomposition.
 
 <details>
 <summary>Parameter values</summary>
-The value of the mass-specific rate of decomposition is $d_C=$
-`r params@other_params$carrion$decompose` per year. 
+The value of the mass-specific rate of decomposition is 
+$d_C=`r params@other_params$carrion$decompose`$ per year. 
 
 The parameters
 $\rho_i$ have units of $g^{-n}$ per year. They are non-zero only for
@@ -584,7 +584,7 @@ $$
 The exponent $\lambda$ is kept fixed and only the coefficient of the
 power law changes with time to reflect the change in the total detritus
 biomass 
-$$B_D = \int_{w_{min}}^{w_{cutoff}} N_D(w)\, w \,dw.$$
+$$B_D = \int_{w_{0}}^{w_{cutoff}} N_D(w)\, w \,dw.$$
 
 The rate of change in the total detritus biomass is simply the difference
 between the rate at which detritus biomass is produced and the rate at which
@@ -593,6 +593,14 @@ $$\frac{dB_D}{dt}=p_D - c_D\,B_D.$$
 
 We will discuss the production rate $p_D$ and the consumption rate
 $c_DB_D$ below.
+
+<details>
+<summary>Parameter values</summary>
+The detritus spectrum stretches from  $w_0=`r signif(min(params@w_full), digits = 1)`$
+to $w_{cutoff}=`r params@resource_params$w_pp_cutoff`$ gramms.
+The power law exponent is $\lambda=`r params@resource_params$lambda`$.
+In the steady state the total detritus biomass is $B_D=`detritus_biomass(params)`$.
+</details>
 
 ## Detritus production
 The rate $p_C$ at which carrion biomass is produced by the ecosystem has
@@ -623,8 +631,8 @@ This rate is a model parameter independent of any other model component.
 
 <details>
 <summary>Parameter values</summary>
-The value of the external detritus production rate is $p_{d.ext}=$
-`r params@other_params$detritus$external` grams per year. 
+The value of the external detritus production rate is 
+$p_{d.ext}=`r params@other_params$detritus$external`$ grams per year. 
 
 </details>
 
@@ -636,7 +644,7 @@ abundance of consumers.
 
 The consumption of detritus is modelled similarly to the consumption of fish. First we introduce the rate at which
 all predators of species $j$ consume detritus particles of size $w$
-$$\mu_{D}(w_p) = \sum_j  \theta_{jD}\int \phi_j(w,w_p) (1-f_j(w))
+$$\mu_{D}(w_p) = \sum_j  \theta_{jD}\int_{w_0}^{w_cutoff} \phi_j(w,w_p) (1-f_j(w))
   \gamma_j(w) N_j(w) \, dw.
 $$
 This is analogous to the [predation mortality] discussed earlier, but
