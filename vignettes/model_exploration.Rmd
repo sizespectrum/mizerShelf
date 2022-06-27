@@ -1,0 +1,28 @@
+---
+title: "Model Exploration"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 3
+    code_folding: hide
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+library(mizerNWMed)
+library(ggplot2)
+library(dplyr)
+library(knitr)
+```
+
+```{r}
+getCarrionProduction(params)
+```
+
