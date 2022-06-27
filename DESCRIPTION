@@ -1,10 +1,11 @@
 Package: mizerNWMed
-Title: What the Package Does (One Line, Title Case)
+Title: A Mizer Model with Carrion and Detritus Components
 Version: 0.0.0.9000
 Authors@R: 
     person("Gustav", "Delius", , "gustav.delius@york.ac.uk", role = c("cre", "aut", "cph"),
            comment = c(ORCID = "0000-0003-4092-8228"))
-Description: What the package does (one paragraph).
+Description: This package provides the functionality for setting up the model
+    in a forthcoming paper. So far this is private.
 License: GPL-3
 Suggests: 
     knitr,
@@ -14,7 +15,7 @@ Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
 Depends: 
     R (>= 2.10),
     mizerExperimental (>= 2.3.0)

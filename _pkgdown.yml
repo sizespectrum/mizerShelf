@@ -1,0 +1,13 @@
+url: ~
+template:
+  bootstrap: 5
+  bootswatch: cerulean
+
+navbar:
+  structure:
+    left: [home, reference, articles]
+    right: [github]
+    
+home:
+  sidebar:
+    structure: [links, license, dev]

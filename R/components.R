@@ -218,7 +218,8 @@ detritus_biomass <- function(params, n_pp = params@initial_n_pp) {
 #'
 #' @param params A [MizerParams] object
 #' @param n A matrix of current species abundances (species x size)
-#' @param n_other List of abundances of other dynamic components
+#' @param n_other Other dynamic components. Only `n_other$carrion` is used.
+#' @param n_pp Vector of detritus density
 #' @param rates A list of rates as returned by [getRates()]
 #' @param dt Time step size
 #' @param ... Unused
@@ -257,7 +258,7 @@ detritus_consumption <- function(params, n_pp = params@initial_n_pp,
     sum(rates$resource_mort * n_pp * params@w_full * params@dw_full)
 }
 
-#' Get detritus consumption rates
+#' Get detritus consumption rates by consumer species
 #' 
 #' @param params MizerParams
 #' @return A named vector with the consumption rates from all species
@@ -305,10 +306,11 @@ plotDetritusConsumption <- function(params) {
 #' 
 #' @param params MizerParams
 #' @param n A matrix of current species abundances (species x size)
+#' @param n_other Other dynamic components. Only `n_other$carrion` is used.
 #' @param rates A list of rates as returned by [getRates()]
 #' 
 #' @return A vector with named entries "external",
-#' "feces" and "carrion", each given the rate at which carrion biomass
+#' "feces" and "carrion", giving the rates at which carrion biomass
 #' is produced by these sources in grams per year.
 #' @export
 getDetritusProduction <- function(params, n = params@initial_n,

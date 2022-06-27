@@ -16,13 +16,9 @@ knitr::opts_chunk$set(
 library(mizerNWMed)
 ```
 
-On this page we present the details of the model. We will also provide links
-to the functions that can be used to set or change the various model parameters
-as well as to the functions that
-calculate the various ecological rates in the model.
-The help pages of these functions will provide useful
-additional details. The model is implemented by extending the 
-[mizer package](https://sizespectrum.org/mizer).
+On this page we present the details of the model. The model consists of three
+components: 1) a collection of species modelled by [size spectrum dynamics],
+2) [carrion] and 3) [detritus]. We discuss each of these in turn below.
 
 
 # Size spectrum dynamics
@@ -44,77 +40,91 @@ with an additional loss term due to fish mortality:
 \begin{equation}
   \label{eq:MvF}
   \frac{\partial N_i(w)}{\partial t} + \frac{\partial g_i(w) N_i(w)}{\partial w} 
-  = -\mu_i(w) N_i(w),
+  = -\mu_i(w) N_i(w).
 \end{equation}
 
-where individual growth $g_i(w)$ is described below in the [Growth](#growth)
-section and mortality $\mu_i(w)$ is described in the [Mortality](#mortality)
-section.
-
-There is no need to understand the mathematical notation used in
-this equation to understand its origin: it just says that the rate at which the
-number of fish in a size bracket changes is the rate at which fish grow into the
-size bracket from a smaller size minus the rate at which fish grow out of it to
-a larger size minus the rate at which the fish in the size bracket die. So to
-simulate the size spectrum dynamics we need to specify the growth rates and the
-mortality rates. This we will do below. The important point is that these rates
+The individual growth rate $g_i(w)$ is described below in the [Growth](#growth)
+section and the mortality rate $\mu_i(w)$ is described in the [Mortality](#mortality)
+section. These rates
 depend on the density of other fish of other sizes, as well as the carrion
 and detritus biomasses, making the size-spectrum
 dynamics non-linear and non-local in very interesting ways. The resulting
 effects are too complicated to disentangle by pure thought. This is where
 simulations with the mizer package come in.
 
-This McKendrick-von Foerster equation is approximated in mizer by a
-finite-difference method. This allows the
-`mizer::project()` function to project the size
-spectrum forwards in time: Given the spectrum at one time the `mizer::project()`
-function calculates it at a set of later times.
+There is no need to understand the mathematical notation used in
+the McKendrick-von Foerster equation to understand its origin: it just says that the rate at which the
+number of fish in a size bracket changes is the rate at which fish grow into the
+size bracket from a smaller size minus the rate at which fish grow out of it to
+a larger size minus the rate at which the fish in the size bracket die. 
 
 Of course there also needs to be reproduction into the smallest size class,
 otherwise there would be no small fish any more after a while. So for the
-smallest size class instead of a rate of growth into the size class there is
+smallest size class, instead of a rate of growth into the size class there is
 a rate of reproduction of new individuals into that size class. This
 reproduction will be described below in the [Reproduction](#reproduction)
 section.
 
 
 
-# Growth
+## Growth
 
 Consumers can grow only by consuming prey (including possibly carrion and
 detritus). In the next few subsections we will
 build towards determining the growth rate resulting from predation.
 We will discuss how we model the [predator-prey encounter rate], the resulting rate
 of [consumption], the rate of [metabolic losses], and the partitioning of the
-remaining energy into [reproduction](#sec:repro) and [growth](#resulting-growth).
+remaining energy into [reproduction](#sec:repro) and [somatic growth](#somatic-growth).
 
-## Predator-prey encounter rate {#sec:pref}
+### Predator-prey encounter rate {#sec:pref}
 
 The rate $E_{i}(w)$ at which a predator of species $i$ and weight $w$ 
 encounters food  (mass per time) is
 determined by summing over all prey species and
 integrating over all prey sizes $w_p$, weighted by the selectivity factors,
-and (where relevant) adding the encounter rates $E_{i.C}$ of carrion and $E_{i.D}$ of detritus:
+and (where relevant) adding the encounter rates $E_{C.i}$ of carrion and $E_{D.i}$ of detritus:
 \begin{equation}
   \label{eq:1}
   E_{i}(w) = \gamma_i(w) \int \sum_{j} \theta_{ij} N_j(w_p)
   \phi_i(w,w_p) w_p \, dw_p + E_{i.C}(w) + E_{i.D}(w).
 \end{equation}
-This is calculated by `mizer::getEncounter()`. The encounter rates for
-[carrion] and [detritus] will be described later.
+The encounter rates for
+[carrion](#carrion-consumption) and [detritus](#detritus-consumption) will be described later.
 
 The overall prefactor $\gamma_i(w)$ sets the predation power of the predator. It
 could be interpreted as a search volume or as an attack rate. By 
 default it is assumed to scale allometrically as
-$\gamma_i(w) = \gamma_i\, w^q.$
+$\gamma_i(w) = \gamma_i\, w^{3/4}.$
 
-The $\theta$ matrix sets the interaction strength between predators and the
-various prey species and resource. It is changed with `mizer::setInteraction()`.
+The $\theta_{ij}$ matrix sets the interaction strength between predator
+species $i$ prey species $j$.
 
 The size selectivity is encoded in the predation kernel $\phi_i(w,w_p)$.
+For most predator species we use the lognormal predation kernel
+given as
+$$\phi_i(w, w_p) = 
+\exp \left[ \frac{-(\ln(w / w_p / \beta_i))^2}{2\sigma_i^2} \right]
+$$
+if $w/w_p$ is larger than 1 and zero otherwise.
+Here $\beta_i$ is the preferred predator-prey mass ratio and $\sigma_i$
+determines the width of the kernel.
 
+For Gurnards, Hake, Angler fish, Poor cod and Blue whiting we use a power-law
+kernel with sigmoidal cutoffs given by 
+$$\phi_i(w, w_p) = 
+\frac{(w/w_p)^s}{\left(1+e^{l_l}\frac{w_p}{w}\right)^{u_l}
+\left(1+e^{-l_r}\frac{w}{w_p}\right)^{u_r}}.
+$$
 
-## Consumption
+Here the parameters $l_l$ and $u_l$ determine the sigmoidal cutoff at low
+predator/prey mass ratio and $l_r$ and $u_r$ similarly determine the cutoff
+at large predator/prey mass ratio.
+
+The parameters for these predation kernels were estimated from stomach data
+or from the physical characteristics of the species. This will be discussed
+elsewhere.
+
+### Consumption
 
 The encountered food is consumed subject to a standard Holling functional 
 response type II to represent satiation. This determines the 
@@ -127,16 +137,21 @@ encountered food that is consumed. The feeding level is given by
   f_i(w) = \frac{E_i(w)}{E_i(w) + h_i(w)},
 \end{equation}
 
-where $h_i(w)$ is the maximum consumption rate. By default mizer assumes an allometric form
-$h_i(w) = h_i\, w^n.$
-The feeding level is calculated with the function `mizer::getFeedingLevel()`.
+where $h_i(w)$ is the maximum consumption rate of a predator of species $i$
+and weight $w$. By default we assume an allometric form
+$h_i(w) = h_i\, w^n$
+with $n=0.7$.
 
-The rate at which food is consumed is then 
+The rate at which food is consumed by a predator of species $i$ and weight $w$
+is then 
 \begin{equation}
 (1-f_i(w))E_{i}(w)=f_i(w)\, h_i(w).
 \end{equation}
+Only a proportion $\alpha_i$ of this consumed biomass is retained, while a
+proportion $1-\alpha_i$ is expelled in the form of feces, which contribute to
+the detritus.
 
-## Metabolic losses
+### Metabolic losses
 
 Some of the consumed food is used to fuel the needs for metabolism and 
 activity and movement, at a rate ${\tt metab}_i(w)$. By default 
@@ -144,45 +159,54 @@ this is made up out of standard metabolism, scaling with exponent $p$, and
 loss due to activity and movement, scaling with exponent $1$:
 \[{\tt metab}_i(w) = k_{s.i}\,w^p + k_i\,w.\]
 
-The remaining biomass, if any, is assimilated with an efficiency $\alpha_i$ and 
-is then available for growth and reproduction. So the rate at which energy
-becomes available for growth and reproduction is
+The remaining energy, if any, 
+is then available for growth and reproduction, at the rate
 \begin{equation}
   \label{eq:Er}
   E_{r.i}(w) = \max(0, \alpha_i f_i(w)\, h_i(w) - {\tt metab}_i(w))
 \end{equation}
-This is calculated with the `mizer::getEReproAndGrowth()` function.
 
 
-## Investment into reproduction  {#sec:repro}
+### Investment into reproduction  {#sec:repro}
 A proportion $\psi_i(w)$ of the energy available for growth and reproduction is
 used for reproduction. This proportion changes from zero below the weight
 $w_{m.i}$ of maturation to one at the asymptotic weight $w_{\infty.i}$, where
-all available energy is used for reproduction. See
+all available energy is used for reproduction. The expression is
+$$ \psi_i(w) = \begin{cases}
+\left[1+\left(\frac{w}{w_{mat}}\right)^{-U}\right]^{-1}
+\left(\frac{w}{w_{inf}}\right)^{m-n}&w<w_{inf}\\
+1&w\geq w_{inf}\end{cases}
+$$
+
+with $m-n = 0.3$ and $U=10$ (which sets the steepness of the sigmoidal
+switch-on of reproduction at around the maturity weight $w_{mat}$).
+See
 `mizer::setReproduction()` for more detail. 
 
 
 
-## Resulting growth
+### Somatic growth
 What is left over after metabolism and reproduction is taken into account
-is invested in somatic growth. Thus the growth rate is
+is invested in somatic growth. Thus the growth rate of an individual of
+species $i$ and weight $w$ is
 \begin{equation}
   \label{eq:growth}
   g_i(w) = E_{r.i}(w)\left(1-\psi_i(w)\right).
 \end{equation}
-It is calculated by the `mizer::getEGrowth()` function.
-
 When food supply does not cover the requirements of metabolism and activity, 
 growth and reproduction stops, i.e. there is no negative growth.
 
 
 
-# Mortality
-The mortality rate of an individual $\mu_i(w)$ has four sources: 
+## Mortality
+The mortality rate $\mu_i(w)$ of an individual has four sources: 
 predation mortality $\mu_{p.i}(w)$, background mortality $\mu_{ext.i}(w)$, 
-fishing mortality $\mu_{f.i}(w)$ and excess gear mortality $\mu_{g.i}$. 
+fishing mortality $\mu_{f.i}(w)$ and excess gear mortality $\mu_{g.i}$, 
+\[\mu_i(w)=\mu_{p.i}(w)+\mu_{ext,i}(w)+\mu_{f.i}(w)+\mu_{g.i}(w).\]
+We will now explain each of the terms.
 
-Predation mortality is calculated such that all that is eaten translates into 
+### Predation mortality
+All consumption by fish translates into 
 corresponding predation mortalities on the ingested prey individuals. 
 Recalling that $1-f_j(w)$ is the proportion of the food encountered by a 
 predator of species $j$ and weight $w$ that is actually consumed, the
@@ -199,42 +223,38 @@ The mortality rate due to predation is then obtained as
   \label{eq:mup}
   \mu_{p.i}(w_p) = \sum_j {\tt pred\_rate}_j(w_p)\, \theta_{ji}.
 \end{equation}
-This predation mortality rate is calculated by the function `mizer::getPredMort()`.
 
+### External mortality
 External mortality $\mu_{ext.i}(w)$ is independent of the abundances. By default mizer assumes that the external
 mortality for each species is a constant $z0_i$ independent of size. The value
 of $z0_i$ is either specified as a species parameter or it is assumed to
 depend allometrically on the asymptotic size:
 \[z0_i = z0_{pre} w_{\infty.i}^{1-n}.\]
 
+### Fishing mortality
 Fishing mortality $\mu_{f.i}(w)$ is calculated with the function `mizer::getFMort()`.
 The fishing parameters for the model are set up with `mizer::setFishing()`, where
 you can find the details of how to set up gears with different selectivities
 and the capabilities of different species.
 
-
+### Excess gear mortality
 The fishing mortality only includes individuals that are hauled into the
 fishing vessel. Fishing gear also causes mortality among individuals that
 encounter the gear but are not caught by it. This mortality is assumed not
 to be size-specific.
-There is a species parameter $g_i$, called `gear_mort` that gives the 
+There is a species parameter called `gear_mort` that gives the 
 mortality rate of an individual imposed by the fishing gear. The part of
-  this gear mortality that is not fishing mortality (i.e., the part where the
-  individuals are not taken up to the fishing vessel but left dead in the sea)
-  contributes to the carrion production.
-\max{\left(g_i - \mu_{f.i}(w), 0\right)
+this gear mortality that is not fishing mortality (i.e., the part where the
+individuals are not taken up to the fishing vessel but left dead in the sea)
+we denote as the excess gear mortality.
+$$\mu_{g.i} = \max{\left(\text{gear_mort}_i - \mu_{f.i}(w), 0\right)}
+$$
 
-The total mortality rate
-\[\mu_i(w)=\mu_{p.i}(w)+\mu_{ext,u}(w)+\mu_{f.i}(w)\]
-is calculated with the function `mizer::getMort()`.
+This excess gear mortality contributes to the carrion production.
 
+## Reproduction
 
-
-
-
-# Reproduction
-
-## Energy invested into reproduction
+### Energy invested into reproduction
 
 The total rate of investment into reproduction (grams/year) is
 found by integrating the contribution from all individuals of species $i$,
@@ -248,11 +268,10 @@ egg production $R_{p.i}$ (numbers per year):
 Here the total rate of investment is multiplied by an efficiency factor $\epsilon$ 
 and then dividing by the egg weight $w_0$ to convert the energy into number of eggs.
 The result is multiplied by a factor $1/2$ to take into account that only 
-females reproduce. This rate of potential egg production is calculated with
-`getRDI()`.
+females reproduce.
 
 
-## Density-dependence in reproduction
+### Density-dependence in reproduction
 
 Three important density-dependent mechanisms widely assumed in fisheries models are 
 automatically captured in the mizer model that lead to an emergent stock-recruitment relationship:
@@ -279,86 +298,150 @@ a *Beverton-Holt* type function:
   \label{eq:R}
   R_i = R_{\max.i} \frac{R_{p.i}}{R_{p.i} + R_{\max.i}},
 \end{equation}
-where $R_{\max.i}$ is the maximum reproduction rate of each trait class. 
-This final rate of reproduction is calculated with `getRDD()`.
+where $R_{\max.i}$ is the maximum reproduction rate of species $i$.
 
-This default *Beverton-Holt* type is implemented by `BervertonHoldRDD()` but
-mizer also provides alternatives `RickerRDD()`, `SheperdRDD()`, `constantRDD()`
-and `noRDD()`. Also, users are able to write their own functions, e.g.
-*hockey-stick*. See `setReproduction()` for details.
+# Carrion
 
-## Carrion
-
-Carrion (dead individuals) is an important component of the ecosystem,
+Carrion (consisting of the dead individuals that have not yet decomposed) is an important component of the ecosystem,
 providing food for scavenger species. Feeding on carrion by scavengers
 is not size-based. Scavengers can feed on carrion of any size. Therefore
 we do not need to describe the carrion by a size spectrum but only need
 to describe its total biomass $B_C$.
 
-### Carrion production
-Carrion is produced by the ecosystem at a rate $p_C$. This rate has
-contributions from three sources, $p_C = p_{C.e} + p_{C.g} + p_{C.d}$.
+The rate of change in the total carrion biomass is simply the difference
+between the rate at which carrion biomass is produced and the rate at which
+it is consumed, so
+$$\frac{dB_C}{dt}=p_C - c_C\,B_C.$$
 
-1. $p_{C.e}$ comes from animals that have died by natural causes other than predation ("external"):
+We will discuss the production rate $p_C$ and the consumption rate
+$c_CB_C$ below.
+
+## Carrion production
+The rate $p_C$ at which carrion biomass is produced by the ecosystem has
+contributions from three sources, 
+$$p_C = p_{C.ext} + p_{C.g} + p_{C.d},$$
+each of which we will now discuss.
+
+### External mortality
+$p_{C.ext}$ comes from animals that have died by natural causes other than predation ("external"):
   A mizer model allows for external mortality to describe all deaths by
   natural causes that are not due to predation from the modelled species.
   So this external mortality would include deaths that lead to carrion,
   but also deaths due to predation by species that
   are not explicitly modelled, for example mammals or sea birds. Thus only
   a proportion of the external mortality produces carrion.
-  There is given by a carrion parameter $e$, called `ext_prop`. So
-  $$p_{C.e} = e\,\sum_i\int\mu_{ext.i}(w)N_i(w)w\,dw.$$
+  This is given by a carrion parameter `ext_prop`. So
+  $$p_{C.ext} = \text{ext_prop}\,\sum_i\int\mu_{ext.i}(w)N_i(w)w\,dw.$$
 
-2. $p_{C.g}$ comes from animals killed by the fishing gear ("gear_mort"):
-  There is a species parameter $g_i$, called `gear_mort` that gives the 
-  mortality rate of an individual imposed by the fishing gear. The part of
-  this gear mortality that is not fishing mortality (i.e., the part where the
-  individuals are not taken up to the fishing vessel but left dead in the sea)
-  contributes to the carrion production. If the fishing mortality is greater
-  than the gear mortality then no carrion is produced.
-  $$p_{C.g} = \sum_i\int\max{\left(g_i - \mu_{f.i}(w), 0\right)}N_i(w)w\,dw.$$
+### Excess gear mortality
+$p_{C.g}$ comes from animals killed by the fishing gear that are not taken 
+up to the fishing vessel but left dead in the sea. Thus
+$$p_{C.g} = \sum_i\int\mu_{g.i}N_i(w)w\,dw,$$
+  where the excess gear mortality rate $\mu_{g.i}$ was discussed 
+[above](#excess-gear-mortality).
 
-3. $p_{C.d}$ comes from discarding of fished animals ("discards"):
+### Discards
+$p_{C.d}$ comes from discarding of fished animals ("discards"):
   There is a species parameter $d_i$, called `discard`, that gives the proportion of
   the catch biomass that is discarded. This biomass is added to the carrion
   biomass. Thus
   $$p_{C.d} = \sum_i\,d_i\int\mu_{f.i}(w)N_i(w)w\,dw.$$
 
-### Carrion consumption
-The rate at which carrion biomass is consumed is assumed to be proportional to the
+## Carrion consumption
+Carrion is consumed by scavengers, but also decomposed by bacteria and other
+processes. The rate at which carrion biomass is consumed is assumed to be proportional to the
 available carrion biomass. The proportionality factor $c_C$, which we refer to
+as the "mass-specific consumption rate", has one component that depends on the
+abundance of consumers and a constant component $d_C$ representing decomposition.
+
+For each consumer species $i$, a parameter $\rho_i$ determines the rate at which individuals
+of that species encounter carrion biomass. The rate is assumed to
+scale with the size of the predator raised to an allometric exponent $n$
+which is taken to be the same as the scaling exponent of the maximum intake rate
+for consumers, 
+$$E_{i.C}(w)=\rho_i\, w^n\,B_C.$$
+Finally, satiation of the consumers is taken into account
+via their feeding level $f_i(w)$ that was described in the section on 
+[consumption](#consumption). This gives the mass-specific carrion
+consumption rate
+$$c_C = \sum_i\int\rho_i\, w^n N_i(w) (1-f_i(w))\,dw + d_C$$
+where $d_C$ is the mass-specific rate of decomposition.
+
+# Detritus
+
+Detritus is at the base of the benthic foodweb, providing food for
+detritivores. 
+
+We describe the detritus as a size-spectrum $N_D(w)$ ,
+which is the *density* of detritus particles of size $w$, 
+so that $\int_w^{w+dw}N_D(w)dw$ is the *number* of
+detritus particles in the size interval $[w,w+dw]$.
+However, we do not know details about the size-specific dynamics
+of detritus and simply assume that its abundance is described by
+a power law up to a maximum size,
+$$N_D(w) \propto \begin{cases} w^{-\lambda} & w\leq w_{cutoff}\\
+0 & w > w_{cutoff}\end{cases}.
+$$
+
+The exponent $\lambda$ is kept fixed and only the coefficient of the
+power law changes with time to reflect the change in the total detritus
+biomass 
+$$B_D = \int_{w_{min}}^{w_{cutoff}} N_D(w)\, w \,dw.$$
+
+The rate of change in the total detritus biomass is simply the difference
+between the rate at which detritus biomass is produced and the rate at which
+it is consumed, so
+$$\frac{dB_D}{dt}=p_D - c_D\,B_D.$$
+
+We will discuss the production rate $p_D$ and the consumption rate
+$c_DB_D$ below.
+
+## Detritus production
+The rate $p_C$ at which carrion biomass is produced by the ecosystem has
+contributions from three sources, 
+$$p_C = p_{C.f} + p_{C.c} + p_{C.ext},$$
+each of which we will now discuss.
+
+### Feces
+$p_{C.f}$ comes from the biomass that is consumed but not assimilated by
+the predators, i.e., it comes from the feces expelled by the predators.
+Let $\alpha_i$ be the proportion of the consumed biomass that is assimilated
+by species $i$
+and let $f_i(w)$ be the feeding level and $E_i(w)$ the food encounter rate
+discussed in the section on [consumption](#consumption). Then
+$$p_{C.f} = \sum_i(1-\alpha_i)\int (1-f_i(w))E_i(w)\,dw.$$
+
+### Decomposing carrion
+$p_{D.c}$ comes from decomposing carrion. As we discussed in the section on
+[carrion consumption], carrion biomass is decomposed to detritus at the rate
+$d_CB_C$ where $d_C$ is a given fixed mass-specific decomposition rate and
+$B_C$ is the total carrion biomass. So
+$$p_{D.c}=d_CB_C.$$
+
+### External
+$p_{D.ext}$ is the rate at which detritus enters the system from external 
+sources. This will mostly be detritus sinking in from the pelagic zone. 
+This rate is a model parameter independent of any other model component.
+
+
+## Detritus consumption
+The rate at which detritus biomass is consumed is assumed to be proportional to the
+available detritus biomass. The proportionality factor $c_D$, which we refer to
 as the "mass-specific consumption rate", depends on the
 abundance of consumers.
-For each consumer species, a parameter $\rho_i$ determines the rate at which individuals
-of that species consume carrion biomass. The actual per capita consumption
-rate scales with the size of the predator raised to an allometric exponent $n$
-which is taken to be the same as the scaling exponent of the maximum intake rate
-for consumers. Finally, satiation of the consumers is taken into account
-via their feeding level $f_i(w)$ that will be described later. This gives the mass-specific
-consumption rate
-$$c_C = \sum_i\,d_i\int\rho_i\, w^n N_i(w) (1-f_i(w))\,dw.$$
 
-### Carrion dynamics
-The rate of change in the total carrion biomass is simply the difference
-between the rate at which carrion biomass is produced and the rate at which
-it is consumed, so
-$$\frac{dB_C}{dt}=p_C - c_C\,B_C.$$
-
-## Detritus
-
-Besides the fish spectrum there is also a resource spectrum $N_R(w)$,
-representing for example the phytoplankton. This spectrum starts at a smaller
-size than the fish spectrum, in order to provide food also for the smallest
-individuals (larvae) of the fish spectrum.
-
-
-## Resource Mortality
-
-The predation mortality rate on resource is given by a similar expression
-as the predation mortality on fish:
-\begin{equation}
-  \label{eq:mupp}
-  \mu_{p}(w_p) = \sum_j {\tt pred\_rate}_j(w_p)\, \theta_{jp}.
-\end{equation}
-This is the only mortality on resource currently implemented in mizer.
-It is calculated with the function `getResourceMort()`.
+The consumption of detritus is modelled similarly to the consumption of fish. First we introduce the rate at which
+all predators of species $j$ consume detritus particles of size $w$
+$$\mu_{D}(w_p) = \sum_j  \theta_{jD}\int \phi_j(w,w_p) (1-f_j(w))
+  \gamma_j(w) N_j(w) \, dw.
+$$
+This is analogous to the [predation mortality] discussed earlier, but
+with $\theta_{jD}$ determining the strength at which species $j$ feeds on
+detritus. To get
+the total rate of detritus consumption we multiply by the weight of the
+detritus particle and integrate over all detritus particles:
+$$c_DB_D=\int\mu_D(w_p)\,w_p\, N_D(w_p)\,dw_p.
+$$
+Because we keep the size-distribution of the detritus fixed, this
+consumption rate is proportional to the total detritus biomass $B_D$, as we
+have already indicated by our notation.
