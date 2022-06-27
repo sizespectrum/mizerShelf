@@ -1,10 +1,14 @@
 ---
 title: "Model Description"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Model Description}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+output:
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
+  html_document:
+    toc: yes
+    toc_depth: 3
+vignette: |
+  %\VignetteIndexEntry{Model Description} %\VignetteEngine{knitr::rmarkdown} %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
@@ -16,7 +20,7 @@ knitr::opts_chunk$set(
 library(mizerNWMed)
 ```
 
-On this page we present the details of the model. The model consists of three
+In this document we present the details of the model. The model consists of three
 components: 1) a collection of species modelled by [size spectrum dynamics],
 2) [carrion] and 3) [detritus]. We discuss each of these in turn below.
 
@@ -247,7 +251,7 @@ mortality rate of an individual imposed by the fishing gear. The part of
 this gear mortality that is not fishing mortality (i.e., the part where the
 individuals are not taken up to the fishing vessel but left dead in the sea)
 we denote as the excess gear mortality.
-$$\mu_{g.i} = \max{\left(\text{gear_mort}_i - \mu_{f.i}(w), 0\right)}
+$$\mu_{g.i} = \max{\left(\rm{gear_mort}_i - \mu_{f.i}(w), 0\right)}
 $$
 
 This excess gear mortality contributes to the carrion production.
@@ -331,7 +335,7 @@ $p_{C.ext}$ comes from animals that have died by natural causes other than preda
   are not explicitly modelled, for example mammals or sea birds. Thus only
   a proportion of the external mortality produces carrion.
   This is given by a carrion parameter `ext_prop`. So
-  $$p_{C.ext} = \text{ext_prop}\,\sum_i\int\mu_{ext.i}(w)N_i(w)w\,dw.$$
+  $$p_{C.ext} = \rm{ext_prop}\,\sum_i\int\mu_{ext.i}(w)N_i(w)w\,dw.$$
 
 ### Excess gear mortality
 $p_{C.g}$ comes from animals killed by the fishing gear that are not taken 
