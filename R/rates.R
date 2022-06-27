@@ -1,6 +1,6 @@
 #' Total mortality rate in the shelf ecosystem model
 #' 
-#' @params params A MizerParams object
+#' @param params A MizerParams object
 #' @param n A matrix of species abundances (species x size).
 #' @param n_pp A vector of the resource abundance by size
 #' @param n_other A list of abundances for other dynamical components of the
@@ -16,6 +16,7 @@
 #' 
 #' @return A named two dimensional array (species x size) with the total
 #'   mortality rates.
+#' @export
 seMort <- function(params, n, n_pp, n_other, t, f_mort, pred_mort, ...) {
     mizerMort(params, n, n_pp, n_other, t, f_mort, pred_mort, ...) +
         gearMort(params, f_mort = f_mort)
@@ -34,6 +35,7 @@ seMort <- function(params, n, n_pp, n_other, t, f_mort, pred_mort, ...) {
 #'   `getMort()`.
 #' @return A named two dimensional array (species x size) with the excess gear
 #'   mortality rates.
+#' @export
 gearMort <- function(params, f_mort) {
     gear_mort <- params@species_params$gear_mort - f_mort
     gear_mort[gear_mort < 0] <- 0

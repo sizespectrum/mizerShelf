@@ -343,26 +343,43 @@ plotDetritusProduction <- function(params) {
              x = "", y = "")
 }
 
+#' Expected carrion lifetime
+#' 
+#' The expected carrion lifetime is defined as the inverse of the 
+#' mass-specific carrion consumption rate.
+#' @param params A MizerParams object
+#' @return The number giving the expected lifetime in years.
 #' @export
 carrion_lifetime <- function(params) {
     1 / carrion_consumption_ms(params)
 }
 
+#' @rdname carrion_lifetime
+#' @param params A MizerParams object
+#' @param value A number with the new value for the lifetime
 #' @export
 `carrion_lifetime<-` <- function(params, value) {
     rescale_carrion(params, value / carrion_lifetime(params))
 }
 
+#' Expected detritus lifetime
+#' 
+#' The expected detritus lifetime is defined as the inverse of the 
+#' mass-specific detritus consumption rate.
+#' @param params A MizerParams object
+#' @return The number giving the expected lifetime in years.
 #' @export
 detritus_lifetime <- function(params) {
-    current_biomass <- 
-        sum(params@initial_n_pp * params@dw_full * params@w_full)
-    current_biomass /
+    detritus_biomass(params) /
         detritus_consumption(params, 
                               n_pp = params@initial_n_pp, 
                               rates = getRates(params))
 }
 
+#' @rdname detritus_lifetime
+#' @param params A MizerParams object
+#' @param value A number with the new value for the lifetime
+#' @export
 #' @export
 `detritus_lifetime<-` <- function(params, value) {
     rescale_detritus(params, value / detritus_lifetime(params))
@@ -392,6 +409,16 @@ carrion_human_origin <- function(params) {
     params
 }
 
+#' Rescale carrion biomass without changing anything else
+#' 
+#' This multiplies the carrion biomass by a factor and divides the
+#' interaction between all species and the detritus by the same
+#' factor, so as to keep the total consumption of detritus unchanged.
+#' It also divides the mass-specific rate of decomposition by the same
+#' factor so that the total decomposition rate stays the same.
+#' @param params A MizerParams object
+#' @param factor A number
+#' @return An updated MizerParams object
 #' @export
 rescale_carrion <- function(params, factor) {
     params@initial_n_other[["carrion"]] <- 
@@ -405,6 +432,14 @@ rescale_carrion <- function(params, factor) {
     params
 }
 
+#' Rescale detritus biomass without changing detritus consumption
+#' 
+#' This multiplies the detritus abundance by a factor and divides the
+#' interaction between all species and the detritus by the same
+#' factor, so as to keep the total consumption of detritus unchanged.
+#' @param params A MizerParams object
+#' @param factor A number
+#' @return An updated MizerParams object
 #' @export
 rescale_detritus <- function(params, factor) {
     params@initial_n_pp <- params@initial_n_pp * factor

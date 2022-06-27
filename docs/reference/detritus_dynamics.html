@@ -31,6 +31,7 @@ total detritus biomass."><!-- mathjax --><script src="https://cdnjs.cloudflare.c
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/model_description.html">Model Description</a>
+    <a class="dropdown-item" href="../articles/model_exploration.html">Model Exploration</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -70,8 +71,12 @@ total detritus biomass.</p>
 <dd><p>A matrix of current species abundances (species x size)</p></dd>
 
 
+<dt>n_pp</dt>
+<dd><p>Vector of detritus density</p></dd>
+
+
 <dt>n_other</dt>
-<dd><p>List of abundances of other dynamic components</p></dd>
+<dd><p>Other dynamic components. Only <code>n_other$carrion</code> is used.</p></dd>
 
 
 <dt>rates</dt>

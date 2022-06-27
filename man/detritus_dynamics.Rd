@@ -11,7 +11,9 @@ detritus_dynamics(params, n, n_pp, n_other, rates, dt, ...)
 
 \item{n}{A matrix of current species abundances (species x size)}
 
-\item{n_other}{List of abundances of other dynamic components}
+\item{n_pp}{Vector of detritus density}
+
+\item{n_other}{Other dynamic components. Only \code{n_other$carrion} is used.}
 
 \item{rates}{A list of rates as returned by \code{\link[=getRates]{getRates()}}}
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/components.R
 \name{getDetritusConsumption}
 \alias{getDetritusConsumption}
-\title{Get detritus consumption rates}
+\title{Get detritus consumption rates by consumer species}
 \usage{
 getDetritusConsumption(params)
 }
@@ -13,5 +13,5 @@ getDetritusConsumption(params)
 A named vector with the consumption rates from all species
 }
 \description{
-Get detritus consumption rates
+Get detritus consumption rates by consumer species
 }

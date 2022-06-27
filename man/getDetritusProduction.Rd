@@ -16,11 +16,13 @@ getDetritusProduction(
 
 \item{n}{A matrix of current species abundances (species x size)}
 
+\item{n_other}{Other dynamic components. Only \code{n_other$carrion} is used.}
+
 \item{rates}{A list of rates as returned by \code{\link[=getRates]{getRates()}}}
 }
 \value{
 A vector with named entries "external",
-"feces" and "carrion", each given the rate at which carrion biomass
+"feces" and "carrion", giving the rates at which carrion biomass
 is produced by these sources in grams per year.
 }
 \description{

@@ -42,6 +42,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/model_description.html">Model Description</a>
+    <a class="dropdown-item" href="../articles/model_exploration.html">Model Exploration</a>
   </div>
 </li>
       </ul>
@@ -70,10 +71,187 @@
 
     
     
-<p>On this page we present the details of the model. The model consists
-of three components: 1) a collection of species modelled by <a href="#size-spectrum-dynamics">size spectrum dynamics</a>, 2) <a href="#carrion">carrion</a> and 3) <a href="#detritus">detritus</a>. We
+<p>In this document we present the details of the model. The model
+consists of three components: 1) a collection of species modelled by <a href="#size-spectrum-dynamics">size spectrum dynamics</a>, 2) <a href="#carrion">carrion</a> and 3) <a href="#detritus">detritus</a>. We
 discuss each of these in turn below.</p>
-<div class="section level2">
+In addition to describing the general model, we also give the values of
+the parameters for the model tuned to the shelf ecosystem off the coast
+of Blanes in the Northwestern Mediterranean. These are by default hidden
+in collapsible sections and can be unhidden by clicking on the
+“Parameter values” headings as below:
+<details><summary>
+Parameter values
+</summary><p>And if you click again this section will be hidden again.</p>
+<p>We model 26 species, in addition to carrion and detritus. For some
+species the total biomass above a certain cutoff size has been observed.
+The following table gives the observed biomass per square meter in grams
+and the cutoff size in grams. Individuals smaller than the cutoff size
+were not observable by the method used.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">biomass_observed</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">biomass_observed</span>, <span class="va">biomass_cutoff</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">kable</span><span class="op">(</span>col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"biomass"</span>, <span class="st">"cutoff size"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left"></th>
+<th align="right">biomass</th>
+<th align="right">cutoff size</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Suprabenthic crustacea</td>
+<td align="right">0.0299200</td>
+<td align="right">0.0000002</td>
+</tr>
+<tr class="even">
+<td align="left">Red mullet</td>
+<td align="right">0.0018383</td>
+<td align="right">0.2477958</td>
+</tr>
+<tr class="odd">
+<td align="left">Striped red mullet</td>
+<td align="right">0.0003677</td>
+<td align="right">0.1985973</td>
+</tr>
+<tr class="even">
+<td align="left">Hake</td>
+<td align="right">0.0129375</td>
+<td align="right">0.2988306</td>
+</tr>
+<tr class="odd">
+<td align="left">Angler fish</td>
+<td align="right">0.0105463</td>
+<td align="right">0.4560274</td>
+</tr>
+<tr class="even">
+<td align="left">Poor cod</td>
+<td align="right">0.0141348</td>
+<td align="right">0.2816911</td>
+</tr>
+<tr class="odd">
+<td align="left">Horse mackerel</td>
+<td align="right">0.0141348</td>
+<td align="right">0.2816911</td>
+</tr>
+<tr class="even">
+<td align="left">Shortfin squid</td>
+<td align="right">0.0055232</td>
+<td align="right">0.1727642</td>
+</tr>
+<tr class="odd">
+<td align="left">Blue whiting</td>
+<td align="right">0.0007209</td>
+<td align="right">0.1279088</td>
+</tr>
+<tr class="even">
+<td align="left">Horned octopus</td>
+<td align="right">0.0055174</td>
+<td align="right">1.2053885</td>
+</tr>
+</tbody>
+</table>
+<p>For the other species the total number above a certain cutoff size
+has been observed instead :</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">number_observed</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">number_observed</span>, <span class="va">number_cutoff</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">kable</span><span class="op">(</span>col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"numbers"</span>, <span class="st">"cutoff size"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left"></th>
+<th align="right">numbers</th>
+<th align="right">cutoff size</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Small DF worms</td>
+<td align="right">279.600000</td>
+<td align="right">0.0000925</td>
+</tr>
+<tr class="even">
+<td align="left">Small DF crustacea</td>
+<td align="right">79.600000</td>
+<td align="right">0.0000004</td>
+</tr>
+<tr class="odd">
+<td align="left">DF worms</td>
+<td align="right">257.000000</td>
+<td align="right">0.0000925</td>
+</tr>
+<tr class="even">
+<td align="left">Endobenthic pred. crustacea</td>
+<td align="right">4.950000</td>
+<td align="right">0.0000002</td>
+</tr>
+<tr class="odd">
+<td align="left">Endobethic pred. worms</td>
+<td align="right">199.000000</td>
+<td align="right">0.0000925</td>
+</tr>
+<tr class="even">
+<td align="left">Large DF worms</td>
+<td align="right">95.000000</td>
+<td align="right">0.0000925</td>
+</tr>
+<tr class="odd">
+<td align="left">Starfish</td>
+<td align="right">0.118140</td>
+<td align="right">0.0141759</td>
+</tr>
+<tr class="even">
+<td align="left">Nut clam</td>
+<td align="right">0.023970</td>
+<td align="right">0.0843025</td>
+</tr>
+<tr class="odd">
+<td align="left">Murex</td>
+<td align="right">0.063220</td>
+<td align="right">0.0190637</td>
+</tr>
+<tr class="even">
+<td align="left">Angular crab</td>
+<td align="right">0.033650</td>
+<td align="right">0.0736550</td>
+</tr>
+<tr class="odd">
+<td align="left">Harbour crab</td>
+<td align="right">0.033650</td>
+<td align="right">0.0736550</td>
+</tr>
+<tr class="even">
+<td align="left">Red snapping shrimp</td>
+<td align="right">0.025960</td>
+<td align="right">0.0690487</td>
+</tr>
+<tr class="odd">
+<td align="left">Spotted flounder</td>
+<td align="right">0.025960</td>
+<td align="right">0.0690487</td>
+</tr>
+<tr class="even">
+<td align="left">Black goby</td>
+<td align="right">0.012653</td>
+<td align="right">0.0972259</td>
+</tr>
+<tr class="odd">
+<td align="left">Gurnards</td>
+<td align="right">0.023970</td>
+<td align="right">0.0843025</td>
+</tr>
+<tr class="even">
+<td align="left">Lesueurs’ goby</td>
+<td align="right">0.007517</td>
+<td align="right">0.0011158</td>
+</tr>
+</tbody>
+</table>
+<p>While the observed abundances of the species are not directly model
+parameters, they have been used to choose the reproduction parameters
+discussed later so that the steady state abundances in the model agree
+with these observations.</p>
+</details><div class="section level2">
 <h2 id="size-spectrum-dynamics">Size spectrum dynamics<a class="anchor" aria-label="anchor" href="#size-spectrum-dynamics"></a>
 </h2>
 <div class="section level3">
@@ -138,11 +316,13 @@ selectivity factors, and (where relevant) adding the encounter rates
 <span class="math inline">\(E_{C.i}\)</span> of carrion and <span class="math inline">\(E_{D.i}\)</span> of detritus: <span class="math display">\[\begin{equation}
   \label{eq:1}
   E_{i}(w) = \gamma_i(w) \int \sum_{j} \theta_{ij} N_j(w_p)
-  \phi_i(w,w_p) w_p \, dw_p + E_{i.C}(w) + E_{i.D}(w).
+  \phi_i(w,w_p) w_p \, dw_p + E_{C.i}(w) + E_{D.i}(w).
 \end{equation}\]</span> The encounter rates for <a href="#carrion-consumption">carrion</a> and <a href="#detritus-consumption">detritus</a> will be described later.</p>
 <p>The overall prefactor <span class="math inline">\(\gamma_i(w)\)</span> sets the predation power of
 the predator. It could be interpreted as a search volume or as an attack
-rate. By default it is assumed to scale allometrically as <span class="math inline">\(\gamma_i(w) = \gamma_i\, w^{3/4}.\)</span></p>
+rate. By default it is assumed to scale allometrically as <span class="math inline">\(\gamma_i(w) = \gamma_i\, w^{3/4}.\)</span> In
+order for <span class="math inline">\(E_i(w)\)</span> to have units of
+grams per year, the prefactor <span class="math inline">\(\gamma_i\)</span> has to have a unit of <span class="math inline">\(\rm{grams}^{-3/4}\)</span> per year.</p>
 <p>The <span class="math inline">\(\theta_{ij}\)</span> matrix sets the
 interaction strength between predator species <span class="math inline">\(i\)</span> prey species <span class="math inline">\(j\)</span>.</p>
 <p>The size selectivity is encoded in the predation kernel <span class="math inline">\(\phi_i(w,w_p)\)</span>. For most predator species
@@ -164,6 +344,242 @@ large predator/prey mass ratio.</p>
 <p>The parameters for these predation kernels were estimated from
 stomach data or from the physical characteristics of the species. This
 will be discussed elsewhere.</p>
+<details><summary>
+Parameter values
+</summary><p>The predator/prey interaction matrix has most entries equal to either
+0 (if the species can not interact) or 1. Only the interaction between
+Hake as predator and Gurnards as prey is set to 0.5.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="fu">melt</span><span class="op">(</span><span class="va">params</span><span class="op">@</span><span class="va">interaction</span><span class="op">)</span>,</span>
+<span>       <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">prey</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/reorder.factor.html" class="external-link">reorder</a></span><span class="op">(</span><span class="va">predator</span>, <span class="fu">desc</span><span class="op">(</span><span class="va">predator</span><span class="op">)</span><span class="op">)</span>, fill <span class="op">=</span> <span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu">geom_tile</span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"black"</span>, size <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">scale_fill_gradient</span><span class="op">(</span>low <span class="op">=</span> <span class="st">"white"</span>, high <span class="op">=</span> <span class="st">"blue"</span>, limit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span>
+<span>                        guide <span class="op">=</span> <span class="st">"legend"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu">theme</span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">45</span>, vjust <span class="op">=</span> <span class="fl">1</span>, hjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="model_description_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
+<p>For the species that use a lognormal predation kernel, the parameters
+are</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pred_kernel_type</span> <span class="op">==</span> <span class="st">"lognormal"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">beta</span>, <span class="va">sigma</span>, <span class="va">gamma</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">kable</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left"></th>
+<th align="right">beta</th>
+<th align="right">sigma</th>
+<th align="right">gamma</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Small DF worms</td>
+<td align="right">1294.87</td>
+<td align="right">1.00</td>
+<td align="right">126.5718078</td>
+</tr>
+<tr class="even">
+<td align="left">Small DF crustacea</td>
+<td align="right">120.00</td>
+<td align="right">1.00</td>
+<td align="right">21.3655420</td>
+</tr>
+<tr class="odd">
+<td align="left">DF worms</td>
+<td align="right">12000.00</td>
+<td align="right">1.00</td>
+<td align="right">50.0119789</td>
+</tr>
+<tr class="even">
+<td align="left">Endobenthic pred. crustacea</td>
+<td align="right">10.90</td>
+<td align="right">2.00</td>
+<td align="right">0.8255096</td>
+</tr>
+<tr class="odd">
+<td align="left">Suprabenthic crustacea</td>
+<td align="right">10.00</td>
+<td align="right">2.00</td>
+<td align="right">8.0559562</td>
+</tr>
+<tr class="even">
+<td align="left">Endobethic pred. worms</td>
+<td align="right">100.00</td>
+<td align="right">2.00</td>
+<td align="right">19.7383100</td>
+</tr>
+<tr class="odd">
+<td align="left">Large DF worms</td>
+<td align="right">303667.00</td>
+<td align="right">1.65</td>
+<td align="right">153.4785611</td>
+</tr>
+<tr class="even">
+<td align="left">Starfish</td>
+<td align="right">52.00</td>
+<td align="right">2.00</td>
+<td align="right">4.3502038</td>
+</tr>
+<tr class="odd">
+<td align="left">Nut clam</td>
+<td align="right">30887.00</td>
+<td align="right">0.55</td>
+<td align="right">120.4364455</td>
+</tr>
+<tr class="even">
+<td align="left">Murex</td>
+<td align="right">50.25</td>
+<td align="right">2.00</td>
+<td align="right">36.2634628</td>
+</tr>
+<tr class="odd">
+<td align="left">Angular crab</td>
+<td align="right">10.00</td>
+<td align="right">2.00</td>
+<td align="right">13.2104721</td>
+</tr>
+<tr class="even">
+<td align="left">Harbour crab</td>
+<td align="right">10.00</td>
+<td align="right">2.00</td>
+<td align="right">2.3374165</td>
+</tr>
+<tr class="odd">
+<td align="left">Red snapping shrimp</td>
+<td align="right">10.05</td>
+<td align="right">2.00</td>
+<td align="right">29.9325630</td>
+</tr>
+<tr class="even">
+<td align="left">Spotted flounder</td>
+<td align="right">77.00</td>
+<td align="right">2.00</td>
+<td align="right">8.7220041</td>
+</tr>
+<tr class="odd">
+<td align="left">Black goby</td>
+<td align="right">200.00</td>
+<td align="right">2.00</td>
+<td align="right">22.4456483</td>
+</tr>
+<tr class="even">
+<td align="left">Red mullet</td>
+<td align="right">283.00</td>
+<td align="right">1.80</td>
+<td align="right">16.2005422</td>
+</tr>
+<tr class="odd">
+<td align="left">Striped red mullet</td>
+<td align="right">283.00</td>
+<td align="right">1.80</td>
+<td align="right">21.2436160</td>
+</tr>
+<tr class="even">
+<td align="left">Horse mackerel</td>
+<td align="right">36.00</td>
+<td align="right">1.80</td>
+<td align="right">466.5291954</td>
+</tr>
+<tr class="odd">
+<td align="left">Shortfin squid</td>
+<td align="right">10.00</td>
+<td align="right">2.00</td>
+<td align="right">646.5095831</td>
+</tr>
+<tr class="even">
+<td align="left">Horned octopus</td>
+<td align="right">10.00</td>
+<td align="right">2.00</td>
+<td align="right">83.5224676</td>
+</tr>
+<tr class="odd">
+<td align="left">Lesueurs’ goby</td>
+<td align="right">100.00</td>
+<td align="right">2.00</td>
+<td align="right">45.5615641</td>
+</tr>
+</tbody>
+</table>
+<p>For the species that use a truncated power law predation kernel, the
+parameters are</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pred_kernel_type</span> <span class="op">==</span> <span class="st">"power_law"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">"kernel"</span><span class="op">)</span>, <span class="va">gamma</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">rename</span><span class="op">(</span>s <span class="op">=</span> <span class="va">kernel_exp</span>,</span>
+<span>           l_l <span class="op">=</span> <span class="va">kernel_l_l</span>,</span>
+<span>           u_l <span class="op">=</span> <span class="va">kernel_u_l</span>,</span>
+<span>           l_r <span class="op">=</span> <span class="va">kernel_l_r</span>,</span>
+<span>           u_r <span class="op">=</span> <span class="va">kernel_u_r</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">kable</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="17%">
+<col width="14%">
+<col width="12%">
+<col width="13%">
+<col width="12%">
+<col width="13%">
+<col width="16%">
+</colgroup>
+<thead><tr class="header">
+<th align="left"></th>
+<th align="right">s</th>
+<th align="right">l_l</th>
+<th align="right">u_l</th>
+<th align="right">l_r</th>
+<th align="right">u_r</th>
+<th align="right">gamma</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Gurnards</td>
+<td align="right">-1.0311955</td>
+<td align="right">1.104517</td>
+<td align="right">5.759042</td>
+<td align="right">6.932295</td>
+<td align="right">14.176132</td>
+<td align="right">77.98283</td>
+</tr>
+<tr class="even">
+<td align="left">Hake</td>
+<td align="right">-0.7999909</td>
+<td align="right">2.328790</td>
+<td align="right">29.533925</td>
+<td align="right">7.625678</td>
+<td align="right">26.992624</td>
+<td align="right">11098.68207</td>
+</tr>
+<tr class="odd">
+<td align="left">Angler fish</td>
+<td align="right">-1.5739389</td>
+<td align="right">1.283283</td>
+<td align="right">5.642066</td>
+<td align="right">6.676509</td>
+<td align="right">5.054213</td>
+<td align="right">29533.62618</td>
+</tr>
+<tr class="even">
+<td align="left">Poor cod</td>
+<td align="right">-0.6114323</td>
+<td align="right">1.930589</td>
+<td align="right">27.643156</td>
+<td align="right">6.825227</td>
+<td align="right">32.547350</td>
+<td align="right">2382.01848</td>
+</tr>
+<tr class="odd">
+<td align="left">Blue whiting</td>
+<td align="right">-0.7999909</td>
+<td align="right">2.328790</td>
+<td align="right">29.533925</td>
+<td align="right">7.625678</td>
+<td align="right">26.992624</td>
+<td align="right">12815.67482</td>
+</tr>
+</tbody>
+</table></details>
 </div>
 <div class="section level4">
 <h4 id="consumption">Consumption<a class="anchor" aria-label="anchor" href="#consumption"></a>
@@ -181,12 +597,191 @@ is given by</p>
 \end{equation}\]</span></p>
 <p>where <span class="math inline">\(h_i(w)\)</span> is the maximum
 consumption rate of a predator of species <span class="math inline">\(i\)</span> and weight <span class="math inline">\(w\)</span>. By default we assume an allometric
-form <span class="math inline">\(h_i(w) = h_i\, w^n\)</span> with <span class="math inline">\(n=0.7\)</span>.</p>
+form <span class="math inline">\(h_i(w) = h_i\, w^n\)</span> with <span class="math inline">\(n=0.7\)</span>. The unit of the coefficients <span class="math inline">\(h_i\)</span> are <span class="math inline">\(\rm{grams}^{1-n}\)</span> per year.</p>
 <p>The rate at which food is consumed by a predator of species <span class="math inline">\(i\)</span> and weight <span class="math inline">\(w\)</span> is then <span class="math display">\[\begin{equation}
 (1-f_i(w))E_{i}(w)=f_i(w)\, h_i(w).
 \end{equation}\]</span> Only a proportion <span class="math inline">\(\alpha_i\)</span> of this consumed biomass is
 retained, while a proportion <span class="math inline">\(1-\alpha_i\)</span> is expelled in the form of
 feces, which contribute to the detritus.</p>
+<details><summary>
+Parameter values
+</summary><p>The values for the coefficients <span class="math inline">\(h_i\)</span> in the maximum consumption rates were
+chosen so that the feeding level that fish experience has a reasonable
+value with fish being neiter too starved nor totally satiated.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">h</span>, <span class="va">alpha</span>, <span class="va">n</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">kable</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left"></th>
+<th align="right">h</th>
+<th align="right">alpha</th>
+<th align="right">n</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Small DF worms</td>
+<td align="right">15.90</td>
+<td align="right">0.6</td>
+<td align="right">0.7</td>
+</tr>
+<tr class="even">
+<td align="left">Small DF crustacea</td>
+<td align="right">2.64</td>
+<td align="right">0.6</td>
+<td align="right">0.7</td>
+</tr>
+<tr class="odd">
+<td align="left">DF worms</td>
+<td align="right">7.80</td>
+<td align="right">0.6</td>
+<td align="right">0.7</td>
+</tr>
+<tr class="even">
+<td align="left">Endobenthic pred. crustacea</td>
+<td align="right">1.94</td>
+<td align="right">0.6</td>
+<td align="right">0.7</td>
+</tr>
+<tr class="odd">
+<td align="left">Suprabenthic crustacea</td>
+<td align="right">3.75</td>
+<td align="right">0.6</td>
+<td align="right">0.7</td>
+</tr>
+<tr class="even">
+<td align="left">Endobethic pred. worms</td>
+<td align="right">13.40</td>
+<td align="right">0.6</td>
+<td align="right">0.7</td>
+</tr>
+<tr class="odd">
+<td align="left">Large DF worms</td>
+<td align="right">38.00</td>
+<td align="right">0.6</td>
+<td align="right">0.7</td>
+</tr>
+<tr class="even">
+<td align="left">Starfish</td>
+<td align="right">14.00</td>
+<td align="right">0.6</td>
+<td align="right">0.7</td>
+</tr>
+<tr class="odd">
+<td align="left">Nut clam</td>
+<td align="right">7.60</td>
+<td align="right">0.6</td>
+<td align="right">0.7</td>
+</tr>
+<tr class="even">
+<td align="left">Murex</td>
+<td align="right">34.00</td>
+<td align="right">0.6</td>
+<td align="right">0.7</td>
+</tr>
+<tr class="odd">
+<td align="left">Angular crab</td>
+<td align="right">11.60</td>
+<td align="right">0.6</td>
+<td align="right">0.7</td>
+</tr>
+<tr class="even">
+<td align="left">Harbour crab</td>
+<td align="right">12.70</td>
+<td align="right">0.6</td>
+<td align="right">0.7</td>
+</tr>
+<tr class="odd">
+<td align="left">Red snapping shrimp</td>
+<td align="right">21.00</td>
+<td align="right">0.6</td>
+<td align="right">0.7</td>
+</tr>
+<tr class="even">
+<td align="left">Spotted flounder</td>
+<td align="right">14.00</td>
+<td align="right">0.6</td>
+<td align="right">0.7</td>
+</tr>
+<tr class="odd">
+<td align="left">Black goby</td>
+<td align="right">15.10</td>
+<td align="right">0.6</td>
+<td align="right">0.7</td>
+</tr>
+<tr class="even">
+<td align="left">Gurnards</td>
+<td align="right">13.00</td>
+<td align="right">0.6</td>
+<td align="right">0.7</td>
+</tr>
+<tr class="odd">
+<td align="left">Red mullet</td>
+<td align="right">20.00</td>
+<td align="right">0.6</td>
+<td align="right">0.7</td>
+</tr>
+<tr class="even">
+<td align="left">Striped red mullet</td>
+<td align="right">18.00</td>
+<td align="right">0.6</td>
+<td align="right">0.7</td>
+</tr>
+<tr class="odd">
+<td align="left">Hake</td>
+<td align="right">28.00</td>
+<td align="right">0.6</td>
+<td align="right">0.7</td>
+</tr>
+<tr class="even">
+<td align="left">Angler fish</td>
+<td align="right">28.00</td>
+<td align="right">0.6</td>
+<td align="right">0.7</td>
+</tr>
+<tr class="odd">
+<td align="left">Poor cod</td>
+<td align="right">14.00</td>
+<td align="right">0.6</td>
+<td align="right">0.7</td>
+</tr>
+<tr class="even">
+<td align="left">Horse mackerel</td>
+<td align="right">35.00</td>
+<td align="right">0.6</td>
+<td align="right">0.7</td>
+</tr>
+<tr class="odd">
+<td align="left">Shortfin squid</td>
+<td align="right">48.00</td>
+<td align="right">0.6</td>
+<td align="right">0.7</td>
+</tr>
+<tr class="even">
+<td align="left">Blue whiting</td>
+<td align="right">21.00</td>
+<td align="right">0.6</td>
+<td align="right">0.7</td>
+</tr>
+<tr class="odd">
+<td align="left">Horned octopus</td>
+<td align="right">85.00</td>
+<td align="right">0.6</td>
+<td align="right">0.7</td>
+</tr>
+<tr class="even">
+<td align="left">Lesueurs’ goby</td>
+<td align="right">8.70</td>
+<td align="right">0.6</td>
+<td align="right">0.7</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">plotFeedingLevel</span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span></code></pre></div>
+<p><img src="model_description_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
+</details>
 </div>
 <div class="section level4">
 <h4 id="metabolic-losses">Metabolic losses<a class="anchor" aria-label="anchor" href="#metabolic-losses"></a>
@@ -196,12 +791,185 @@ and activity and movement, at a rate <span class="math inline">\({\tt
 metab}_i(w)\)</span>. By default this is made up out of standard
 metabolism, scaling with exponent <span class="math inline">\(p\)</span>, and loss due to activity and movement,
 scaling with exponent <span class="math inline">\(1\)</span>: <span class="math display">\[{\tt metab}_i(w) = k_{s.i}\,w^p +
-k_i\,w.\]</span></p>
+k_i\,w.\]</span> The units of the coefficients <span class="math inline">\(k_{s.i}\)</span> are <span class="math inline">\(\rm{grams}^{1-p}\)</span> per year and the units
+of the <span class="math inline">\(k_i\)</span> is grams per year.</p>
 <p>The remaining energy, if any, is then available for growth and
 reproduction, at the rate <span class="math display">\[\begin{equation}
   \label{eq:Er}
   E_{r.i}(w) = \max(0, \alpha_i f_i(w)\, h_i(w) - {\tt metab}_i(w))
 \end{equation}\]</span></p>
+<details><summary>
+Parameter values
+</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">ks</span>, <span class="va">p</span>, <span class="va">k</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">kable</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left"></th>
+<th align="right">ks</th>
+<th align="right">p</th>
+<th align="right">k</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Small DF worms</td>
+<td align="right">2.550000</td>
+<td align="right">0.7</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">Small DF crustacea</td>
+<td align="right">0.240000</td>
+<td align="right">0.7</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">DF worms</td>
+<td align="right">0.970000</td>
+<td align="right">0.7</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">Endobenthic pred. crustacea</td>
+<td align="right">0.180000</td>
+<td align="right">0.7</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">Suprabenthic crustacea</td>
+<td align="right">0.410000</td>
+<td align="right">0.7</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">Endobethic pred. worms</td>
+<td align="right">2.330000</td>
+<td align="right">0.7</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">Large DF worms</td>
+<td align="right">5.450000</td>
+<td align="right">0.7</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">Starfish</td>
+<td align="right">1.810000</td>
+<td align="right">0.7</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">Nut clam</td>
+<td align="right">1.020000</td>
+<td align="right">0.7</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">Murex</td>
+<td align="right">5.100000</td>
+<td align="right">0.7</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">Angular crab</td>
+<td align="right">1.700000</td>
+<td align="right">0.7</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">Harbour crab</td>
+<td align="right">1.460000</td>
+<td align="right">0.7</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">Red snapping shrimp</td>
+<td align="right">3.050000</td>
+<td align="right">0.7</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">Spotted flounder</td>
+<td align="right">1.920000</td>
+<td align="right">0.7</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">Black goby</td>
+<td align="right">2.282506</td>
+<td align="right">0.7</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">Gurnards</td>
+<td align="right">1.620000</td>
+<td align="right">0.7</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">Red mullet</td>
+<td align="right">2.554247</td>
+<td align="right">0.7</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">Striped red mullet</td>
+<td align="right">2.828756</td>
+<td align="right">0.7</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">Hake</td>
+<td align="right">3.915779</td>
+<td align="right">0.7</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">Angler fish</td>
+<td align="right">3.695586</td>
+<td align="right">0.7</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">Poor cod</td>
+<td align="right">1.340000</td>
+<td align="right">0.7</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">Horse mackerel</td>
+<td align="right">4.250000</td>
+<td align="right">0.7</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">Shortfin squid</td>
+<td align="right">5.756755</td>
+<td align="right">0.7</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">Blue whiting</td>
+<td align="right">2.880000</td>
+<td align="right">0.7</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">Horned octopus</td>
+<td align="right">14.150000</td>
+<td align="right">0.7</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">Lesueurs’ goby</td>
+<td align="right">1.330000</td>
+<td align="right">0.7</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table></details>
 </div>
 <div class="section level4">
 <h4 id="sec:repro">Investment into reproduction<a class="anchor" aria-label="anchor" href="#sec:repro"></a>
@@ -219,6 +987,151 @@ where all available energy is used for reproduction. The expression is
 <p>with <span class="math inline">\(m-n = 0.3\)</span> and <span class="math inline">\(U=10\)</span> (which sets the steepness of the
 sigmoidal switch-on of reproduction at around the maturity weight <span class="math inline">\(w_{mat}\)</span>). See
 <code><a href="https://sizespectrum.org/mizer/reference/setReproduction.html" class="external-link">mizer::setReproduction()</a></code> for more detail.</p>
+<details><summary>
+Parameter values
+</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">w_mat</span>, <span class="va">w_inf</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">kable</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left"></th>
+<th align="right">w_mat</th>
+<th align="right">w_inf</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Small DF worms</td>
+<td align="right">0.0045010</td>
+<td align="right">0.128</td>
+</tr>
+<tr class="even">
+<td align="left">Small DF crustacea</td>
+<td align="right">0.0026898</td>
+<td align="right">0.045</td>
+</tr>
+<tr class="odd">
+<td align="left">DF worms</td>
+<td align="right">0.0239883</td>
+<td align="right">1.168</td>
+</tr>
+<tr class="even">
+<td align="left">Endobenthic pred. crustacea</td>
+<td align="right">0.0450000</td>
+<td align="right">0.248</td>
+</tr>
+<tr class="odd">
+<td align="left">Suprabenthic crustacea</td>
+<td align="right">0.0546917</td>
+<td align="right">0.507</td>
+</tr>
+<tr class="even">
+<td align="left">Endobethic pred. worms</td>
+<td align="right">0.0239883</td>
+<td align="right">1.168</td>
+</tr>
+<tr class="odd">
+<td align="left">Large DF worms</td>
+<td align="right">1.1676519</td>
+<td align="right">88.261</td>
+</tr>
+<tr class="even">
+<td align="left">Starfish</td>
+<td align="right">52.9883647</td>
+<td align="right">227.506</td>
+</tr>
+<tr class="odd">
+<td align="left">Nut clam</td>
+<td align="right">0.2960000</td>
+<td align="right">37.000</td>
+</tr>
+<tr class="even">
+<td align="left">Murex</td>
+<td align="right">6.9981465</td>
+<td align="right">22.135</td>
+</tr>
+<tr class="odd">
+<td align="left">Angular crab</td>
+<td align="right">9.1446431</td>
+<td align="right">37.464</td>
+</tr>
+<tr class="even">
+<td align="left">Harbour crab</td>
+<td align="right">11.6000000</td>
+<td align="right">30.000</td>
+</tr>
+<tr class="odd">
+<td align="left">Red snapping shrimp</td>
+<td align="right">0.5429000</td>
+<td align="right">112.129</td>
+</tr>
+<tr class="even">
+<td align="left">Spotted flounder</td>
+<td align="right">18.0000000</td>
+<td align="right">221.000</td>
+</tr>
+<tr class="odd">
+<td align="left">Black goby</td>
+<td align="right">2.6604088</td>
+<td align="right">63.654</td>
+</tr>
+<tr class="even">
+<td align="left">Gurnards</td>
+<td align="right">4.1455705</td>
+<td align="right">42.697</td>
+</tr>
+<tr class="odd">
+<td align="left">Red mullet</td>
+<td align="right">20.3724594</td>
+<td align="right">511.416</td>
+</tr>
+<tr class="even">
+<td align="left">Striped red mullet</td>
+<td align="right">39.4751739</td>
+<td align="right">693.734</td>
+</tr>
+<tr class="odd">
+<td align="left">Hake</td>
+<td align="right">246.8323157</td>
+<td align="right">10470.096</td>
+</tr>
+<tr class="even">
+<td align="left">Angler fish</td>
+<td align="right">556.5694708</td>
+<td align="right">12684.207</td>
+</tr>
+<tr class="odd">
+<td align="left">Poor cod</td>
+<td align="right">21.0863760</td>
+<td align="right">302.566</td>
+</tr>
+<tr class="even">
+<td align="left">Horse mackerel</td>
+<td align="right">88.5182881</td>
+<td align="right">2498.930</td>
+</tr>
+<tr class="odd">
+<td align="left">Shortfin squid</td>
+<td align="right">53.3995794</td>
+<td align="right">673.821</td>
+</tr>
+<tr class="even">
+<td align="left">Blue whiting</td>
+<td align="right">20.4857478</td>
+<td align="right">1269.288</td>
+</tr>
+<tr class="odd">
+<td align="left">Horned octopus</td>
+<td align="right">656.1481189</td>
+<td align="right">1824.429</td>
+</tr>
+<tr class="even">
+<td align="left">Lesueurs’ goby</td>
+<td align="right">0.2255431</td>
+<td align="right">3.407</td>
+</tr>
+</tbody>
+</table></details>
 </div>
 <div class="section level4">
 <h4 id="somatic-growth">Somatic growth<a class="anchor" aria-label="anchor" href="#somatic-growth"></a>
@@ -232,6 +1145,217 @@ individual of species <span class="math inline">\(i\)</span> and weight
 \end{equation}\]</span> When food supply does not cover the requirements
 of metabolism and activity, growth and reproduction stops, i.e. there is
 no negative growth.</p>
+<details><summary>
+Parameter values
+</summary><p>The values for the model parameters were chosen so that the resulting
+growth curves would be close to von Bertalanffy growth curves with the
+following parameters that were taken from the literature:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">k_vb</span>, <span class="va">t0</span>, <span class="va">a</span>, <span class="va">b</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">kable</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left"></th>
+<th align="right">k_vb</th>
+<th align="right">t0</th>
+<th align="right">a</th>
+<th align="right">b</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Small DF worms</td>
+<td align="right">1.4000000</td>
+<td align="right">-0.1000</td>
+<td align="right">6.2230000</td>
+<td align="right">2.414</td>
+</tr>
+<tr class="even">
+<td align="left">Small DF crustacea</td>
+<td align="right">0.4807962</td>
+<td align="right">-0.1000</td>
+<td align="right">0.3229647</td>
+<td align="right">2.975</td>
+</tr>
+<tr class="odd">
+<td align="left">DF worms</td>
+<td align="right">0.3696245</td>
+<td align="right">-0.1000</td>
+<td align="right">6.2230000</td>
+<td align="right">2.414</td>
+</tr>
+<tr class="even">
+<td align="left">Endobenthic pred. crustacea</td>
+<td align="right">0.3445000</td>
+<td align="right">-0.1000</td>
+<td align="right">0.5074599</td>
+<td align="right">3.214</td>
+</tr>
+<tr class="odd">
+<td align="left">Suprabenthic crustacea</td>
+<td align="right">0.4800000</td>
+<td align="right">-0.1000</td>
+<td align="right">0.5074599</td>
+<td align="right">3.214</td>
+</tr>
+<tr class="even">
+<td align="left">Endobethic pred. worms</td>
+<td align="right">0.6850000</td>
+<td align="right">-0.1000</td>
+<td align="right">6.2230000</td>
+<td align="right">2.414</td>
+</tr>
+<tr class="odd">
+<td align="left">Large DF worms</td>
+<td align="right">0.4800000</td>
+<td align="right">-0.1000</td>
+<td align="right">6.2230000</td>
+<td align="right">2.414</td>
+</tr>
+<tr class="even">
+<td align="left">Starfish</td>
+<td align="right">0.2886165</td>
+<td align="right">-0.1000</td>
+<td align="right">0.0951000</td>
+<td align="right">2.746</td>
+</tr>
+<tr class="odd">
+<td align="left">Nut clam</td>
+<td align="right">0.1691822</td>
+<td align="right">-0.1000</td>
+<td align="right">0.2960000</td>
+<td align="right">2.997</td>
+</tr>
+<tr class="even">
+<td align="left">Murex</td>
+<td align="right">1.2631990</td>
+<td align="right">-0.3100</td>
+<td align="right">0.1365000</td>
+<td align="right">2.840</td>
+</tr>
+<tr class="odd">
+<td align="left">Angular crab</td>
+<td align="right">0.5753350</td>
+<td align="right">-0.1000</td>
+<td align="right">0.8207000</td>
+<td align="right">3.478</td>
+</tr>
+<tr class="even">
+<td align="left">Harbour crab</td>
+<td align="right">0.5753350</td>
+<td align="right">-0.1000</td>
+<td align="right">0.3243000</td>
+<td align="right">3.258</td>
+</tr>
+<tr class="odd">
+<td align="left">Red snapping shrimp</td>
+<td align="right">0.4945090</td>
+<td align="right">0.0300</td>
+<td align="right">0.5429000</td>
+<td align="right">2.975</td>
+</tr>
+<tr class="even">
+<td align="left">Spotted flounder</td>
+<td align="right">0.2500000</td>
+<td align="right">-0.4000</td>
+<td align="right">0.0050000</td>
+<td align="right">3.100</td>
+</tr>
+<tr class="odd">
+<td align="left">Black goby</td>
+<td align="right">0.4489000</td>
+<td align="right">-0.1980</td>
+<td align="right">0.0150000</td>
+<td align="right">2.890</td>
+</tr>
+<tr class="even">
+<td align="left">Gurnards</td>
+<td align="right">0.5640000</td>
+<td align="right">-0.1700</td>
+<td align="right">0.0070000</td>
+<td align="right">3.070</td>
+</tr>
+<tr class="odd">
+<td align="left">Red mullet</td>
+<td align="right">0.3400000</td>
+<td align="right">-0.1000</td>
+<td align="right">0.0080000</td>
+<td align="right">3.125</td>
+</tr>
+<tr class="even">
+<td align="left">Striped red mullet</td>
+<td align="right">0.3400000</td>
+<td align="right">-0.1000</td>
+<td align="right">0.0062400</td>
+<td align="right">3.150</td>
+</tr>
+<tr class="odd">
+<td align="left">Hake</td>
+<td align="right">0.1780000</td>
+<td align="right">-0.0028</td>
+<td align="right">0.0066700</td>
+<td align="right">3.035</td>
+</tr>
+<tr class="even">
+<td align="left">Angler fish</td>
+<td align="right">0.1500000</td>
+<td align="right">-0.0500</td>
+<td align="right">0.0244000</td>
+<td align="right">2.846</td>
+</tr>
+<tr class="odd">
+<td align="left">Poor cod</td>
+<td align="right">0.2693150</td>
+<td align="right">-0.3500</td>
+<td align="right">0.0075000</td>
+<td align="right">3.060</td>
+</tr>
+<tr class="even">
+<td align="left">Horse mackerel</td>
+<td align="right">0.3626447</td>
+<td align="right">0.7000</td>
+<td align="right">0.0118250</td>
+<td align="right">2.886</td>
+</tr>
+<tr class="odd">
+<td align="left">Shortfin squid</td>
+<td align="right">0.8486615</td>
+<td align="right">0.0000</td>
+<td align="right">0.0188000</td>
+<td align="right">3.200</td>
+</tr>
+<tr class="even">
+<td align="left">Blue whiting</td>
+<td align="right">0.2793190</td>
+<td align="right">0.0000</td>
+<td align="right">0.0040000</td>
+<td align="right">3.154</td>
+</tr>
+<tr class="odd">
+<td align="left">Horned octopus</td>
+<td align="right">1.3927305</td>
+<td align="right">-0.1000</td>
+<td align="right">0.1330000</td>
+<td align="right">3.180</td>
+</tr>
+<tr class="even">
+<td align="left">Lesueurs’ goby</td>
+<td align="right">0.7000000</td>
+<td align="right">0.0000</td>
+<td align="right">0.0087000</td>
+<td align="right">2.963</td>
+</tr>
+</tbody>
+</table>
+<p>Here the parameters <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> are parameters for the allometric
+weight-length relationship <span class="math inline">\(w = a
+l^b\)</span> where <span class="math inline">\(w\)</span> is measured in
+grams and <span class="math inline">\(l\)</span> is measured in
+centimetres.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">plotGrowthCurves</span><span class="op">(</span><span class="va">params</span>, species_panel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="model_description_files/figure-html/unnamed-chunk-12-1.png" width="100%"></p>
+</details>
 </div>
 </div>
 <div class="section level3">
@@ -269,16 +1393,279 @@ independent of size. The value of <span class="math inline">\(z0_i\)</span> is e
 parameter or it is assumed to depend allometrically on the asymptotic
 size: <span class="math display">\[z0_i = z0_{pre}
 w_{\infty.i}^{1-n}.\]</span></p>
+<details><summary>
+Parameter values
+</summary><p>We use size-independent external mortalities.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">z0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">kable</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left"></th>
+<th align="right">z0</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Small DF worms</td>
+<td align="right">10.0</td>
+</tr>
+<tr class="even">
+<td align="left">Small DF crustacea</td>
+<td align="right">0.1</td>
+</tr>
+<tr class="odd">
+<td align="left">DF worms</td>
+<td align="right">5.0</td>
+</tr>
+<tr class="even">
+<td align="left">Endobenthic pred. crustacea</td>
+<td align="right">0.1</td>
+</tr>
+<tr class="odd">
+<td align="left">Suprabenthic crustacea</td>
+<td align="right">0.1</td>
+</tr>
+<tr class="even">
+<td align="left">Endobethic pred. worms</td>
+<td align="right">8.0</td>
+</tr>
+<tr class="odd">
+<td align="left">Large DF worms</td>
+<td align="right">10.0</td>
+</tr>
+<tr class="even">
+<td align="left">Starfish</td>
+<td align="right">2.0</td>
+</tr>
+<tr class="odd">
+<td align="left">Nut clam</td>
+<td align="right">2.0</td>
+</tr>
+<tr class="even">
+<td align="left">Murex</td>
+<td align="right">4.0</td>
+</tr>
+<tr class="odd">
+<td align="left">Angular crab</td>
+<td align="right">1.0</td>
+</tr>
+<tr class="even">
+<td align="left">Harbour crab</td>
+<td align="right">1.0</td>
+</tr>
+<tr class="odd">
+<td align="left">Red snapping shrimp</td>
+<td align="right">2.0</td>
+</tr>
+<tr class="even">
+<td align="left">Spotted flounder</td>
+<td align="right">0.1</td>
+</tr>
+<tr class="odd">
+<td align="left">Black goby</td>
+<td align="right">0.1</td>
+</tr>
+<tr class="even">
+<td align="left">Gurnards</td>
+<td align="right">0.1</td>
+</tr>
+<tr class="odd">
+<td align="left">Red mullet</td>
+<td align="right">0.1</td>
+</tr>
+<tr class="even">
+<td align="left">Striped red mullet</td>
+<td align="right">0.1</td>
+</tr>
+<tr class="odd">
+<td align="left">Hake</td>
+<td align="right">0.1</td>
+</tr>
+<tr class="even">
+<td align="left">Angler fish</td>
+<td align="right">0.1</td>
+</tr>
+<tr class="odd">
+<td align="left">Poor cod</td>
+<td align="right">0.1</td>
+</tr>
+<tr class="even">
+<td align="left">Horse mackerel</td>
+<td align="right">0.1</td>
+</tr>
+<tr class="odd">
+<td align="left">Shortfin squid</td>
+<td align="right">0.1</td>
+</tr>
+<tr class="even">
+<td align="left">Blue whiting</td>
+<td align="right">0.1</td>
+</tr>
+<tr class="odd">
+<td align="left">Horned octopus</td>
+<td align="right">2.0</td>
+</tr>
+<tr class="even">
+<td align="left">Lesueurs’ goby</td>
+<td align="right">0.1</td>
+</tr>
+</tbody>
+</table></details>
 </div>
 <div class="section level4">
 <h4 id="fishing-mortality">Fishing mortality<a class="anchor" aria-label="anchor" href="#fishing-mortality"></a>
 </h4>
-<p>Fishing mortality <span class="math inline">\(\mu_{f.i}(w)\)</span>
-is calculated with the function <code><a href="https://sizespectrum.org/mizer/reference/getFMort.html" class="external-link">mizer::getFMort()</a></code>. The
-fishing parameters for the model are set up with
-<code><a href="https://sizespectrum.org/mizer/reference/setFishing.html" class="external-link">mizer::setFishing()</a></code>, where you can find the details of how
-to set up gears with different selectivities and the capabilities of
-different species.</p>
+<p>The fishing mortality rate <span class="math inline">\(\mu_{f.i}(w)\)</span> is the product of the
+species- and size-dependent selectivity of the gear, the
+species-specific catchability and the fishing effort.</p>
+<p>We use two types of selectivity curves: knife-edge selectivity where
+the selectivity is zero until a certain knife-edge size where it jumps
+to 1 (fully selected) and sigmoidal selectivity where the transition
+from 0 to 1 is more gradual. The sigmoidal selectivity is described by
+the parameters <code>l50</code> which is the lenght in centimetres where
+50% of the individuals are selected and <code>l25</code>, the length at
+wich 25% are selected.</p>
+<p>We choose a normalisation where the current fishing effort is taken
+to be equal to 1 so that the <code>catchability</code> gives the fishing
+mortality rate at fully selected sizes.</p>
+<details><summary>
+Parameter values
+</summary><p>The species for which we use sigmoidal selectivity are:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">gear_params</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">sel_func</span> <span class="op">==</span> <span class="st">"sigmoid_length"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">species</span>, <span class="va">l50</span>, <span class="va">l25</span>, <span class="va">catchability</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">kable</span><span class="op">(</span>row.names <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>          col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Species"</span>, <span class="st">"l50 [cm]"</span>, <span class="st">"l25 [cm]"</span>, <span class="st">"catchability [1/year]"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left">Species</th>
+<th align="right">l50 [cm]</th>
+<th align="right">l25 [cm]</th>
+<th align="right">catchability [1/year]</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Spotted flounder</td>
+<td align="right">9.2000</td>
+<td align="right">8.3000</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="even">
+<td align="left">Gurnards</td>
+<td align="right">17.9000</td>
+<td align="right">16.7500</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="odd">
+<td align="left">Red mullet</td>
+<td align="right">12.1900</td>
+<td align="right">11.1150</td>
+<td align="right">1.47</td>
+</tr>
+<tr class="even">
+<td align="left">Striped red mullet</td>
+<td align="right">12.1900</td>
+<td align="right">11.1150</td>
+<td align="right">1.47</td>
+</tr>
+<tr class="odd">
+<td align="left">Hake</td>
+<td align="right">16.9000</td>
+<td align="right">15.8350</td>
+<td align="right">1.74</td>
+</tr>
+<tr class="even">
+<td align="left">Angler fish</td>
+<td align="right">15.0000</td>
+<td align="right">13.5000</td>
+<td align="right">1.13</td>
+</tr>
+<tr class="odd">
+<td align="left">Poor cod</td>
+<td align="right">8.7433</td>
+<td align="right">7.5983</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="even">
+<td align="left">Horse mackerel</td>
+<td align="right">15.8600</td>
+<td align="right">14.5167</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="odd">
+<td align="left">Shortfin squid</td>
+<td align="right">15.0000</td>
+<td align="right">14.0000</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="even">
+<td align="left">Blue whiting</td>
+<td align="right">19.2343</td>
+<td align="right">17.7881</td>
+<td align="right">1.72</td>
+</tr>
+<tr class="odd">
+<td align="left">Horned octopus</td>
+<td align="right">15.0000</td>
+<td align="right">14.0000</td>
+<td align="right">1.00</td>
+</tr>
+</tbody>
+</table>
+<p>We use knife-edge selectivity for the following species:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">gear_params</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">sel_func</span> <span class="op">==</span> <span class="st">"knife_edge"</span>,</span>
+<span>           <span class="va">catchability</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">species</span>, <span class="va">knife_edge_size</span>, <span class="va">catchability</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">kable</span><span class="op">(</span>row.names <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>          col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Species"</span>, <span class="st">"knife edge size [g]"</span>, <span class="st">"catchability [1/year]"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left">Species</th>
+<th align="right">knife edge size [g]</th>
+<th align="right">catchability [1/year]</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Starfish</td>
+<td align="right">53.0</td>
+<td align="right">0.03</td>
+</tr>
+<tr class="even">
+<td align="left">Murex</td>
+<td align="right">6.7</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="odd">
+<td align="left">Angular crab</td>
+<td align="right">9.1</td>
+<td align="right">0.50</td>
+</tr>
+<tr class="even">
+<td align="left">Harbour crab</td>
+<td align="right">11.6</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="odd">
+<td align="left">Black goby</td>
+<td align="right">6.0</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="even">
+<td align="left">Lesueurs’ goby</td>
+<td align="right">1.0</td>
+<td align="right">1.00</td>
+</tr>
+</tbody>
+</table>
+The remaining species experience no fishing mortality: Small DF worms,
+Small DF crustacea, DF worms, Endobenthic pred. crustacea, Suprabenthic
+crustacea, Endobethic pred. worms, Large DF worms, Nut clam, Red
+snapping shrimp.
+</details>
 </div>
 <div class="section level4">
 <h4 id="excess-gear-mortality">Excess gear mortality<a class="anchor" aria-label="anchor" href="#excess-gear-mortality"></a>
@@ -291,10 +1678,128 @@ assumed not to be size-specific. There is a species parameter called
 imposed by the fishing gear. The part of this gear mortality that is not
 fishing mortality (i.e., the part where the individuals are not taken up
 to the fishing vessel but left dead in the sea) we denote as the excess
-gear mortality. <span class="math display">\[\mu_{g.i} =
-\max{\left(\text{gear_mort}_i - \mu_{f.i}(w), 0\right)}
+gear mortality. <span class="math display">\[\mu_{g.i} = \max{\left({\tt
+gear\_mort}_i - \mu_{f.i}(w), 0\right)}
 \]</span></p>
 <p>This excess gear mortality contributes to the carrion production.</p>
+<details><summary>
+Parameter values
+</summary><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">gear_mort</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">kable</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left"></th>
+<th align="right">gear_mort</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Small DF worms</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="left">Small DF crustacea</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="left">DF worms</td>
+<td align="right">0.2</td>
+</tr>
+<tr class="even">
+<td align="left">Endobenthic pred. crustacea</td>
+<td align="right">0.2</td>
+</tr>
+<tr class="odd">
+<td align="left">Suprabenthic crustacea</td>
+<td align="right">0.2</td>
+</tr>
+<tr class="even">
+<td align="left">Endobethic pred. worms</td>
+<td align="right">0.2</td>
+</tr>
+<tr class="odd">
+<td align="left">Large DF worms</td>
+<td align="right">0.4</td>
+</tr>
+<tr class="even">
+<td align="left">Starfish</td>
+<td align="right">0.6</td>
+</tr>
+<tr class="odd">
+<td align="left">Nut clam</td>
+<td align="right">0.4</td>
+</tr>
+<tr class="even">
+<td align="left">Murex</td>
+<td align="right">0.6</td>
+</tr>
+<tr class="odd">
+<td align="left">Angular crab</td>
+<td align="right">0.6</td>
+</tr>
+<tr class="even">
+<td align="left">Harbour crab</td>
+<td align="right">0.6</td>
+</tr>
+<tr class="odd">
+<td align="left">Red snapping shrimp</td>
+<td align="right">0.2</td>
+</tr>
+<tr class="even">
+<td align="left">Spotted flounder</td>
+<td align="right">0.8</td>
+</tr>
+<tr class="odd">
+<td align="left">Black goby</td>
+<td align="right">1.0</td>
+</tr>
+<tr class="even">
+<td align="left">Gurnards</td>
+<td align="right">1.0</td>
+</tr>
+<tr class="odd">
+<td align="left">Red mullet</td>
+<td align="right">1.0</td>
+</tr>
+<tr class="even">
+<td align="left">Striped red mullet</td>
+<td align="right">1.0</td>
+</tr>
+<tr class="odd">
+<td align="left">Hake</td>
+<td align="right">1.0</td>
+</tr>
+<tr class="even">
+<td align="left">Angler fish</td>
+<td align="right">1.0</td>
+</tr>
+<tr class="odd">
+<td align="left">Poor cod</td>
+<td align="right">1.0</td>
+</tr>
+<tr class="even">
+<td align="left">Horse mackerel</td>
+<td align="right">1.0</td>
+</tr>
+<tr class="odd">
+<td align="left">Shortfin squid</td>
+<td align="right">1.0</td>
+</tr>
+<tr class="even">
+<td align="left">Blue whiting</td>
+<td align="right">1.0</td>
+</tr>
+<tr class="odd">
+<td align="left">Horned octopus</td>
+<td align="right">1.0</td>
+</tr>
+<tr class="even">
+<td align="left">Lesueurs’ goby</td>
+<td align="right">0.6</td>
+</tr>
+</tbody>
+</table></details>
 </div>
 </div>
 <div class="section level3">
@@ -306,17 +1811,19 @@ gear mortality. <span class="math display">\[\mu_{g.i} =
 <p>The total rate of investment into reproduction (grams/year) is found
 by integrating the contribution from all individuals of species <span class="math inline">\(i\)</span>, each of which invests a proportion
 <span class="math inline">\(\psi_i(w)\)</span> of their consumption.
-This total rate of energy investment can then be converted to a total
-rate of egg production <span class="math inline">\(R_{p.i}\)</span>
+This total rate of energy investment can then be converted to a rate of
+production of offspring <span class="math inline">\(R_{p.i}\)</span>
 (numbers per year): <span class="math display">\[\begin{equation}
   \label{eq:Rp}
-  R_{p.i} = \frac{\epsilon}{2 w_0} \int N_i(w)  E_{r.i}(w) \psi_i(w) \,
-dw,
+  R_{p.i} = \frac{\epsilon}{2 w_{min}} \int N_i(w)  E_{r.i}(w) \psi_i(w)
+\, dw,
 \end{equation}\]</span> Here the total rate of investment is multiplied
 by an efficiency factor <span class="math inline">\(\epsilon\)</span>
-and then dividing by the egg weight <span class="math inline">\(w_0\)</span> to convert the energy into number of
-eggs. The result is multiplied by a factor <span class="math inline">\(1/2\)</span> to take into account that only
+and then dividing by the offspring weight <span class="math inline">\(w_{min}\)</span> to convert the energy into number
+of offspring. The result is multiplied by a factor <span class="math inline">\(1/2\)</span> to take into account that only
 females reproduce.</p>
+<p>Note that for species that have a pelagic phase the size <span class="math inline">\(w_min\)</span> is the size at which the offspring
+join the benthic ecosystem.</p>
 </div>
 <div class="section level4">
 <h4 id="density-dependence-in-reproduction">Density-dependence in reproduction<a class="anchor" aria-label="anchor" href="#density-dependence-in-reproduction"></a>
@@ -350,6 +1857,223 @@ function:</p>
   R_i = R_{\max.i} \frac{R_{p.i}}{R_{p.i} + R_{\max.i}},
 \end{equation}\]</span> where <span class="math inline">\(R_{\max.i}\)</span> is the maximum reproduction
 rate of species <span class="math inline">\(i\)</span>.</p>
+<details><summary>
+Parameter values
+</summary><p>The following table also gives the steady-state reproduction level
+which is defined as the ratio between the actual reproduction rate <span class="math inline">\(R_i\)</span> and the maximal possible reproduction
+rate <span class="math inline">\(R_{\max.i}\)</span>.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="va">params</span><span class="op">@</span><span class="va">species_params</span></span>
+<span><span class="va">df</span><span class="op">$</span><span class="va">reproduction_level</span> <span class="op">&lt;-</span> <span class="fu">getReproductionLevel</span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span>
+<span><span class="va">df</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">w_min</span>, <span class="va">erepro</span>, <span class="va">R_max</span>, <span class="va">reproduction_level</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">kable</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="35%">
+<col width="12%">
+<col width="12%">
+<col width="16%">
+<col width="23%">
+</colgroup>
+<thead><tr class="header">
+<th align="left"></th>
+<th align="right">w_min</th>
+<th align="right">erepro</th>
+<th align="right">R_max</th>
+<th align="right">reproduction_level</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Small DF worms</td>
+<td align="right">0.0000003</td>
+<td align="right">0.0077702</td>
+<td align="right">4.070743e+04</td>
+<td align="right">0.2718577</td>
+</tr>
+<tr class="even">
+<td align="left">Small DF crustacea</td>
+<td align="right">0.0000003</td>
+<td align="right">0.0614886</td>
+<td align="right">1.471790e+03</td>
+<td align="right">0.1448097</td>
+</tr>
+<tr class="odd">
+<td align="left">DF worms</td>
+<td align="right">0.0000003</td>
+<td align="right">0.0389863</td>
+<td align="right">3.319273e+04</td>
+<td align="right">0.2415191</td>
+</tr>
+<tr class="even">
+<td align="left">Endobenthic pred. crustacea</td>
+<td align="right">0.0002950</td>
+<td align="right">0.1859972</td>
+<td align="right">1.198770e+01</td>
+<td align="right">0.3735000</td>
+</tr>
+<tr class="odd">
+<td align="left">Suprabenthic crustacea</td>
+<td align="right">0.0002950</td>
+<td align="right">0.0436060</td>
+<td align="right">3.922463e+00</td>
+<td align="right">0.3615648</td>
+</tr>
+<tr class="even">
+<td align="left">Endobethic pred. worms</td>
+<td align="right">0.0000003</td>
+<td align="right">0.0099443</td>
+<td align="right">2.966811e+04</td>
+<td align="right">0.3013401</td>
+</tr>
+<tr class="odd">
+<td align="left">Large DF worms</td>
+<td align="right">0.0000874</td>
+<td align="right">0.0610070</td>
+<td align="right">4.474451e+03</td>
+<td align="right">0.2961211</td>
+</tr>
+<tr class="even">
+<td align="left">Starfish</td>
+<td align="right">0.0001501</td>
+<td align="right">0.0045780</td>
+<td align="right">1.832146e+00</td>
+<td align="right">0.3497800</td>
+</tr>
+<tr class="odd">
+<td align="left">Nut clam</td>
+<td align="right">0.0000003</td>
+<td align="right">0.0001344</td>
+<td align="right">1.786876e+00</td>
+<td align="right">0.3039962</td>
+</tr>
+<tr class="even">
+<td align="left">Murex</td>
+<td align="right">0.0001718</td>
+<td align="right">0.0007322</td>
+<td align="right">1.636446e+00</td>
+<td align="right">0.3064586</td>
+</tr>
+<tr class="odd">
+<td align="left">Angular crab</td>
+<td align="right">0.0002577</td>
+<td align="right">0.0008629</td>
+<td align="right">3.954989e-01</td>
+<td align="right">0.3218675</td>
+</tr>
+<tr class="even">
+<td align="left">Harbour crab</td>
+<td align="right">0.0001718</td>
+<td align="right">0.0009042</td>
+<td align="right">3.703473e-01</td>
+<td align="right">0.3555259</td>
+</tr>
+<tr class="odd">
+<td align="left">Red snapping shrimp</td>
+<td align="right">0.0005065</td>
+<td align="right">0.0008547</td>
+<td align="right">4.342393e-01</td>
+<td align="right">0.2818929</td>
+</tr>
+<tr class="even">
+<td align="left">Spotted flounder</td>
+<td align="right">0.0009953</td>
+<td align="right">0.0025490</td>
+<td align="right">1.950497e-01</td>
+<td align="right">0.2650858</td>
+</tr>
+<tr class="odd">
+<td align="left">Black goby</td>
+<td align="right">0.0382245</td>
+<td align="right">0.0549314</td>
+<td align="right">8.482820e-02</td>
+<td align="right">0.2347802</td>
+</tr>
+<tr class="even">
+<td align="left">Gurnards</td>
+<td align="right">0.1934237</td>
+<td align="right">0.0853649</td>
+<td align="right">9.931400e-02</td>
+<td align="right">0.1874865</td>
+</tr>
+<tr class="odd">
+<td align="left">Red mullet</td>
+<td align="right">0.2214065</td>
+<td align="right">0.1450590</td>
+<td align="right">1.239700e-03</td>
+<td align="right">0.2051113</td>
+</tr>
+<tr class="even">
+<td align="left">Striped red mullet</td>
+<td align="right">0.1934237</td>
+<td align="right">0.2277776</td>
+<td align="right">2.589000e-04</td>
+<td align="right">0.2282317</td>
+</tr>
+<tr class="odd">
+<td align="left">Hake</td>
+<td align="right">0.2901027</td>
+<td align="right">0.2482888</td>
+<td align="right">2.723900e-03</td>
+<td align="right">0.2442945</td>
+</tr>
+<tr class="even">
+<td align="left">Angler fish</td>
+<td align="right">0.4351047</td>
+<td align="right">0.0660374</td>
+<td align="right">5.104000e-04</td>
+<td align="right">0.1829045</td>
+</tr>
+<tr class="odd">
+<td align="left">Poor cod</td>
+<td align="right">0.1934237</td>
+<td align="right">0.5709465</td>
+<td align="right">1.963920e-02</td>
+<td align="right">0.3053664</td>
+</tr>
+<tr class="even">
+<td align="left">Horse mackerel</td>
+<td align="right">0.2534376</td>
+<td align="right">0.0176291</td>
+<td align="right">1.117700e-03</td>
+<td align="right">0.2521006</td>
+</tr>
+<tr class="odd">
+<td align="left">Shortfin squid</td>
+<td align="right">0.5701055</td>
+<td align="right">0.0075474</td>
+<td align="right">2.354000e-04</td>
+<td align="right">0.3066469</td>
+</tr>
+<tr class="even">
+<td align="left">Blue whiting</td>
+<td align="right">0.1126645</td>
+<td align="right">0.0516547</td>
+<td align="right">2.479000e-04</td>
+<td align="right">0.2881831</td>
+</tr>
+<tr class="odd">
+<td align="left">Horned octopus</td>
+<td align="right">1.1203627</td>
+<td align="right">0.0558640</td>
+<td align="right">2.602000e-04</td>
+<td align="right">0.2969748</td>
+</tr>
+<tr class="even">
+<td align="left">Lesueurs’ goby</td>
+<td align="right">0.0000667</td>
+<td align="right">0.0004233</td>
+<td align="right">3.206650e-02</td>
+<td align="right">0.3218925</td>
+</tr>
+</tbody>
+</table>
+<p>The reproduction parameters <code>erepro</code> and
+<code>R_max</code> are not directly observable. The values were instead
+chosen so as to give reasonable values for the reproduction level and to
+produce steady-state abundances of the species that are in line with
+observations.</p>
+</details>
 </div>
 </div>
 </div>
@@ -366,47 +2090,14 @@ describe its total biomass <span class="math inline">\(B_C\)</span>.</p>
 difference between the rate at which carrion biomass is produced and the
 rate at which it is consumed, so <span class="math display">\[\frac{dB_C}{dt}=p_C - c_C\,B_C.\]</span></p>
 <p>We will discuss the production rate <span class="math inline">\(p_C\)</span> and the consumption rate <span class="math inline">\(c_CB_C\)</span> below.</p>
-<div class="section level3">
-<h3 id="carrion-production">Carrion production<a class="anchor" aria-label="anchor" href="#carrion-production"></a>
-</h3>
-<p>The rate <span class="math inline">\(p_C\)</span> at which carrion
-biomass is produced by the ecosystem has contributions from three
-sources, <span class="math display">\[p_C = p_{C.ext} + p_{C.g} +
-p_{C.d},\]</span> each of which we will now discuss.</p>
-<div class="section level4">
-<h4 id="external-mortality-1">External mortality<a class="anchor" aria-label="anchor" href="#external-mortality-1"></a>
-</h4>
-<p><span class="math inline">\(p_{C.ext}\)</span> comes from animals
-that have died by natural causes other than predation (“external”): A
-mizer model allows for external mortality to describe all deaths by
-natural causes that are not due to predation from the modelled species.
-So this external mortality would include deaths that lead to carrion,
-but also deaths due to predation by species that are not explicitly
-modelled, for example mammals or sea birds. Thus only a proportion of
-the external mortality produces carrion. This is given by a carrion
-parameter <code>ext_prop</code>. So <span class="math display">\[p_{C.ext} =
-\text{ext_prop}\,\sum_i\int\mu_{ext.i}(w)N_i(w)w\,dw.\]</span></p>
-</div>
-<div class="section level4">
-<h4 id="excess-gear-mortality-1">Excess gear mortality<a class="anchor" aria-label="anchor" href="#excess-gear-mortality-1"></a>
-</h4>
-<p><span class="math inline">\(p_{C.g}\)</span> comes from animals
-killed by the fishing gear that are not taken up to the fishing vessel
-but left dead in the sea. Thus <span class="math display">\[p_{C.g} =
-\sum_i\int\mu_{g.i}N_i(w)w\,dw,\]</span> where the excess gear mortality
-rate <span class="math inline">\(\mu_{g.i}\)</span> was discussed <a href="#excess-gear-mortality">above</a>.</p>
-</div>
-<div class="section level4">
-<h4 id="discards">Discards<a class="anchor" aria-label="anchor" href="#discards"></a>
-</h4>
-<p><span class="math inline">\(p_{C.d}\)</span> comes from discarding of
-fished animals (“discards”): There is a species parameter <span class="math inline">\(d_i\)</span>, called <code>discard</code>, that
-gives the proportion of the catch biomass that is discarded. This
-biomass is added to the carrion biomass. Thus <span class="math display">\[p_{C.d} =
-\sum_i\,d_i\int\mu_{f.i}(w)N_i(w)w\,dw.\]</span></p>
-</div>
-</div>
-<div class="section level3">
+<details><summary>
+Parameter values
+</summary>
+In the steady state the total carrion biomass is <span class="math inline">\(B_C = 0.04482\)</span> grams. This was chosen so
+that under the given consumption, the expected lifetime for the carrion
+biomass, i.e., the inverse of the mass-specific carrion consumption
+rate, is equal to 1 day.
+</details><div class="section level3">
 <h3 id="carrion-consumption">Carrion consumption<a class="anchor" aria-label="anchor" href="#carrion-consumption"></a>
 </h3>
 <p>Carrion is consumed by scavengers, but also decomposed by bacteria
@@ -429,13 +2120,233 @@ on <a href="#consumption">consumption</a>. This gives the mass-specific
 carrion consumption rate <span class="math display">\[c_C =
 \sum_i\int\rho_i\, w^n N_i(w) (1-f_i(w))\,dw + d_C\]</span> where <span class="math inline">\(d_C\)</span> is the mass-specific rate of
 decomposition.</p>
+<details><summary>
+Parameter values
+</summary><p>The value of the mass-specific rate of decomposition is <span class="math inline">\(d_C=48.6168197\)</span> per year.</p>
+<p>The parameters <span class="math inline">\(\rho_i\)</span> have units
+of <span class="math inline">\(g^{-n}\)</span> per year. They are
+non-zero only for species that do at least some scavenging:</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">rho_carrion</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">rename</span><span class="op">(</span>rho <span class="op">=</span> <span class="va">rho_carrion</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">rho</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">kable</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left"></th>
+<th align="right">rho</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Endobenthic pred. crustacea</td>
+<td align="right">44.57038</td>
+</tr>
+<tr class="even">
+<td align="left">Suprabenthic crustacea</td>
+<td align="right">127.52082</td>
+</tr>
+<tr class="odd">
+<td align="left">Endobethic pred. worms</td>
+<td align="right">297.13589</td>
+</tr>
+<tr class="even">
+<td align="left">Starfish</td>
+<td align="right">433.32318</td>
+</tr>
+<tr class="odd">
+<td align="left">Murex</td>
+<td align="right">817.12370</td>
+</tr>
+<tr class="even">
+<td align="left">Angular crab</td>
+<td align="right">290.94556</td>
+</tr>
+<tr class="odd">
+<td align="left">Harbour crab</td>
+<td align="right">445.70384</td>
+</tr>
+<tr class="even">
+<td align="left">Red snapping shrimp</td>
+<td align="right">440.75157</td>
+</tr>
+<tr class="odd">
+<td align="left">Spotted flounder</td>
+<td align="right">319.42108</td>
+</tr>
+</tbody>
+</table></details>
+</div>
+<div class="section level3">
+<h3 id="carrion-production">Carrion production<a class="anchor" aria-label="anchor" href="#carrion-production"></a>
+</h3>
+<p>The rate <span class="math inline">\(p_C\)</span> at which carrion
+biomass is produced by the ecosystem has contributions from three
+sources, <span class="math display">\[p_C = p_{C.ext} + p_{C.g} +
+p_{C.d},\]</span> each of which we will now discuss.</p>
+<div class="section level4">
+<h4 id="external-mortality-1">External mortality<a class="anchor" aria-label="anchor" href="#external-mortality-1"></a>
+</h4>
+<p><span class="math inline">\(p_{C.ext}\)</span> comes from animals
+that have died by natural causes other than predation (“external”): A
+mizer model allows for external mortality to describe all deaths by
+natural causes that are not due to predation from the modelled species.
+So this external mortality would include deaths that lead to carrion,
+but also deaths due to predation by species that are not explicitly
+modelled, for example mammals or sea birds. Thus only a proportion of
+the external mortality produces carrion. This is given by a carrion
+parameter <code>ext_prop</code>. So <span class="math display">\[p_{C.ext} = {\tt
+ext\_prop}\,\sum_i\int\mu_{ext.i}(w)N_i(w)w\,dw.\]</span></p>
+<details><summary>
+Parameter values
+</summary>
+The value of <code>ext_prop</code> is 0.173718.
+</details>
+</div>
+<div class="section level4">
+<h4 id="excess-gear-mortality-1">Excess gear mortality<a class="anchor" aria-label="anchor" href="#excess-gear-mortality-1"></a>
+</h4>
+<p><span class="math inline">\(p_{C.g}\)</span> comes from animals
+killed by the fishing gear that are not taken up to the fishing vessel
+but left dead in the sea. Thus <span class="math display">\[p_{C.g} =
+\sum_i\int\mu_{g.i}N_i(w)w\,dw,\]</span> where the excess gear mortality
+rate <span class="math inline">\(\mu_{g.i}\)</span> was discussed <a href="#excess-gear-mortality">above</a>.</p>
+</div>
+<div class="section level4">
+<h4 id="discards">Discards<a class="anchor" aria-label="anchor" href="#discards"></a>
+</h4>
+<p><span class="math inline">\(p_{C.d}\)</span> comes from discarding of
+fished animals (“discards”): There is a species parameter <span class="math inline">\(d_i\)</span>, called <code>discard</code>, that
+gives the proportion of the catch biomass that is discarded. This
+biomass is added to the carrion biomass. Thus <span class="math display">\[p_{C.d} =
+\sum_i\,d_i\int\mu_{f.i}(w)N_i(w)w\,dw.\]</span></p>
+<details><summary>
+Parameter values
+</summary><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">discard</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">kable</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left"></th>
+<th align="right">discard</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Small DF worms</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="even">
+<td align="left">Small DF crustacea</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="odd">
+<td align="left">DF worms</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="even">
+<td align="left">Endobenthic pred. crustacea</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="odd">
+<td align="left">Suprabenthic crustacea</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="even">
+<td align="left">Endobethic pred. worms</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="odd">
+<td align="left">Large DF worms</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="even">
+<td align="left">Starfish</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="odd">
+<td align="left">Nut clam</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="even">
+<td align="left">Murex</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="odd">
+<td align="left">Angular crab</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="even">
+<td align="left">Harbour crab</td>
+<td align="right">0.50</td>
+</tr>
+<tr class="odd">
+<td align="left">Red snapping shrimp</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="even">
+<td align="left">Spotted flounder</td>
+<td align="right">0.25</td>
+</tr>
+<tr class="odd">
+<td align="left">Black goby</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="even">
+<td align="left">Gurnards</td>
+<td align="right">0.05</td>
+</tr>
+<tr class="odd">
+<td align="left">Red mullet</td>
+<td align="right">0.05</td>
+</tr>
+<tr class="even">
+<td align="left">Striped red mullet</td>
+<td align="right">0.02</td>
+</tr>
+<tr class="odd">
+<td align="left">Hake</td>
+<td align="right">0.10</td>
+</tr>
+<tr class="even">
+<td align="left">Angler fish</td>
+<td align="right">0.08</td>
+</tr>
+<tr class="odd">
+<td align="left">Poor cod</td>
+<td align="right">0.15</td>
+</tr>
+<tr class="even">
+<td align="left">Horse mackerel</td>
+<td align="right">0.15</td>
+</tr>
+<tr class="odd">
+<td align="left">Shortfin squid</td>
+<td align="right">0.15</td>
+</tr>
+<tr class="even">
+<td align="left">Blue whiting</td>
+<td align="right">0.25</td>
+</tr>
+<tr class="odd">
+<td align="left">Horned octopus</td>
+<td align="right">0.10</td>
+</tr>
+<tr class="even">
+<td align="left">Lesueurs’ goby</td>
+<td align="right">1.00</td>
+</tr>
+</tbody>
+</table></details>
+</div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="detritus">Detritus<a class="anchor" aria-label="anchor" href="#detritus"></a>
 </h2>
 <p>Detritus is at the base of the benthic foodweb, providing food for
-detritivores.</p>
+detritivores. Also small individuals of other species will ingest
+detritus particles.</p>
 <p>We describe the detritus as a size-spectrum <span class="math inline">\(N_D(w)\)</span> , which is the <em>density</em> of
 detritus particles of size <span class="math inline">\(w\)</span>, so
 that <span class="math inline">\(\int_w^{w+dw}N_D(w)dw\)</span> is the
@@ -447,12 +2358,55 @@ w\leq w_{cutoff}\\
 \]</span></p>
 <p>The exponent <span class="math inline">\(\lambda\)</span> is kept
 fixed and only the coefficient of the power law changes with time to
-reflect the change in the total detritus biomass <span class="math display">\[B_D = \int_{w_{min}}^{w_{cutoff}} N_D(w)\, w
+reflect the change in the total detritus biomass <span class="math display">\[B_D = \int_{w_{0}}^{w_{cutoff}} N_D(w)\, w
 \,dw.\]</span></p>
 <p>The rate of change in the total detritus biomass is simply the
 difference between the rate at which detritus biomass is produced and
 the rate at which it is consumed, so <span class="math display">\[\frac{dB_D}{dt}=p_D - c_D\,B_D.\]</span></p>
 <p>We will discuss the production rate <span class="math inline">\(p_D\)</span> and the consumption rate <span class="math inline">\(c_DB_D\)</span> below.</p>
+<details><summary>
+Parameter values
+</summary>
+The detritus spectrum stretches from <span class="math inline">\(w_0=6\times 10^{-12}\)</span> to <span class="math inline">\(w_{cutoff}=0.001\)</span> grams. The power law
+exponent is <span class="math inline">\(\lambda=2.05\)</span>. In the
+steady state the total detritus biomass is <span class="math inline">\(B_D = 235.2\)</span> grams. This was chosen so
+that under the given consumption, the expected lifetime for the detritus
+biomass, i.e., the inverse of the mass-specific detritus consumption
+rate, is 1 year.
+</details><div class="section level3">
+<h3 id="detritus-consumption">Detritus consumption<a class="anchor" aria-label="anchor" href="#detritus-consumption"></a>
+</h3>
+<p>The rate at which detritus biomass is consumed is assumed to be
+proportional to the available detritus biomass. The proportionality
+factor <span class="math inline">\(c_D\)</span>, which we refer to as
+the “mass-specific consumption rate”, depends on the abundance of
+consumers.</p>
+<p>The consumption of detritus is modelled similarly to the consumption
+of fish. First we introduce the rate at which all predators of species
+<span class="math inline">\(j\)</span> consume detritus particles of
+size <span class="math inline">\(w\)</span> <span class="math display">\[\mu_{D}(w_p) = \sum_j  \theta_{jD}\int
+\phi_j(w,w_p) (1-f_j(w))
+  \gamma_j(w) N_j(w) \, dw.
+\]</span> This is analogous to the <a href="#predation-mortality">predation mortality</a> discussed earlier,
+but with <span class="math inline">\(\theta_{jD}\)</span> determining
+the strength at which species <span class="math inline">\(j\)</span>
+feeds on detritus. To get the total rate of detritus consumption we
+multiply by the weight of the detritus particle and integrate over all
+detritus particles: <span class="math display">\[c_DB_D=\int_{w_0}^{w_{cutoff}}\mu_D(w_p)\,w_p\,
+N_D(w_p)\,dw_p.
+\]</span> Because we keep the size-distribution of the detritus fixed,
+this consumption rate is proportional to the total detritus biomass
+<span class="math inline">\(B_D\)</span>, as we have already indicated
+by our notation.</p>
+<details><summary>
+Parameter values
+</summary>
+We use the same value of <span class="math inline">\(\theta_{jD}=0.00905\)</span> for all predator
+species. Note that this does not mean that all species are detritivores.
+For most species the predation kernel will be such that detritus will
+only be selected by the very small individuals.
+</details>
+</div>
 <div class="section level3">
 <h3 id="detritus-production">Detritus production<a class="anchor" aria-label="anchor" href="#detritus-production"></a>
 </h3>
@@ -486,32 +2440,11 @@ total carrion biomass. So <span class="math display">\[p_{D.c}=d_CB_C.\]</span><
 detritus enters the system from external sources. This will mostly be
 detritus sinking in from the pelagic zone. This rate is a model
 parameter independent of any other model component.</p>
+<details><summary>
+Parameter values
+</summary><p>The value of the external detritus production rate is <span class="math inline">\(p_{d.ext}=129.8022286\)</span> grams per year.</p>
+</details>
 </div>
-</div>
-<div class="section level3">
-<h3 id="detritus-consumption">Detritus consumption<a class="anchor" aria-label="anchor" href="#detritus-consumption"></a>
-</h3>
-<p>The rate at which detritus biomass is consumed is assumed to be
-proportional to the available detritus biomass. The proportionality
-factor <span class="math inline">\(c_D\)</span>, which we refer to as
-the “mass-specific consumption rate”, depends on the abundance of
-consumers.</p>
-<p>The consumption of detritus is modelled similarly to the consumption
-of fish. First we introduce the rate at which all predators of species
-<span class="math inline">\(j\)</span> consume detritus particles of
-size <span class="math inline">\(w\)</span> <span class="math display">\[\mu_{D}(w_p) = \sum_j  \theta_{jD}\int
-\phi_j(w,w_p) (1-f_j(w))
-  \gamma_j(w) N_j(w) \, dw.
-\]</span> This is analogous to the <a href="#predation-mortality">predation mortality</a> discussed earlier,
-but with <span class="math inline">\(\theta_{jD}\)</span> determining
-the strength at which species <span class="math inline">\(j\)</span>
-feeds on detritus. To get the total rate of detritus consumption we
-multiply by the weight of the detritus particle and integrate over all
-detritus particles: <span class="math display">\[c_DB_D=\int\mu_D(w_p)\,w_p\, N_D(w_p)\,dw_p.
-\]</span> Because we keep the size-distribution of the detritus fixed,
-this consumption rate is proportional to the total detritus biomass
-<span class="math inline">\(B_D\)</span>, as we have already indicated
-by our notation.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

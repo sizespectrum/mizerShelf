@@ -37,6 +37,7 @@ the pelagic zone ("external").
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/model_description.html">Model Description</a>
+    <a class="dropdown-item" href="../articles/model_exploration.html">Model Exploration</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -81,6 +82,10 @@ ecosystem produce detritus:</p><ol><li><p>biomass not assimilated by predators (
 <dd><p>A matrix of current species abundances (species x size)</p></dd>
 
 
+<dt>n_other</dt>
+<dd><p>Other dynamic components. Only <code>n_other$carrion</code> is used.</p></dd>
+
+
 <dt>rates</dt>
 <dd><p>A list of rates as returned by <code>getRates()</code></p></dd>
 
@@ -90,7 +95,7 @@ ecosystem produce detritus:</p><ol><li><p>biomass not assimilated by predators (
     
 
 <p>A vector with named entries "external",
-"feces" and "carrion", each given the rate at which carrion biomass
+"feces" and "carrion", giving the rates at which carrion biomass
 is produced by these sources in grams per year.</p>
     </div>
     <div class="section level2">
