@@ -391,7 +391,7 @@ mortality rate of an individual imposed by the fishing gear. The part of
 this gear mortality that is not fishing mortality (i.e., the part where the
 individuals are not taken up to the fishing vessel but left dead in the sea)
 we denote as the excess gear mortality.
-$$\mu_{g.i} = \max{\left(\rm{gear_mort}_i - \mu_{f.i}(w), 0\right)}
+$$\mu_{g.i} = \max{\left(\rm{gear\_mort}_i - \mu_{f.i}(w), 0\right)}
 $$
 
 This excess gear mortality contributes to the carrion production.
@@ -412,16 +412,19 @@ params@species_params |>
 The total rate of investment into reproduction (grams/year) is
 found by integrating the contribution from all individuals of species $i$,
 each of which invests a proportion $\psi_i(w)$ of their consumption. This
-total rate of energy investment can then be converted to a total rate of
-egg production $R_{p.i}$ (numbers per year):
+total rate of energy investment can then be converted to a rate of
+production of offspring $R_{p.i}$ (numbers per year):
 \begin{equation}
   \label{eq:Rp}
-  R_{p.i} = \frac{\epsilon}{2 w_0} \int N_i(w)  E_{r.i}(w) \psi_i(w) \, dw,
+  R_{p.i} = \frac{\epsilon}{2 w_{min}} \int N_i(w)  E_{r.i}(w) \psi_i(w) \, dw,
 \end{equation}
 Here the total rate of investment is multiplied by an efficiency factor $\epsilon$ 
-and then dividing by the egg weight $w_0$ to convert the energy into number of eggs.
+and then dividing by the offspring weight $w_{min}$ to convert the energy into number of offspring.
 The result is multiplied by a factor $1/2$ to take into account that only 
 females reproduce.
+
+Note that for species that have a pelagic phase the size $w_min$ is the size at
+which the offspring join the benthic ecosystem.
 
 
 
@@ -494,7 +497,7 @@ $p_{C.ext}$ comes from animals that have died by natural causes other than preda
   are not explicitly modelled, for example mammals or sea birds. Thus only
   a proportion of the external mortality produces carrion.
   This is given by a carrion parameter `ext_prop`. So
-  $$p_{C.ext} = \rm{ext_prop}\,\sum_i\int\mu_{ext.i}(w)N_i(w)w\,dw.$$
+  $$p_{C.ext} = \rm{ext\_prop}\,\sum_i\int\mu_{ext.i}(w)N_i(w)w\,dw.$$
 
 <details>
 <summary>Parameter values</summary>
