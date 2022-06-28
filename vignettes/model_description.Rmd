@@ -17,10 +17,14 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-library(mizerNWMed)
 library(ggplot2)
 library(dplyr)
 library(knitr)
+library(mizerExperimental)
+source("../R/components.R")
+source("../R/plots.R")
+source("../R/rates.R")
+load("../data/params.rda")
 ```
 
 In this document we present the details of the model. The model consists of three
