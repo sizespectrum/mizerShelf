@@ -1,13 +1,13 @@
 ---
 title: "Model Description"
 output:
-  pdf_document:
-    toc: yes
-    toc_depth: '4'
   html_document:
     toc: yes
     toc_depth: 4
     code_folding: hide
+  pdf_document:
+    toc: yes
+    toc_depth: '4'
 ---
 
 ```{r, include = FALSE}
@@ -53,17 +53,17 @@ observed. The following table gives the observed biomass per square meter
 in grams and the cutoff size in grams. Individuals smaller than the
 cutoff size were not observable by the method used.
 ```{r}
-params@species_params |>
-    filter(!is.na(biomass_observed)) |>
-    select(biomass_observed, biomass_cutoff) |>
+params@species_params %>%
+    filter(!is.na(biomass_observed)) %>%
+    select(biomass_observed, biomass_cutoff) %>%
     kable(col.names = c("biomass", "cutoff size"))
 ```
 For the other species the total number above a certain cutoff size has been
 observed instead :
 ```{r}
-params@species_params |>
-    filter(!is.na(number_observed)) |>
-    select(number_observed, number_cutoff) |>
+params@species_params %>%
+    filter(!is.na(number_observed)) %>%
+    select(number_observed, number_cutoff) %>%
     kable(col.names = c("numbers", "cutoff size"))
 ```
 
@@ -202,22 +202,22 @@ ggplot(melt(params@interaction),
 
 For the species that use a lognormal predation kernel, the parameters are
 ```{r results='asis'}
-params@species_params |>
-    filter(pred_kernel_type == "lognormal") |>
-    select(beta, sigma, gamma) |>
+params@species_params %>%
+    filter(pred_kernel_type == "lognormal") %>%
+    select(beta, sigma, gamma) %>%
     kable()
 ```
 
 For the species that use a truncated power law predation kernel, the parameters are
 ```{r results='asis'}
-params@species_params |>
-    filter(pred_kernel_type == "power_law") |>
-    select(starts_with("kernel"), gamma) |>
+params@species_params %>%
+    filter(pred_kernel_type == "power_law") %>%
+    select(starts_with("kernel"), gamma) %>%
     rename(s = kernel_exp,
            l_l = kernel_l_l,
            u_l = kernel_u_l,
            l_r = kernel_l_r,
-           u_r = kernel_u_r) |>
+           u_r = kernel_u_r) %>%
     kable()
 ```
 
@@ -256,8 +256,8 @@ The values for the coefficients $h_i$ in the maximum consumption rates
 were chosen so that the feeding level that fish experience has a reasonable
 value with fish being neiter too starved nor totally satiated.
 ```{r}
-params@species_params |>
-    select(h, alpha, n) |>
+params@species_params %>%
+    select(h, alpha, n) %>%
     kable()
 ```
 
@@ -287,8 +287,8 @@ is then available for growth and reproduction, at the rate
 #### Parameter values
 Skip to [Investment into reproduction]
 ```{r}
-params@species_params |>
-    select(ks, p, k) |>
+params@species_params %>%
+    select(ks, p, k) %>%
     kable()
 ```
 
@@ -312,8 +312,8 @@ See
 Skip to [Somatic growth]
 
 ```{r}
-params@species_params |>
-    select(w_mat, w_inf) |>
+params@species_params %>%
+    select(w_mat, w_inf) %>%
     kable()
 ```
 
@@ -337,8 +337,8 @@ growth curves would be close to von Bertalanffy growth curves with the
 following parameters that were taken from the literature:
 
 ```{r}
-params@species_params |>
-    select(k_vb, t0, a, b) |>
+params@species_params %>%
+    select(k_vb, t0, a, b) %>%
     kable()
 ```
 Here the parameters $a$ and $b$ are parameters for the allometric weight-length
@@ -389,8 +389,8 @@ Skip to [Fishing mortality]
 
 We use size-independent external mortalities.
 ```{r}
-params@species_params |>
-    select(z0) |>
+params@species_params %>%
+    select(z0) %>%
     kable()
 ```
 
@@ -413,18 +413,18 @@ Skip to [Excess gear mortality]
 
 The species for which we use sigmoidal selectivity are:
 ```{r}
-params@gear_params |>
-    filter(sel_func == "sigmoid_length") |>
-    select(species, l50, l25, catchability) |>
+params@gear_params %>%
+    filter(sel_func == "sigmoid_length") %>%
+    select(species, l50, l25, catchability) %>%
     kable(row.names = FALSE,
           col.names = c("Species", "l50 [cm]", "l25 [cm]", "catchability [1/year]"))
 ```
 We use knife-edge selectivity for the following species:
 ```{r}
-params@gear_params |>
+params@gear_params %>%
     filter(sel_func == "knife_edge",
-           catchability > 0) |>
-    select(species, knife_edge_size, catchability) |>
+           catchability > 0) %>%
+    select(species, knife_edge_size, catchability) %>%
     kable(row.names = FALSE,
           col.names = c("Species", "knife edge size [g]", "catchability [1/year]"))
 ```
@@ -451,8 +451,8 @@ This excess gear mortality contributes to the carrion production.
 Skip to [Reproduction]
 
 ```{r}
-params@species_params |>
-    select(gear_mort) |>
+params@species_params %>%
+    select(gear_mort) %>%
     kable()
 ```
 
@@ -518,8 +518,8 @@ possible reproduction rate $R_{\max.i}$.
 ```{r}
 df <- params@species_params
 df$reproduction_level <- getReproductionLevel(params)
-df |>
-    select(w_min, erepro, R_max, reproduction_level) |>
+df %>%
+    select(w_min, erepro, R_max, reproduction_level) %>%
     kable()
 ```
 
@@ -576,10 +576,10 @@ The parameters
 $\rho_i$ have units of $g^{-n}$ per year. They are non-zero only for
 species that do at least some scavenging:
 ```{r}
-params@species_params |>
-    select(rho_carrion) |>
-    rename(rho = rho_carrion) |>
-    filter(rho > 0) |>
+params@species_params %>%
+    select(rho_carrion) %>%
+    rename(rho = rho_carrion) %>%
+    filter(rho > 0) %>%
     kable()
 ```
 
@@ -624,8 +624,8 @@ $p_{C.d}$ comes from discarding of fished animals ("discards"):
 Skip to [Detritus]
 
 ```{r}
-params@species_params |>
-    select(discard) |>
+params@species_params %>%
+    select(discard) %>%
     kable()
 ```
 
