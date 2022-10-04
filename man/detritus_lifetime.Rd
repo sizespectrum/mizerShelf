@@ -12,7 +12,11 @@ detritus_lifetime(params) <- value
 \arguments{
 \item{params}{A MizerParams object}
 
-\item{value}{A number with the new value for the lifetime}
+\item{value}{A number with the new value for the expected lifetime in years
+
+Assigning a new value to the detritus lifetime rescales the detritus
+abundance while keeping the total consumption of detritus the same (by
+adjusting the interaction strength of species with detritus).}
 }
 \value{
 The number giving the expected lifetime in years.

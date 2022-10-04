@@ -19,7 +19,7 @@ A vector with named entries "external",
 is produced by these sources in grams per year.
 }
 \description{
-This is the rate at which the rest of the system produces carrion
+This is the rate in grams/year at which the rest of the system produces carrion
 biomass. The production comes from three sources:
 }
 \details{
@@ -31,4 +31,7 @@ biomass. The production comes from three sources:
 
 The function returns a vector with the individual contributions. These
 can be summed with \code{sum()} to get the total production rate.
+}
+\seealso{
+getCarrionConsumption carrion_dynamics getDetritusProduction
 }

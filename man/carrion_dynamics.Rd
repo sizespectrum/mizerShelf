@@ -46,3 +46,6 @@ The dynamical equation is solved analytically to
 This avoids the stability problems that would arise if we used the Euler
 method to solve the equation numerically.
 }
+\seealso{
+detritus_dynamics
+}

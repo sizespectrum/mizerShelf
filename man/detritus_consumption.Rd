@@ -24,5 +24,5 @@ A number giving the consumption rate in grams per year.
 An internal helper function. This returns the total detritus consumption rate
 and is used in \code{detritus_dynamics()} to calculate the detritus abundance at
 the next time step. To get the consumption rate split up by consumer species,
-use \code{getCarrionConsumption()}.
+use \code{getDetritusConsumption()}.
 }

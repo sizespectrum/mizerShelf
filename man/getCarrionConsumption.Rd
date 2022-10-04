@@ -14,5 +14,11 @@ A named vector with the consumption rates from all species and
 decomposition.
 }
 \description{
-Get carrion consumption rates
+This function returns a named vector with one component for each species
+giving the rate in grams/year at which that species consumes carrion, as well
+as a component named \code{decompose} with the rate in grams/year at which carrion
+is decomposed by bacteria and other processes.
+}
+\seealso{
+getCarrionProduction carrion_dynamics getDetritusConsumption
 }
