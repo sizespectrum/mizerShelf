@@ -28,6 +28,7 @@ VignetteBuilder: knitr
 Collate:
     components.R
     helpers.R
+    newDetritusCarrionParams.R
     plots.R
     rates.R
     rhoControl.R
