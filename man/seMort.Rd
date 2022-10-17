@@ -33,5 +33,7 @@ A named two dimensional array (species x size) with the total
 mortality rates.
 }
 \description{
-Total mortality rate in the shelf ecosystem model
+This function replaces the usual \code{\link[=mizerMort]{mizerMort()}} function and returns the
+sum of the usual mortality and the excess gear mortality calculated with
+\code{\link[=gearMort]{gearMort()}}.
 }

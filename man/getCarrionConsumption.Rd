@@ -20,5 +20,5 @@ as a component named \code{decompose} with the rate in grams/year at which carri
 is decomposed by bacteria and other processes.
 }
 \seealso{
-getCarrionProduction carrion_dynamics getDetritusConsumption
+\code{\link[=getCarrionProduction]{getCarrionProduction()}}, \code{\link[=carrion_dynamics]{carrion_dynamics()}}, \code{\link[=getDetritusConsumption]{getDetritusConsumption()}}
 }
