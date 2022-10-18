@@ -16,8 +16,8 @@ An updated MizerParams object
 }
 \description{
 This multiplies the carrion biomass by a factor and divides the
-interaction between all species and the detritus by the same
-factor, so as to keep the total consumption of detritus unchanged.
+interaction between all species and the carrion by the same
+factor, so as to keep the total consumption of carrion unchanged.
 It also divides the mass-specific rate of decomposition by the same
-factor so that the total decomposition rate stays the same.
+factor so that the total carrion decomposition rate stays the same.
 }

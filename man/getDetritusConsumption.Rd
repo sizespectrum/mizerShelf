@@ -13,5 +13,9 @@ getDetritusConsumption(params)
 A named vector with the consumption rates from all species
 }
 \description{
-Get detritus consumption rates by consumer species
+This function returns a named vector with one component for each species
+giving the rate in grams/year at which that species consumes detritus.
+}
+\seealso{
+getDetritusProduction detritus_dynamics getCarrionConsumption
 }

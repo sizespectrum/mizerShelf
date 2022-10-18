@@ -14,8 +14,16 @@ encounter_contribution(params, n_other, component, ...)
 \item{component}{Name of component whose contribution is requested}
 }
 \value{
-Array species x size
+Array species x size with the encounter rate in g/year.
 }
 \description{
-Contribution of unstructured components to the encounter rate
+The encounter rate \eqn{E_i(w)} for an unstructured resource like for example
+carrion is proportional to the total biomass \eqn{B} with a coefficient
+\eqn{\rhi_i(w)} that depends on the predator species \eqn{i} and the size of
+the predator:
+\deqn{E_i(w) = \rho_i(w) B.}
+}
+\details{
+The coefficient \eqn{\rhi_i(w)} is stored as a matrix (species x size) in
+the \code{rho} parameter of the component. It has units 1/year.
 }

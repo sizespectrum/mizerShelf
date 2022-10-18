@@ -26,7 +26,7 @@ calculate the carrion biomass at the next time step. To get the
 non-mass-specific consumption rate, use \code{getCarrionConsumption()}.
 
 The consumption rate by fish is determined by
-\code{params@other_params$carrion$rho}
+\code{other_params(params)$carrion$rho}
 and the decomposition rate is given by
-\code{params@other_params$carrion$decompose}.
+\code{other_params(params)$carrion$decompose}.
 }

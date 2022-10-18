@@ -8,8 +8,8 @@
 <meta name="description" content="mizerNWMed">
 <title>Model Description • mizerNWMed</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.1.0/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.1.0/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../deps/bootstrap-5.1.3/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.1.3/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Model Description">
 <meta property="og:description" content="mizerNWMed">
@@ -72,25 +72,30 @@
     
     
 <p>In this document we present the details of the model. The model
-consists of three components: 1) a collection of species modelled by <a href="#size-spectrum-dynamics">size spectrum dynamics</a>, 2) <a href="#carrion">carrion</a> and 3) <a href="#detritus">detritus</a>. We
+consists of three components: 1) a collection of species modelled by <a href="#species-size-spectra">size spectra</a>, 2) <a href="#carrion">carrion</a> and 3) <a href="#detritus">detritus</a>. We
 discuss each of these in turn below.</p>
-In addition to describing the general model, we also give the values of
-the parameters for the model tuned to the shelf ecosystem off the coast
-of Blanes in the Northwestern Mediterranean. These are by default hidden
-in collapsible sections and can be unhidden by clicking on the
-“Parameter values” headings as below:
-<details><summary>
-Parameter values
-</summary><p>And if you click again this section will be hidden again.</p>
+<div class="section level2">
+<h2 id="parameter-values">Parameter values<a class="anchor" aria-label="anchor" href="#parameter-values"></a>
+</h2>
+<p>In addition to the description of the general model, this document
+also includes sections that give numerical values for the model
+parameters introduced in the previous section. These are the parameter
+values we chose for describing the shelf ecosystem off the coast of
+Blanes in the Northwestern Mediterranean. These sections are all headed
+“Parameter values” and start with a “Skip” link that allows you to jump
+over them to the next section of model description. We start with such a
+section that describes the observed abundances of the species included
+in the model as well as the carrion and detritus.</p>
+<p><a href="#species-size-spectra">Skip this section</a></p>
 <p>We model 26 species, in addition to carrion and detritus. For some
 species the total biomass above a certain cutoff size has been observed.
 The following table gives the observed biomass per square meter in grams
 and the cutoff size in grams. Individuals smaller than the cutoff size
 were not observable by the method used.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">biomass_observed</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">select</span><span class="op">(</span><span class="va">biomass_observed</span>, <span class="va">biomass_cutoff</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">biomass_observed</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">biomass_observed</span>, <span class="va">biomass_cutoff</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>    <span class="fu">kable</span><span class="op">(</span>col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"biomass"</span>, <span class="st">"cutoff size"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
@@ -154,9 +159,9 @@ were not observable by the method used.</p>
 <p>For the other species the total number above a certain cutoff size
 has been observed instead :</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">number_observed</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">select</span><span class="op">(</span><span class="va">number_observed</span>, <span class="va">number_cutoff</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">number_observed</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">number_observed</span>, <span class="va">number_cutoff</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>    <span class="fu">kable</span><span class="op">(</span>col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"numbers"</span>, <span class="st">"cutoff size"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
@@ -251,12 +256,16 @@ has been observed instead :</p>
 parameters, they have been used to choose the reproduction parameters
 discussed later so that the steady state abundances in the model agree
 with these observations.</p>
-</details><div class="section level2">
-<h2 id="size-spectrum-dynamics">Size spectrum dynamics<a class="anchor" aria-label="anchor" href="#size-spectrum-dynamics"></a>
+<p>In the steady state the total carrion biomass is <span class="math inline">\(B_C = 0.04482\)</span> grams. This was chosen so
+that the expected lifetime for the carrion biomass, i.e., the inverse of
+the mass-specific carrion consumption rate, is equal to 1 day.</p>
+<p>In the steady state the total detritus biomass is <span class="math inline">\(B_D = 235.2\)</span> grams. This was chosen so
+that the expected lifetime for the detritus biomass, i.e., the inverse
+of the mass-specific detritus consumption rate, is 1 year.</p>
+</div>
+<div class="section level2">
+<h2 id="species-size-spectra">Species size spectra<a class="anchor" aria-label="anchor" href="#species-size-spectra"></a>
 </h2>
-<div class="section level3">
-<h3 id="species-size-spectra">Species size spectra<a class="anchor" aria-label="anchor" href="#species-size-spectra"></a>
-</h3>
 <p>The model assumes that, to a first approximation, an individual can
 be characterized by its weight <span class="math inline">\(w\)</span>
 and its species number <span class="math inline">\(i\)</span> only. The
@@ -292,7 +301,6 @@ class, otherwise there would be no small fish any more after a while. So
 for the smallest size class, instead of a rate of growth into the size
 class there is a rate of reproduction of new individuals into that size
 class. This reproduction will be described below in the <a href="#reproduction">Reproduction</a> section.</p>
-</div>
 <div class="section level3">
 <h3 id="growth">Growth<a class="anchor" aria-label="anchor" href="#growth"></a>
 </h3>
@@ -344,9 +352,11 @@ large predator/prey mass ratio.</p>
 <p>The parameters for these predation kernels were estimated from
 stomach data or from the physical characteristics of the species. This
 will be discussed elsewhere.</p>
-<details><summary>
-Parameter values
-</summary><p>The predator/prey interaction matrix has most entries equal to either
+<div class="section level5">
+<h5 id="parameter-values-1">Parameter values<a class="anchor" aria-label="anchor" href="#parameter-values-1"></a>
+</h5>
+<p>Skip to <a href="#consumption">Consumption</a></p>
+<p>The predator/prey interaction matrix has most entries equal to either
 0 (if the species can not interact) or 1. Only the interaction between
 Hake as predator and Gurnards as prey is set to 0.5.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -361,9 +371,9 @@ Hake as predator and Gurnards as prey is set to 0.5.</p>
 <p>For the species that use a lognormal predation kernel, the parameters
 are</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pred_kernel_type</span> <span class="op">==</span> <span class="st">"lognormal"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">select</span><span class="op">(</span><span class="va">beta</span>, <span class="va">sigma</span>, <span class="va">gamma</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pred_kernel_type</span> <span class="op">==</span> <span class="st">"lognormal"</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">beta</span>, <span class="va">sigma</span>, <span class="va">gamma</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>    <span class="fu">kable</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
@@ -504,14 +514,14 @@ are</p>
 <p>For the species that use a truncated power law predation kernel, the
 parameters are</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pred_kernel_type</span> <span class="op">==</span> <span class="st">"power_law"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">select</span><span class="op">(</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">"kernel"</span><span class="op">)</span>, <span class="va">gamma</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pred_kernel_type</span> <span class="op">==</span> <span class="st">"power_law"</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">"kernel"</span><span class="op">)</span>, <span class="va">gamma</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>    <span class="fu">rename</span><span class="op">(</span>s <span class="op">=</span> <span class="va">kernel_exp</span>,</span>
 <span>           l_l <span class="op">=</span> <span class="va">kernel_l_l</span>,</span>
 <span>           u_l <span class="op">=</span> <span class="va">kernel_u_l</span>,</span>
 <span>           l_r <span class="op">=</span> <span class="va">kernel_l_r</span>,</span>
-<span>           u_r <span class="op">=</span> <span class="va">kernel_u_r</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>           u_r <span class="op">=</span> <span class="va">kernel_u_r</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>    <span class="fu">kable</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
@@ -579,7 +589,8 @@ parameters are</p>
 <td align="right">12815.67482</td>
 </tr>
 </tbody>
-</table></details>
+</table>
+</div>
 </div>
 <div class="section level4">
 <h4 id="consumption">Consumption<a class="anchor" aria-label="anchor" href="#consumption"></a>
@@ -603,14 +614,16 @@ form <span class="math inline">\(h_i(w) = h_i\, w^n\)</span> with <span class="m
 \end{equation}\]</span> Only a proportion <span class="math inline">\(\alpha_i\)</span> of this consumed biomass is
 retained, while a proportion <span class="math inline">\(1-\alpha_i\)</span> is expelled in the form of
 feces, which contribute to the detritus.</p>
-<details><summary>
-Parameter values
-</summary><p>The values for the coefficients <span class="math inline">\(h_i\)</span> in the maximum consumption rates were
+<div class="section level5">
+<h5 id="parameter-values-2">Parameter values<a class="anchor" aria-label="anchor" href="#parameter-values-2"></a>
+</h5>
+<p>Skip to <a href="#metabolic-losses">Metabolic losses</a></p>
+<p>The values for the coefficients <span class="math inline">\(h_i\)</span> in the maximum consumption rates were
 chosen so that the feeding level that fish experience has a reasonable
 value with fish being neiter too starved nor totally satiated.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">select</span><span class="op">(</span><span class="va">h</span>, <span class="va">alpha</span>, <span class="va">n</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">h</span>, <span class="va">alpha</span>, <span class="va">n</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>    <span class="fu">kable</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
@@ -781,7 +794,7 @@ value with fish being neiter too starved nor totally satiated.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">plotFeedingLevel</span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span></code></pre></div>
 <p><img src="model_description_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
-</details>
+</div>
 </div>
 <div class="section level4">
 <h4 id="metabolic-losses">Metabolic losses<a class="anchor" aria-label="anchor" href="#metabolic-losses"></a>
@@ -798,11 +811,13 @@ reproduction, at the rate <span class="math display">\[\begin{equation}
   \label{eq:Er}
   E_{r.i}(w) = \max(0, \alpha_i f_i(w)\, h_i(w) - {\tt metab}_i(w))
 \end{equation}\]</span></p>
-<details><summary>
-Parameter values
-</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">select</span><span class="op">(</span><span class="va">ks</span>, <span class="va">p</span>, <span class="va">k</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<div class="section level5">
+<h5 id="parameter-values-3">Parameter values<a class="anchor" aria-label="anchor" href="#parameter-values-3"></a>
+</h5>
+<p>Skip to <a href="#sec:repro">Investment into reproduction</a></p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">ks</span>, <span class="va">p</span>, <span class="va">k</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>    <span class="fu">kable</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
@@ -969,7 +984,8 @@ Parameter values
 <td align="right">0</td>
 </tr>
 </tbody>
-</table></details>
+</table>
+</div>
 </div>
 <div class="section level4">
 <h4 id="sec:repro">Investment into reproduction<a class="anchor" aria-label="anchor" href="#sec:repro"></a>
@@ -987,11 +1003,13 @@ where all available energy is used for reproduction. The expression is
 <p>with <span class="math inline">\(m-n = 0.3\)</span> and <span class="math inline">\(U=10\)</span> (which sets the steepness of the
 sigmoidal switch-on of reproduction at around the maturity weight <span class="math inline">\(w_{mat}\)</span>). See
 <code><a href="https://sizespectrum.org/mizer/reference/setReproduction.html" class="external-link">mizer::setReproduction()</a></code> for more detail.</p>
-<details><summary>
-Parameter values
-</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">select</span><span class="op">(</span><span class="va">w_mat</span>, <span class="va">w_inf</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<div class="section level5">
+<h5 id="parameter-values-4">Parameter values<a class="anchor" aria-label="anchor" href="#parameter-values-4"></a>
+</h5>
+<p>Skip to <a href="#somatic-growth">Somatic growth</a></p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">w_mat</span>, <span class="va">w_inf</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>    <span class="fu">kable</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
@@ -1131,7 +1149,8 @@ Parameter values
 <td align="right">3.407</td>
 </tr>
 </tbody>
-</table></details>
+</table>
+</div>
 </div>
 <div class="section level4">
 <h4 id="somatic-growth">Somatic growth<a class="anchor" aria-label="anchor" href="#somatic-growth"></a>
@@ -1145,14 +1164,16 @@ individual of species <span class="math inline">\(i\)</span> and weight
 \end{equation}\]</span> When food supply does not cover the requirements
 of metabolism and activity, growth and reproduction stops, i.e. there is
 no negative growth.</p>
-<details><summary>
-Parameter values
-</summary><p>The values for the model parameters were chosen so that the resulting
+<div class="section level5">
+<h5 id="parameter-values-5">Parameter values<a class="anchor" aria-label="anchor" href="#parameter-values-5"></a>
+</h5>
+<p>Skip to <a href="#mortality">Mortality</a></p>
+<p>The values for the model parameters were chosen so that the resulting
 growth curves would be close to von Bertalanffy growth curves with the
 following parameters that were taken from the literature:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">select</span><span class="op">(</span><span class="va">k_vb</span>, <span class="va">t0</span>, <span class="va">a</span>, <span class="va">b</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">k_vb</span>, <span class="va">t0</span>, <span class="va">a</span>, <span class="va">b</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>    <span class="fu">kable</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
@@ -1355,7 +1376,7 @@ centimetres.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">plotGrowthCurves</span><span class="op">(</span><span class="va">params</span>, species_panel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="model_description_files/figure-html/unnamed-chunk-12-1.png" width="100%"></p>
-</details>
+</div>
 </div>
 </div>
 <div class="section level3">
@@ -1393,12 +1414,14 @@ independent of size. The value of <span class="math inline">\(z0_i\)</span> is e
 parameter or it is assumed to depend allometrically on the asymptotic
 size: <span class="math display">\[z0_i = z0_{pre}
 w_{\infty.i}^{1-n}.\]</span></p>
-<details><summary>
-Parameter values
-</summary><p>We use size-independent external mortalities.</p>
+<div class="section level5">
+<h5 id="parameter-values-6">Parameter values<a class="anchor" aria-label="anchor" href="#parameter-values-6"></a>
+</h5>
+<p>Skip to <a href="#fishing-mortality">Fishing mortality</a></p>
+<p>We use size-independent external mortalities.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">select</span><span class="op">(</span><span class="va">z0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">z0</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>    <span class="fu">kable</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
@@ -1511,7 +1534,8 @@ Parameter values
 <td align="right">0.1</td>
 </tr>
 </tbody>
-</table></details>
+</table>
+</div>
 </div>
 <div class="section level4">
 <h4 id="fishing-mortality">Fishing mortality<a class="anchor" aria-label="anchor" href="#fishing-mortality"></a>
@@ -1529,13 +1553,16 @@ wich 25% are selected.</p>
 <p>We choose a normalisation where the current fishing effort is taken
 to be equal to 1 so that the <code>catchability</code> gives the fishing
 mortality rate at fully selected sizes.</p>
-<details><summary>
-Parameter values
-</summary><p>The species for which we use sigmoidal selectivity are:</p>
+<div class="section level5">
+<h5 id="parameter-values-7">Parameter values<a class="anchor" aria-label="anchor" href="#parameter-values-7"></a>
+</h5>
+<p>Skip to <a href="#excess-gear-mortality-1">Excess gear
+mortality</a></p>
+<p>The species for which we use sigmoidal selectivity are:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">gear_params</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">sel_func</span> <span class="op">==</span> <span class="st">"sigmoid_length"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">select</span><span class="op">(</span><span class="va">species</span>, <span class="va">l50</span>, <span class="va">l25</span>, <span class="va">catchability</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">gear_params</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">sel_func</span> <span class="op">==</span> <span class="st">"sigmoid_length"</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">species</span>, <span class="va">l50</span>, <span class="va">l25</span>, <span class="va">catchability</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>    <span class="fu">kable</span><span class="op">(</span>row.names <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>          col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Species"</span>, <span class="st">"l50 [cm]"</span>, <span class="st">"l25 [cm]"</span>, <span class="st">"catchability [1/year]"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
@@ -1616,10 +1643,10 @@ Parameter values
 </table>
 <p>We use knife-edge selectivity for the following species:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">gear_params</span> <span class="op">|&gt;</span></span>
+<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">gear_params</span> <span class="op">%&gt;%</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">sel_func</span> <span class="op">==</span> <span class="st">"knife_edge"</span>,</span>
-<span>           <span class="va">catchability</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">select</span><span class="op">(</span><span class="va">species</span>, <span class="va">knife_edge_size</span>, <span class="va">catchability</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>           <span class="va">catchability</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">species</span>, <span class="va">knife_edge_size</span>, <span class="va">catchability</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>    <span class="fu">kable</span><span class="op">(</span>row.names <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>          col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Species"</span>, <span class="st">"knife edge size [g]"</span>, <span class="st">"catchability [1/year]"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
@@ -1661,11 +1688,11 @@ Parameter values
 </tr>
 </tbody>
 </table>
-The remaining species experience no fishing mortality: Small DF worms,
-Small DF crustacea, DF worms, Endobenthic pred. crustacea, Suprabenthic
-crustacea, Endobethic pred. worms, Large DF worms, Nut clam, Red
-snapping shrimp.
-</details>
+<p>The remaining species experience no fishing mortality: Small DF
+worms, Small DF crustacea, DF worms, Endobenthic pred. crustacea,
+Suprabenthic crustacea, Endobethic pred. worms, Large DF worms, Nut
+clam, Red snapping shrimp.</p>
+</div>
 </div>
 <div class="section level4">
 <h4 id="excess-gear-mortality">Excess gear mortality<a class="anchor" aria-label="anchor" href="#excess-gear-mortality"></a>
@@ -1682,11 +1709,13 @@ gear mortality. <span class="math display">\[\mu_{g.i} = \max{\left({\tt
 gear\_mort}_i - \mu_{f.i}(w), 0\right)}
 \]</span></p>
 <p>This excess gear mortality contributes to the carrion production.</p>
-<details><summary>
-Parameter values
-</summary><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">select</span><span class="op">(</span><span class="va">gear_mort</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<div class="section level5">
+<h5 id="parameter-values-8">Parameter values<a class="anchor" aria-label="anchor" href="#parameter-values-8"></a>
+</h5>
+<p>Skip to <a href="#reproduction">Reproduction</a></p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">gear_mort</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>    <span class="fu">kable</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
@@ -1799,7 +1828,8 @@ Parameter values
 <td align="right">0.6</td>
 </tr>
 </tbody>
-</table></details>
+</table>
+</div>
 </div>
 </div>
 <div class="section level3">
@@ -1857,16 +1887,18 @@ function:</p>
   R_i = R_{\max.i} \frac{R_{p.i}}{R_{p.i} + R_{\max.i}},
 \end{equation}\]</span> where <span class="math inline">\(R_{\max.i}\)</span> is the maximum reproduction
 rate of species <span class="math inline">\(i\)</span>.</p>
-<details><summary>
-Parameter values
-</summary><p>The following table also gives the steady-state reproduction level
+<div class="section level5">
+<h5 id="parameter-values-9">Parameter values<a class="anchor" aria-label="anchor" href="#parameter-values-9"></a>
+</h5>
+<p>Skip to <a href="#carrion">Carrion</a></p>
+<p>The following table also gives the steady-state reproduction level
 which is defined as the ratio between the actual reproduction rate <span class="math inline">\(R_i\)</span> and the maximal possible reproduction
 rate <span class="math inline">\(R_{\max.i}\)</span>.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="va">params</span><span class="op">@</span><span class="va">species_params</span></span>
 <span><span class="va">df</span><span class="op">$</span><span class="va">reproduction_level</span> <span class="op">&lt;-</span> <span class="fu">getReproductionLevel</span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span>
-<span><span class="va">df</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">select</span><span class="op">(</span><span class="va">w_min</span>, <span class="va">erepro</span>, <span class="va">R_max</span>, <span class="va">reproduction_level</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span><span class="va">df</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">w_min</span>, <span class="va">erepro</span>, <span class="va">R_max</span>, <span class="va">reproduction_level</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>    <span class="fu">kable</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
@@ -1887,184 +1919,184 @@ rate <span class="math inline">\(R_{\max.i}\)</span>.</p>
 <tr class="odd">
 <td align="left">Small DF worms</td>
 <td align="right">0.0000003</td>
-<td align="right">0.0077702</td>
-<td align="right">4.070743e+04</td>
-<td align="right">0.2718577</td>
+<td align="right">0.0075438</td>
+<td align="right">4.426651e+04</td>
+<td align="right">0.25</td>
 </tr>
 <tr class="even">
 <td align="left">Small DF crustacea</td>
 <td align="right">0.0000003</td>
-<td align="right">0.0614886</td>
-<td align="right">1.471790e+03</td>
-<td align="right">0.1448097</td>
+<td align="right">0.0701127</td>
+<td align="right">8.525177e+02</td>
+<td align="right">0.25</td>
 </tr>
 <tr class="odd">
 <td align="left">DF worms</td>
 <td align="right">0.0000003</td>
-<td align="right">0.0389863</td>
-<td align="right">3.319273e+04</td>
-<td align="right">0.2415191</td>
+<td align="right">0.0394272</td>
+<td align="right">3.206671e+04</td>
+<td align="right">0.25</td>
 </tr>
 <tr class="even">
 <td align="left">Endobenthic pred. crustacea</td>
 <td align="right">0.0002950</td>
-<td align="right">0.1859972</td>
-<td align="right">1.198770e+01</td>
-<td align="right">0.3735000</td>
+<td align="right">0.1553697</td>
+<td align="right">1.790962e+01</td>
+<td align="right">0.25</td>
 </tr>
 <tr class="odd">
 <td align="left">Suprabenthic crustacea</td>
 <td align="right">0.0002950</td>
-<td align="right">0.0436060</td>
-<td align="right">3.922463e+00</td>
-<td align="right">0.3615648</td>
+<td align="right">0.0371195</td>
+<td align="right">5.672899e+00</td>
+<td align="right">0.25</td>
 </tr>
 <tr class="even">
 <td align="left">Endobethic pred. worms</td>
 <td align="right">0.0000003</td>
-<td align="right">0.0099443</td>
-<td align="right">2.966811e+04</td>
-<td align="right">0.3013401</td>
+<td align="right">0.0092636</td>
+<td align="right">3.576076e+04</td>
+<td align="right">0.25</td>
 </tr>
 <tr class="odd">
 <td align="left">Large DF worms</td>
 <td align="right">0.0000874</td>
-<td align="right">0.0610070</td>
-<td align="right">4.474451e+03</td>
-<td align="right">0.2961211</td>
+<td align="right">0.0572554</td>
+<td align="right">5.299918e+03</td>
+<td align="right">0.25</td>
 </tr>
 <tr class="even">
 <td align="left">Starfish</td>
 <td align="right">0.0001501</td>
-<td align="right">0.0045780</td>
-<td align="right">1.832146e+00</td>
-<td align="right">0.3497800</td>
+<td align="right">0.0039689</td>
+<td align="right">2.563393e+00</td>
+<td align="right">0.25</td>
 </tr>
 <tr class="odd">
 <td align="left">Nut clam</td>
 <td align="right">0.0000003</td>
-<td align="right">0.0001344</td>
-<td align="right">1.786876e+00</td>
-<td align="right">0.3039962</td>
+<td align="right">0.0001248</td>
+<td align="right">2.172814e+00</td>
+<td align="right">0.25</td>
 </tr>
 <tr class="even">
 <td align="left">Murex</td>
 <td align="right">0.0001718</td>
-<td align="right">0.0007322</td>
-<td align="right">1.636446e+00</td>
-<td align="right">0.3064586</td>
+<td align="right">0.0006771</td>
+<td align="right">2.006012e+00</td>
+<td align="right">0.25</td>
 </tr>
 <tr class="odd">
 <td align="left">Angular crab</td>
 <td align="right">0.0002577</td>
-<td align="right">0.0008629</td>
-<td align="right">3.954989e-01</td>
-<td align="right">0.3218675</td>
+<td align="right">0.0007802</td>
+<td align="right">5.091929e-01</td>
+<td align="right">0.25</td>
 </tr>
 <tr class="even">
 <td align="left">Harbour crab</td>
 <td align="right">0.0001718</td>
-<td align="right">0.0009042</td>
-<td align="right">3.703473e-01</td>
-<td align="right">0.3555259</td>
+<td align="right">0.0007770</td>
+<td align="right">5.266722e-01</td>
+<td align="right">0.25</td>
 </tr>
 <tr class="odd">
 <td align="left">Red snapping shrimp</td>
 <td align="right">0.0005065</td>
-<td align="right">0.0008547</td>
-<td align="right">4.342393e-01</td>
-<td align="right">0.2818929</td>
+<td align="right">0.0008184</td>
+<td align="right">4.896359e-01</td>
+<td align="right">0.25</td>
 </tr>
 <tr class="even">
 <td align="left">Spotted flounder</td>
 <td align="right">0.0009953</td>
-<td align="right">0.0025490</td>
-<td align="right">1.950497e-01</td>
-<td align="right">0.2650858</td>
+<td align="right">0.0024978</td>
+<td align="right">2.068196e-01</td>
+<td align="right">0.25</td>
 </tr>
 <tr class="odd">
 <td align="left">Black goby</td>
 <td align="right">0.0382245</td>
-<td align="right">0.0549314</td>
-<td align="right">8.482820e-02</td>
-<td align="right">0.2347802</td>
+<td align="right">0.0560461</td>
+<td align="right">7.966390e-02</td>
+<td align="right">0.25</td>
 </tr>
 <tr class="even">
 <td align="left">Gurnards</td>
 <td align="right">0.1934237</td>
-<td align="right">0.0853649</td>
-<td align="right">9.931400e-02</td>
-<td align="right">0.1874865</td>
+<td align="right">0.0924802</td>
+<td align="right">7.448010e-02</td>
+<td align="right">0.25</td>
 </tr>
 <tr class="odd">
 <td align="left">Red mullet</td>
 <td align="right">0.2214065</td>
-<td align="right">0.1450590</td>
-<td align="right">1.239700e-03</td>
-<td align="right">0.2051113</td>
+<td align="right">0.1537411</td>
+<td align="right">1.017100e-03</td>
+<td align="right">0.25</td>
 </tr>
 <tr class="even">
 <td align="left">Striped red mullet</td>
 <td align="right">0.1934237</td>
-<td align="right">0.2277776</td>
-<td align="right">2.589000e-04</td>
-<td align="right">0.2282317</td>
+<td align="right">0.2343887</td>
+<td align="right">2.364000e-04</td>
+<td align="right">0.25</td>
 </tr>
 <tr class="odd">
 <td align="left">Hake</td>
 <td align="right">0.2901027</td>
-<td align="right">0.2482888</td>
-<td align="right">2.723900e-03</td>
-<td align="right">0.2442945</td>
+<td align="right">0.2501777</td>
+<td align="right">2.661800e-03</td>
+<td align="right">0.25</td>
 </tr>
 <tr class="even">
 <td align="left">Angler fish</td>
 <td align="right">0.4351047</td>
-<td align="right">0.0660374</td>
-<td align="right">5.104000e-04</td>
-<td align="right">0.1829045</td>
+<td align="right">0.0719452</td>
+<td align="right">3.734000e-04</td>
+<td align="right">0.25</td>
 </tr>
 <tr class="odd">
 <td align="left">Poor cod</td>
 <td align="right">0.1934237</td>
-<td align="right">0.5709465</td>
-<td align="right">1.963920e-02</td>
-<td align="right">0.3053664</td>
+<td align="right">0.5287982</td>
+<td align="right">2.398860e-02</td>
+<td align="right">0.25</td>
 </tr>
 <tr class="even">
 <td align="left">Horse mackerel</td>
 <td align="right">0.2534376</td>
-<td align="right">0.0176291</td>
-<td align="right">1.117700e-03</td>
-<td align="right">0.2521006</td>
+<td align="right">0.0175797</td>
+<td align="right">1.127100e-03</td>
+<td align="right">0.25</td>
 </tr>
 <tr class="odd">
 <td align="left">Shortfin squid</td>
 <td align="right">0.5701055</td>
-<td align="right">0.0075474</td>
-<td align="right">2.354000e-04</td>
-<td align="right">0.3066469</td>
+<td align="right">0.0069774</td>
+<td align="right">2.888000e-04</td>
+<td align="right">0.25</td>
 </tr>
 <tr class="even">
 <td align="left">Blue whiting</td>
 <td align="right">0.1126645</td>
-<td align="right">0.0516547</td>
-<td align="right">2.479000e-04</td>
-<td align="right">0.2881831</td>
+<td align="right">0.0490249</td>
+<td align="right">2.857000e-04</td>
+<td align="right">0.25</td>
 </tr>
 <tr class="odd">
 <td align="left">Horned octopus</td>
 <td align="right">1.1203627</td>
-<td align="right">0.0558640</td>
-<td align="right">2.602000e-04</td>
-<td align="right">0.2969748</td>
+<td align="right">0.0523651</td>
+<td align="right">3.091000e-04</td>
+<td align="right">0.25</td>
 </tr>
 <tr class="even">
 <td align="left">Lesueurs’ goby</td>
 <td align="right">0.0000667</td>
-<td align="right">0.0004233</td>
-<td align="right">3.206650e-02</td>
-<td align="right">0.3218925</td>
+<td align="right">0.0003827</td>
+<td align="right">4.128790e-02</td>
+<td align="right">0.25</td>
 </tr>
 </tbody>
 </table>
@@ -2073,7 +2105,7 @@ rate <span class="math inline">\(R_{\max.i}\)</span>.</p>
 chosen so as to give reasonable values for the reproduction level and to
 produce steady-state abundances of the species that are in line with
 observations.</p>
-</details>
+</div>
 </div>
 </div>
 </div>
@@ -2090,14 +2122,7 @@ describe its total biomass <span class="math inline">\(B_C\)</span>.</p>
 difference between the rate at which carrion biomass is produced and the
 rate at which it is consumed, so <span class="math display">\[\frac{dB_C}{dt}=p_C - c_C\,B_C.\]</span></p>
 <p>We will discuss the production rate <span class="math inline">\(p_C\)</span> and the consumption rate <span class="math inline">\(c_CB_C\)</span> below.</p>
-<details><summary>
-Parameter values
-</summary>
-In the steady state the total carrion biomass is <span class="math inline">\(B_C = 0.04482\)</span> grams. This was chosen so
-that under the given consumption, the expected lifetime for the carrion
-biomass, i.e., the inverse of the mass-specific carrion consumption
-rate, is equal to 1 day.
-</details><div class="section level3">
+<div class="section level3">
 <h3 id="carrion-consumption">Carrion consumption<a class="anchor" aria-label="anchor" href="#carrion-consumption"></a>
 </h3>
 <p>Carrion is consumed by scavengers, but also decomposed by bacteria
@@ -2120,17 +2145,19 @@ on <a href="#consumption">consumption</a>. This gives the mass-specific
 carrion consumption rate <span class="math display">\[c_C =
 \sum_i\int\rho_i\, w^n N_i(w) (1-f_i(w))\,dw + d_C\]</span> where <span class="math inline">\(d_C\)</span> is the mass-specific rate of
 decomposition.</p>
-<details><summary>
-Parameter values
-</summary><p>The value of the mass-specific rate of decomposition is <span class="math inline">\(d_C=48.6168197\)</span> per year.</p>
+<div class="section level4">
+<h4 id="parameter-values-10">Parameter values<a class="anchor" aria-label="anchor" href="#parameter-values-10"></a>
+</h4>
+<p>Skip to <a href="#carrion-production">Carrion production</a></p>
+<p>The value of the mass-specific rate of decomposition is <span class="math inline">\(d_C=48.6168197\)</span> per year.</p>
 <p>The parameters <span class="math inline">\(\rho_i\)</span> have units
 of <span class="math inline">\(g^{-n}\)</span> per year. They are
 non-zero only for species that do at least some scavenging:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">select</span><span class="op">(</span><span class="va">rho_carrion</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">rename</span><span class="op">(</span>rho <span class="op">=</span> <span class="va">rho_carrion</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">rho</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">rho_carrion</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">rename</span><span class="op">(</span>rho <span class="op">=</span> <span class="va">rho_carrion</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">rho</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>    <span class="fu">kable</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
@@ -2175,7 +2202,8 @@ non-zero only for species that do at least some scavenging:</p>
 <td align="right">319.42108</td>
 </tr>
 </tbody>
-</table></details>
+</table>
+</div>
 </div>
 <div class="section level3">
 <h3 id="carrion-production">Carrion production<a class="anchor" aria-label="anchor" href="#carrion-production"></a>
@@ -2197,11 +2225,11 @@ modelled, for example mammals or sea birds. Thus only a proportion of
 the external mortality produces carrion. This is given by a carrion
 parameter <code>ext_prop</code>. So <span class="math display">\[p_{C.ext} = {\tt
 ext\_prop}\,\sum_i\int\mu_{ext.i}(w)N_i(w)w\,dw.\]</span></p>
-<details><summary>
-Parameter values
-</summary>
-The value of <code>ext_prop</code> is 0.173718.
-</details>
+<div class="section level5">
+<h5 id="parameter-values-11">Parameter values<a class="anchor" aria-label="anchor" href="#parameter-values-11"></a>
+</h5>
+<p>The value of <code>ext_prop</code> is 0.173718.</p>
+</div>
 </div>
 <div class="section level4">
 <h4 id="excess-gear-mortality-1">Excess gear mortality<a class="anchor" aria-label="anchor" href="#excess-gear-mortality-1"></a>
@@ -2220,11 +2248,13 @@ fished animals (“discards”): There is a species parameter <span class="math 
 gives the proportion of the catch biomass that is discarded. This
 biomass is added to the carrion biomass. Thus <span class="math display">\[p_{C.d} =
 \sum_i\,d_i\int\mu_{f.i}(w)N_i(w)w\,dw.\]</span></p>
-<details><summary>
-Parameter values
-</summary><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">select</span><span class="op">(</span><span class="va">discard</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<div class="section level5">
+<h5 id="parameter-values-12">Parameter values<a class="anchor" aria-label="anchor" href="#parameter-values-12"></a>
+</h5>
+<p>Skip to <a href="#detritus">Detritus</a></p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">discard</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>    <span class="fu">kable</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
@@ -2337,7 +2367,8 @@ Parameter values
 <td align="right">1.00</td>
 </tr>
 </tbody>
-</table></details>
+</table>
+</div>
 </div>
 </div>
 </div>
@@ -2364,16 +2395,13 @@ reflect the change in the total detritus biomass <span class="math display">\[B_
 difference between the rate at which detritus biomass is produced and
 the rate at which it is consumed, so <span class="math display">\[\frac{dB_D}{dt}=p_D - c_D\,B_D.\]</span></p>
 <p>We will discuss the production rate <span class="math inline">\(p_D\)</span> and the consumption rate <span class="math inline">\(c_DB_D\)</span> below.</p>
-<details><summary>
-Parameter values
-</summary>
-The detritus spectrum stretches from <span class="math inline">\(w_0=6\times 10^{-12}\)</span> to <span class="math inline">\(w_{cutoff}=0.001\)</span> grams. The power law
-exponent is <span class="math inline">\(\lambda=2.05\)</span>. In the
-steady state the total detritus biomass is <span class="math inline">\(B_D = 235.2\)</span> grams. This was chosen so
-that under the given consumption, the expected lifetime for the detritus
-biomass, i.e., the inverse of the mass-specific detritus consumption
-rate, is 1 year.
-</details><div class="section level3">
+<div class="section level3">
+<h3 id="parameter-values-13">Parameter values<a class="anchor" aria-label="anchor" href="#parameter-values-13"></a>
+</h3>
+<p>The detritus spectrum stretches from <span class="math inline">\(w_0=6\times 10^{-12}\)</span> to <span class="math inline">\(w_{cutoff}=0.001\)</span> grams. The power law
+exponent is <span class="math inline">\(\lambda=2.05\)</span>.</p>
+</div>
+<div class="section level3">
 <h3 id="detritus-consumption">Detritus consumption<a class="anchor" aria-label="anchor" href="#detritus-consumption"></a>
 </h3>
 <p>The rate at which detritus biomass is consumed is assumed to be
@@ -2398,14 +2426,14 @@ N_D(w_p)\,dw_p.
 this consumption rate is proportional to the total detritus biomass
 <span class="math inline">\(B_D\)</span>, as we have already indicated
 by our notation.</p>
-<details><summary>
-Parameter values
-</summary>
-We use the same value of <span class="math inline">\(\theta_{jD}=0.00905\)</span> for all predator
+<div class="section level4">
+<h4 id="parameter-values-14">Parameter values<a class="anchor" aria-label="anchor" href="#parameter-values-14"></a>
+</h4>
+<p>We use the same value of <span class="math inline">\(\theta_{jD}=0.00905\)</span> for all predator
 species. Note that this does not mean that all species are detritivores.
 For most species the predation kernel will be such that detritus will
-only be selected by the very small individuals.
-</details>
+only be selected by the very small individuals.</p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="detritus-production">Detritus production<a class="anchor" aria-label="anchor" href="#detritus-production"></a>
@@ -2440,10 +2468,11 @@ total carrion biomass. So <span class="math display">\[p_{D.c}=d_CB_C.\]</span><
 detritus enters the system from external sources. This will mostly be
 detritus sinking in from the pelagic zone. This rate is a model
 parameter independent of any other model component.</p>
-<details><summary>
-Parameter values
-</summary><p>The value of the external detritus production rate is <span class="math inline">\(p_{d.ext}=129.8022286\)</span> grams per year.</p>
-</details>
+<div class="section level5">
+<h5 id="parameter-values-15">Parameter values<a class="anchor" aria-label="anchor" href="#parameter-values-15"></a>
+</h5>
+<p>The value of the external detritus production rate is <span class="math inline">\(p_{d.ext}=129.8\)</span> grams per year.</p>
+</div>
 </div>
 </div>
 </div>
@@ -2460,7 +2489,7 @@ Parameter values
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
     </footer>

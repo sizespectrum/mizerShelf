@@ -1,5 +1,9 @@
 #' Total mortality rate in the shelf ecosystem model
 #' 
+#' This function replaces the usual [mizerMort()] function and returns the
+#' sum of the usual mortality and the excess gear mortality calculated with
+#' [gearMort()].
+#' 
 #' @param params A MizerParams object
 #' @param n A matrix of species abundances (species x size).
 #' @param n_pp A vector of the resource abundance by size
@@ -32,7 +36,7 @@ seMort <- function(params, n, n_pp, n_other, t, f_mort, pred_mort, ...) {
 #' 
 #' @param params A MizerParams object
 #' @param f_mort The array of fishing mortality rates as calculated by
-#'   `getMort()`.
+#'   `getFMort()`.
 #' @return A named two dimensional array (species x size) with the excess gear
 #'   mortality rates.
 #' @export

@@ -70,12 +70,12 @@ params@species_params %>%
 While the observed abundances of the species are not directly model parameters, they have been used to choose the reproduction parameters discussed later so
 that the steady state abundances in the model agree with these observations.
 
-In the steady state the total carrion biomass is \( B_C = `r signif(carrion_biomass(params), digits = 4)`\) grams. This was chosen so that
+In the steady state the total carrion biomass per m^2 is \( B_C = `r signif(carrion_biomass(params), digits = 4)`\) grams. This was chosen so that
 the expected lifetime for the carrion biomass,
 i.e., the inverse of the mass-specific carrion consumption rate, is equal
 to `r signif(carrion_lifetime(params)*365, digits = 3)` day.
 
-In the steady state the total detritus biomass is \( B_D = `r signif(detritus_biomass(params), digits = 4)`\) grams. This was chosen so that 
+In the steady state the total detritus biomass per m^2 is \( B_D = `r signif(detritus_biomass(params), digits = 4)`\) grams. This was chosen so that 
 the expected lifetime for the detritus biomass,
 i.e., the inverse of the mass-specific detritus consumption rate, is 
 `r signif(detritus_lifetime(params), digits = 4)` year.
@@ -570,7 +570,9 @@ where $d_C$ is the mass-specific rate of decomposition.
 Skip to [Carrion production]
 
 The value of the mass-specific rate of decomposition is 
-$d_C=`r params@other_params$carrion$decompose`$ per year. 
+$d_C=`r params@other_params$carrion$decompose`$ per year. This was chosen so
+that the production and consumption are equal for the chosen steady state 
+abundances.
 
 The parameters
 $\rho_i$ have units of $g^{-n}$ per year. They are non-zero only for
@@ -725,6 +727,8 @@ sources. This will mostly be detritus sinking in from the pelagic zone.
 This rate is a model parameter independent of any other model component.
 
 #### Parameter values
-The value of the external detritus production rate is 
-$p_{d.ext}=`r signif(params@other_params$detritus$external, digits = 4)`$ grams per year. 
+The value of the external detritus production rate is $p_{d.ext}=`r
+signif(params@other_params$detritus$external, digits = 4)`$ grams per year. This
+was chosen so that the production and consumption are equal for the chosen
+steady state abundances.
 

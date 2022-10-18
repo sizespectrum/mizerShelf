@@ -10,7 +10,7 @@ gearMort(params, f_mort)
 \item{params}{A MizerParams object}
 
 \item{f_mort}{The array of fishing mortality rates as calculated by
-\code{getMort()}.}
+\code{getFMort()}.}
 }
 \value{
 A named two dimensional array (species x size) with the excess gear

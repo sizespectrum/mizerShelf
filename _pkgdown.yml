@@ -11,3 +11,22 @@ navbar:
 home:
   sidebar:
     structure: [links, license, dev]
+
+destination: docs
+
+reference:
+- title: Detritus
+- contents:
+  - matches("etritus")
+- title: Carrion
+- contents:
+  - matches("arrion")
+- title: Plots
+- contents:
+  - matches("plot")
+- title: Mortality
+- contents:
+  - matches("Mort")
+- title: Others
+- contents:
+  - encounter_contribution
