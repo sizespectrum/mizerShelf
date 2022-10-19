@@ -68,5 +68,5 @@ new_steady <- function(params, t_max = 100, t_per = 1.5, dt = 0.1,
     }
 }
 
-environment(new_steady) <- asNamespace('mizer')
-utils::assignInNamespace("steady", new_steady, ns = "mizer")
+environment(new_steady) <- asNamespace('mizerExperimental')
+utils::assignInNamespace("steady", new_steady, ns = "mizerExperimental")
