@@ -16,13 +16,91 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-library(mizerNWMed)
 library(ggplot2)
 library(dplyr)
 library(knitr)
+remotes::install_github("sizespectrum/mizerExperimental", ref = "tuneMR")
+library(mizerExperimental)
+source("../R/components.R")
+source("../R/plots.R")
+source("../R/rates.R")
+source("../R/rhoControl.R")
+source("../R/steady.R")
+load("../data/catch.rda")
+```
+
+```{r}
+commercial = c("Hake", "Red mullet", "Poor cod","Blue whiting", "Shortfin squid",
+               "Horse mackerel", "Angler fish", "Horned octopus")
+```
+
+```{r}
+params <- readParams("../inst/params191022.rds")
+# set some parameters that control the sensitivity of the system
+params <- setBevertonHolt(params, reproduction_level = 0.25)
+carrion_lifetime(params) <- 1/365
+detritus_lifetime(params) <- 1
+carrion_human_origin(params) <- 0.2
+params_original <- params
+```
+
+```{r}
+sim <- project(params, t_max = 50)
+plotlyBiomass(sim)
+```
+
+```{r}
+params <- tuneParams(params, catch = catch, 
+                     controls = c("abundance", "predation", "fishing", 
+                                  "reproduction", "other", "interaction", 
+                                  "resource", "rho"))
+```
+
+
+```{r}
+gear_params(params) |> filter(sel_func == "sigmoid_length") |> select(l25, l50) 
+```
+
+```{r}
+# Change selectivity ----
+params_s <- params_original
+gear_params(params_s)["Hake, Main", c("l25", "l50")] <- c(18, 21.5)
+gear_params(params_s)["Red mullet, Main", c("l25", "l50")] <- c(15.13, 17.28)
+gear_params(params_s)["Striped red mullet, Main", c("l25", "l50")] <- c(15.13, 17.28)
+gear_params(params_s)["Angler fish, Main", c("l25", "l50")] <- c(14, 18)
+gear_params(params_s)["Poor cod, Main", c("l25", "l50")] <- c(8.1, 9.5)
+gear_params(params_s)["Horse mackerel, Main", c("l25", "l50")] <- c(15.2, 17)
+gear_params(params_s)["Blue whiting, Main", c("l25", "l50")] <- c(18.80, 22.25)
+gear_params(params_s)["Shortfin squid, Main", c("l25", "l50")] <- c(14.2, 16.5)
+gear_params(params_s)["Horned octopus, Main", c("l25", "l50")] <- c(14.20, 16.5)
+gear_params(params_s)["Gurnards, Main", c("l25", "l50")] <- c(16.6, 18.5)
+
+sim_s <- project(params_s, t_max = 15)
+```
+
+```{r}
+plotlyBiomass(sim_s, species = commercial)
+```
+
+```{r}
+plotlyYieldRelative(sim_s, sim)
 ```
 
 ```{r}
 getCarrionProduction(params)
+```
+
+```{r}
+plotYieldCurve(params, species = "Hake")
+```
+
+```{r}
+plotSpectra(params, power = 1, resource = FALSE)
+```
+
+
+
+```{r}
+getDetritusProduction(params)
 ```
 
