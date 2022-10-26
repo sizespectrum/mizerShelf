@@ -513,6 +513,8 @@ tune_carrion_detritus <- function(params) {
 scaleModel <- function(params, factor) {
     params@other_params[["carrion"]]$rho <- 
         params@other_params[["carrion"]]$rho / factor
+    params@species_params$rho_carrion <-
+        params@species_params$rho_carrion / factor
     mizer::scaleModel(params, factor)
 }
 
