@@ -22,36 +22,20 @@ library(knitr)
 library(mizerShelf)
 ```
 
+
 ```{r}
-commercial = c("Hake", "Red mullet", "Poor cod","Blue whiting", "Shortfin squid",
-               "Horse mackerel", "Angler fish", "Horned octopus")
+params <- readParams("../inst/params_no_lesueurs.rds")
+plotlySpectra(params, resource = FALSE, ylim = c(1e-10, NA))
 ```
 
 ```{r}
-params <- NWMed_params
-# set some parameters that control the sensitivity of the system
-params <- setBevertonHolt(params, reproduction_level = 0.25)
-carrion_lifetime(params) <- 1/365
-detritus_lifetime(params) <- 1
-carrion_human_origin(params) <- 0.2
+target = c("Hake", "Red mullet", "Poor cod","Blue whiting", "Shortfin squid",
+           "Horse mackerel", "Angler fish", "Horned octopus")
+
+plotSpectra(params, resource = FALSE, species = target, ylim = c(1e-7, NA))
 ```
 
-```{r}
-sim <- project(params, t_max = 50)
-plotlyBiomass(sim)
-```
-
-```{r}
-params <- tuneParams(params, catch = catch, 
-                     controls = c("abundance", "predation", "fishing", 
-                                  "reproduction", "other", "interaction", 
-                                  "resource", "rho"))
-```
-
-
-```{r}
-gear_params(params) |> filter(sel_func == "sigmoid_length") |> select(l25, l50) 
-```
+## Change in selectivity
 
 ```{r}
 # Change selectivity ----
@@ -65,34 +49,60 @@ gear_params(params_s)["Horse mackerel, Main", c("l25", "l50")] <- c(15.2, 17)
 gear_params(params_s)["Blue whiting, Main", c("l25", "l50")] <- c(18.80, 22.25)
 gear_params(params_s)["Shortfin squid, Main", c("l25", "l50")] <- c(14.2, 16.5)
 gear_params(params_s)["Horned octopus, Main", c("l25", "l50")] <- c(14.20, 16.5)
-gear_params(params_s)["Gurnards, Main", c("l25", "l50")] <- c(16.6, 18.5)
+#gear_params(params_s)["Gurnards, Main", c("l25", "l50")] <- c(16.6, 18.5)
+```
 
+
+```{r}
 sim_s <- project(params_s, t_max = 15)
 ```
 
 ```{r}
-plotlyBiomass(sim_s, species = commercial)
+mizer::plotBiomass(sim_s, species = target)
 ```
 
 ```{r}
-plotlyYieldRelative(sim_s, sim)
+yield <- plotYield(sim_s, species = target, return_data = TRUE)
+yield_initial <- data.frame(Year = rep(-1, 8),
+                            Yield = getYield(params)[target],
+                            Species = target)
+plotDataFrame(rbind(yield_initial, yield), params)
+```
+
+## Discard reduction
+
+```{r}
+params_d <- NWMed_params
+species_params(params_d)["Hake", "discard"] <- 0
 ```
 
 ```{r}
-getCarrionProduction(params)
+sim_d <- project(params_d, t_max = 15)
 ```
 
 ```{r}
-plotYieldCurve(params, species = "Hake")
+mizer::plotBiomass(sim_d, species = target)
 ```
 
 ```{r}
-plotSpectra(params, power = 1, resource = FALSE)
+plotlyBiomassRelative(sim_d)
 ```
 
 
+## Effort reduction
 
 ```{r}
-getDetritusProduction(params)
+sim_e <- project(params, t_max = 15, effort = 0.6)
 ```
 
+```{r}
+mizer::plotBiomass(sim_e, species = target)
+```
+
+```{r}
+yield <- plotYield(sim_e, species = target, return_data = TRUE)
+yield_initial <- data.frame(Year = rep(-1, 8),
+                            Yield = getYield(params)[target],
+                            Species = target)
+plotDataFrame(rbind(yield_initial, yield), params)
+```
