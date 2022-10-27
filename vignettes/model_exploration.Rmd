@@ -19,14 +19,7 @@ knitr::opts_chunk$set(
 library(ggplot2)
 library(dplyr)
 library(knitr)
-remotes::install_github("sizespectrum/mizerExperimental", ref = "tuneMR")
-library(mizerExperimental)
-source("../R/components.R")
-source("../R/plots.R")
-source("../R/rates.R")
-source("../R/rhoControl.R")
-source("../R/steady.R")
-load("../data/catch.rda")
+library(mizerShelf)
 ```
 
 ```{r}
@@ -35,13 +28,12 @@ commercial = c("Hake", "Red mullet", "Poor cod","Blue whiting", "Shortfin squid"
 ```
 
 ```{r}
-params <- readParams("../inst/params191022.rds")
+params <- NWMed_params
 # set some parameters that control the sensitivity of the system
 params <- setBevertonHolt(params, reproduction_level = 0.25)
 carrion_lifetime(params) <- 1/365
 detritus_lifetime(params) <- 1
 carrion_human_origin(params) <- 0.2
-params_original <- params
 ```
 
 ```{r}
@@ -63,7 +55,7 @@ gear_params(params) |> filter(sel_func == "sigmoid_length") |> select(l25, l50)
 
 ```{r}
 # Change selectivity ----
-params_s <- params_original
+params_s <- NWMed_params
 gear_params(params_s)["Hake, Main", c("l25", "l50")] <- c(18, 21.5)
 gear_params(params_s)["Red mullet, Main", c("l25", "l50")] <- c(15.13, 17.28)
 gear_params(params_s)["Striped red mullet, Main", c("l25", "l50")] <- c(15.13, 17.28)
