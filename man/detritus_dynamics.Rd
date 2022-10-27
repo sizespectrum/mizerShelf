@@ -50,5 +50,5 @@ This avoids the stability problems that would arise if we used the Euler
 method to solve the equation numerically.
 }
 \seealso{
-carrion_dynamics
+\code{\link[=carrion_dynamics]{carrion_dynamics()}}
 }

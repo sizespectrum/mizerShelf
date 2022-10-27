@@ -33,5 +33,5 @@ The function returns a vector with the individual contributions. These
 can be summed with \code{sum()} to get the total production rate.
 }
 \seealso{
-getCarrionConsumption carrion_dynamics getDetritusProduction
+\code{\link[=getCarrionConsumption]{getCarrionConsumption()}}, \code{\link[=carrion_dynamics]{carrion_dynamics()}}, \code{\link[=getDetritusProduction]{getDetritusProduction()}}
 }

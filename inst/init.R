@@ -1,4 +1,4 @@
-remotes::install_github("sizespectrum/mizerExperimental")
+remotes::install_github("sizespectrum/mizerExperimental", ref = "tuneMR")
 library(dplyr)
 library(waldo)
 library(mizerExperimental)

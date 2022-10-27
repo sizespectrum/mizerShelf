@@ -17,5 +17,5 @@ This function returns a named vector with one component for each species
 giving the rate in grams/year at which that species consumes detritus.
 }
 \seealso{
-getDetritusProduction detritus_dynamics getCarrionConsumption
+\code{\link[=getDetritusProduction]{getDetritusProduction()}}, \code{\link[=detritus_dynamics]{detritus_dynamics()}}, \code{\link[=getCarrionConsumption]{getCarrionConsumption()}}
 }

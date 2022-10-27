@@ -1,8 +1,8 @@
 #' Create new mizer model with detritus and carrion components
 #' 
 #' @param species_params A species parameter data frame
-#' @param w_min_detritus
-#' @param w_max_detritus
+#' @param w_min_detritus Minimum size of detritus in grams
+#' @param w_max_detritus Maximum size of detritus in grams
 #' @param n Growth exponent (also used as metabolic exponent p)
 #' @param ... Extra parameters to be passed to [newMultispeciesParams()]
 #' @return A MizerParams object
