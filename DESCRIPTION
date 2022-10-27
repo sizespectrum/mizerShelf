@@ -1,11 +1,13 @@
-Package: mizerNWMed
-Title: A Mizer Model with Carrion and Detritus Components
+Package: mizerShelf
+Title: A Mizer Model with Carrion and Detritus Components suitable for
+  continental shelf ecosystems
 Version: 0.0.0.9000
 Authors@R: 
     person("Gustav", "Delius", , "gustav.delius@york.ac.uk", role = c("cre", "aut", "cph"),
            comment = c(ORCID = "0000-0003-4092-8228"))
-Description: This package provides the functionality for setting up the model
-    in a forthcoming paper. So far this is private.
+Description: This package provides the functionality for setting up and
+  exploring mizer models with detritus and carrion components and includes an 
+  example model for a region in the Nort-West Mediterranean.
 License: GPL-3
 Suggests: 
     knitr,
@@ -17,8 +19,8 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
 Depends: 
-    R (>= 2.10),
-    mizerExperimental (>= 2.3.0)
+    R (>= 4.0),
+    mizerExperimental (>= 2.3.1)
 Remotes: 
     sizespectrum/mizerExperimental
 Imports: 

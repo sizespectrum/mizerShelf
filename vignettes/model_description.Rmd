@@ -187,8 +187,7 @@ elsewhere.
 Skip to [Consumption]
 
 The predator/prey interaction matrix has most entries equal to either 0
-(if the species can not interact) or 1. Only the interaction between Hake
-as predator and Gurnards as prey is set to 0.5.
+(if the species can not interact) or 1.
 
 ```{r}
 ggplot(melt(params@interaction),
@@ -196,6 +195,7 @@ ggplot(melt(params@interaction),
     geom_tile(colour = "black", size = 0.25) +
     scale_fill_gradient(low = "white", high = "blue", limit = c(0, 1),
                         guide = "legend") +
+    ylab("predator") +
     theme_minimal() + 
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
 ```
