@@ -29,6 +29,7 @@ Imports:
 VignetteBuilder: knitr
 Collate:
     components.R
+    data.R
     helpers.R
     newDetritusCarrionParams.R
     plots.R
