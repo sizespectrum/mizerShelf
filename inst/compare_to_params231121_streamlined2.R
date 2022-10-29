@@ -6,7 +6,8 @@ library(tidyr)
 library(googlesheets4)
 library(waldo)
 library(mizerExperimental)
-library(mizerNWMed)
+library(mizerShelf)
+params <- NWMed_params
 
 sp <- species_params(params)
 sp_sheet <- read_sheet("https://docs.google.com/spreadsheets/d/1mXJ4BMeO6V95-B58UqQ-ZxqHcQuTXQnN5_Wa17zC7CE/edit#gid=931771299",
@@ -38,11 +39,13 @@ compare(sp$a, sp_sheet$a, max_diffs = 30)
 compare(sp$b, sp_sheet$b, max_diffs = 30)
 
 # We don't use the biomass for species where numbers have also been observed
-compare(sp$biomass_observed, sp_sheet$biomass_observed * 100, max_diffs = 30)
+compare(sp$biomass_observed, sp_sheet$biomass_observed, max_diffs = 30)
 compare(sp$biomass_cutoff, sp_sheet$biomass_cutoff, max_diffs = 30)
 
-compare(sp$number_observed, sp_sheet$number_observed * 100, max_diffs = 30)
+compare(sp$number_observed, sp_sheet$number_observed, max_diffs = 30)
 compare(sp$number_cutoff, sp_sheet$number_cutoff, max_diffs = 30)
+
+compare(sp$yield_observed, sp_sheet$yield_observed, max_diffs = 30)
 
 gp <- gear_params(params)
 compare(gp$l50, signif(sp_sheet$l50, 3), max_diffs = 30)
