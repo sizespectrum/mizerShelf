@@ -166,8 +166,8 @@ plotCarrionConsumption <- function(params) {
 #' is produced by these sources in grams per year.
 #' @seealso [getCarrionConsumption()], [carrion_dynamics()], [getDetritusProduction()]
 #' @export
-getCarrionProduction <- function(params, n = params@initial_n, 
-                                          rates = getRates(params)) {
+getCarrionProduction <- function(params, n = params@initial_n,
+                                 rates = getRates(params)) {
     c(ext_mort = sum((params@mu_b * n) %*% (params@w * params@dw)) *
           params@other_params$carrion$ext_prop,
       gear_mort = sum((gearMort(params, rates$f_mort) * n) %*% 
@@ -515,6 +515,8 @@ scaleModel <- function(params, factor) {
         params@other_params[["carrion"]]$rho / factor
     params@species_params$rho_carrion <-
         params@species_params$rho_carrion / factor
+    params@other_params$detritus$external <-
+        params@other_params$detritus$external * factor
     mizer::scaleModel(params, factor)
 }
 
