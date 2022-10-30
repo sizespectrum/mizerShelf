@@ -26,18 +26,62 @@ params <- NWMed_params
 
 In this document we present the details of the model. The model consists of three components:
 
-1)  a collection of species modelled by [size spectra](#species-size-spectra),
+1)  a collection of [species],
 2)  [carrion] and
-3)  [detritus]. We discuss each of these in turn below.
+3)  [detritus]. 
 
-In addition to the description of the general model, the sections of this document also include "Parameter values" subsections that give numerical values for the model parameters introduced in that section. These are the parameter values we chose for describing the shelf ecosystem off the coast of Blanes in the Northwestern Mediterranean, including `r nrow(params@species_params)` species.
+We discuss each of these in turn below. In addition to the description of the general model, the sections of this document also include "Parameter values" subsections that give numerical values for the model parameters introduced in that section. These are the parameter values we chose for describing the shelf ecosystem off the coast of Blanes in the Northwestern Mediterranean.
 
 ::: {.content-visible when-format="html"}
 These parameter value sections start with a "Skip" link that allows you to jump over them to the next section of model description.
 :::
 
 
-# Species size spectra {#species-size-spectra}
+# Species
+
+#### Parameter values
+
+::: {.content-visible when-format="html"}
+Skip to [Size-spectrum dynamics]
+:::
+
+We model `r nrow(params@species_params)` species, in addition to carrion and detritus. For each of these species we have some estimates of their observed abundances. While the observed abundances of the species are not directly model parameters, we have used them to choose the reproduction parameters (discussed later) so that the steady state abundances in the model agree with these observations.
+
+For some species the total biomass above a certain cutoff size has been
+observed. @tbl-biomass gives the observed biomass per square meter
+in grams and the cutoff size in grams. Individuals smaller than the
+cutoff size were not observable by the method used.
+```{r}
+#| label: tbl-biomass
+#| tbl-cap: Observed biomasses
+params@species_params %>%
+    filter(!is.na(biomass_observed)) %>%
+    select(biomass_observed, biomass_cutoff) %>%
+    kable(col.names = c("Biomass [g/m^2]", "cutoff size [g]"))
+```
+
+For the other species the total number above a certain cutoff size has been
+observed instead. These are shown in @tbl-numbers.
+```{r}
+#| label: tbl-numbers
+#| tbl-cap: Numbers of individuals
+params@species_params %>%
+    filter(!is.na(number_observed)) %>%
+    select(number_observed, number_cutoff) %>%
+    kable(col.names = c("Numbers", "cutoff size [g]"))
+```
+
+For the commercial species we also have the yearly fishery yield, given in @tbl-yields in grams per square meter per year. For these species we calibrated the model abundances so that the estimated fishing mortalities lead to these yields.
+```{r}
+#| label: tbl-yields
+#| tbl-cap: Average annual yield
+params@species_params %>%
+    filter(!is.na(yield_observed)) %>%
+    select(yield_observed) %>%
+    kable(col.names = c("Yield [g/m^2/yr]"))
+```
+
+## Size-spectrum dynamics
 
 The model assumes that, to a first approximation, an individual can be characterized by its weight $w$ and its species number $i$ only. The aim of the model is to calculate the size spectrum $N_i(w)$, which is the *density* of individuals of species $i$ and size $w$. The number of individuals in a size range is obtained from the density by integrating over the size range, such that $\int_w^{w+dw}N_i(w)dw$ is the number of individuals of species $i$ in the size interval $[w,w+dw]$. In other words: the number of individuals in a size range is the area under the number density $N_i(w)$.
 
@@ -111,7 +155,7 @@ ggplot(melt(params@interaction),
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
 ```
 
-The parameters for the predation kernels were estimated from stomach data or from the physical characteristics of the species. For the species that use a lognormal predation kernel, the parameters are given in @tbl-lognormal.
+The parameters for the predation kernels were estimated from stomach data or from the physical characteristics of the species. For the species that use a lognormal predation kernel, the parameters are given in @tbl-lognormal. The values for the detritivores were chosen so that they would have access to detritus throughout their life.
 
 ```{r results='asis'}
 #| label: tbl-lognormal
@@ -413,6 +457,8 @@ $$
 $$ {#eq-BC}
 We will discuss the production rate $p_C$ and the consumption rate $c_CB_C$ below.
 
+#### Parameter values
+
 In the steady state the total carrion biomass per square meter is $B_C = `r signif(carrion_biomass(params), digits = 4)`$ grams. This was chosen so that the expected lifetime for the carrion biomass, i.e., the inverse of the mass-specific carrion consumption rate, is equal to `r signif(carrion_lifetime(params)*365, digits = 3)` day.
 
 ## Carrion consumption {#carrion-consumption}
@@ -430,7 +476,7 @@ c_C = \sum_i\int\rho_i\, w^n N_i(w) (1-f_i(w))\,dw + d_C.
 $$ {#eq-cC} 
 where $d_C$ is the mass-specific rate of decomposition.
 
-### Parameter values
+#### Parameter values
 
 ::: {.content-visible when-format="html"}
 Skip to [Carrion production]
@@ -528,7 +574,7 @@ $$ {#eq-dBd}
 
 We will discuss the production rate $p_D$ and the consumption rate $c_DB_D$ below.
 
-## Parameter values
+#### Parameter values
 ```{r}
 wcutoff <- params@resource_params$w_pp_cutoff
 lambda <- params@resource_params$lambda
@@ -551,7 +597,7 @@ c_DB_D=\int_{w_0}^{w_{cutoff}}\mu_D(w_p)\,w_p\, N_D(w_p)\,dw_p.
 $$ {#eq-cDBD} 
 Because we keep the size-distribution of the detritus fixed, this consumption rate is proportional to the total detritus biomass $B_D$, as we have already indicated by our notation.
 
-### Parameter values
+#### Parameter values
 ```{r}
 #| include: false
 ir <- signif(params@species_params$interaction_resource[[1]], 3)
