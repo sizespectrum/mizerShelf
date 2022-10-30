@@ -30,6 +30,7 @@ reference:
 - title: Others
 - contents:
   - encounter_contribution
+  - removeSpecies
 - title: Example model
 - contents:
   - matches("NWMed")

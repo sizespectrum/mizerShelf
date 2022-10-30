@@ -1,21 +1,24 @@
-plot_diff <- function(x1, x2) {
-    wc <- compare(x1, x2, max_diffs = Inf)
-    if (length(wc)) {
-        barplot(rel_diff(x1, x2), names.arg = 1:length(x1), horiz = TRUE)
-    }
-    wc
-}
-
-rel_diff <- function(x1, x2) {
-    r <- abs((x1 - x2) / (x1 + x2))
-    r[is.nan(r)] <- 0
-    r
-}
-
-l <- function(w) {
-    (w / sp$a) ^ (1 / sp$b)
-}
-
-w <- function(l) {
-    sp$a * l ^ sp$b
+#' Remove some species from the model
+#' 
+#' This calls `mizer::removeSpecies()` and in addition removes the relevant
+#' row from the carrion consumption array `rho`.
+#' @param params A MizerParams object
+#' @param species The species to be removed. A vector of species names, or a
+#'   numeric vector of species indices, or a logical vector indicating for each
+#'   species whether it is to be removed (TRUE) or not.
+#' @return A MizerParams object with fewer species.
+#' @examples
+#' params <- NWMed_params
+#' species_params(params)$species
+#' params <- removeSpecies(params, c("Poor cod", "Horse mackerel"))
+#' species_params(params)$species
+#' @export
+removeSpecies <- function(params, species) {
+    p <- mizer::removeSpecies(params, species)
+    species <- valid_species_arg(params, species,
+                                 return.logical = TRUE)
+    keep <- !species
+    p@other_params$carrion$rho <-
+        p@other_params$carrion$rho[keep, , drop = FALSE]
+    p
 }
