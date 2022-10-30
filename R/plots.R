@@ -41,12 +41,12 @@ library(plotly)
 #' @family plotting functions
 #' @examples
 #' \donttest{
-#' plotBiomass(NS_sim)
-#' plotBiomass(NS_sim, species = c("Sandeel", "Herring"), total = TRUE)
-#' plotBiomass(NS_sim, start_time = 1980, end_time = 1990)
+#' NWMed_sim <- project(NWMed_params, t_max = 15, effort = 0.6)
+#' plotBiomass(NWMed_sim, species = c("Hake", "Red mullet"))
+#' plotBiomass(NWMed_sim, start_time = 5, end_time = 15)
 #'
 #' # Returning the data frame
-#' fr <- plotBiomass(NS_sim, return_data = TRUE)
+#' fr <- plotBiomass(NWMed_sim, return_data = TRUE)
 #' str(fr)
 #' }
 plotBiomass <- function(sim, species = NULL, 
@@ -228,6 +228,7 @@ plotlyDeath <- function(object,
              tooltip = c("value", "Cause", "w"))
 }
 
+#' @export
 plotYieldMinusDiscards <- function(sim, sim2,
                       species = NULL,
                       total = FALSE, log = TRUE,
