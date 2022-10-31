@@ -12,6 +12,8 @@ encounter_contribution(params, n_other, component, ...)
 \item{n_other}{Biomasses of unstructured components}
 
 \item{component}{Name of component whose contribution is requested}
+
+\item{...}{Unused}
 }
 \value{
 Array species x size with the encounter rate in g/year.

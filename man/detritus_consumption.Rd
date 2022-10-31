@@ -13,9 +13,9 @@ detritus_consumption(
 \arguments{
 \item{params}{MizerParams}
 
-\item{rates}{A list of rates as returned by \code{\link[=getRates]{getRates()}}}
+\item{n_pp}{Detritus spectrum}
 
-\item{n}{A matrix of current species abundances (species x size)}
+\item{rates}{A list of rates as returned by \code{\link[=getRates]{getRates()}}}
 }
 \value{
 A number giving the consumption rate in grams per year.

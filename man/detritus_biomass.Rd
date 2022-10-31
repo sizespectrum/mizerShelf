@@ -8,6 +8,8 @@ detritus_biomass(params, n_pp = params@initial_n_pp)
 }
 \arguments{
 \item{params}{MizerParams}
+
+\item{n_pp}{Detritus spectrum}
 }
 \value{
 The detritus biomass in grams

@@ -246,8 +246,8 @@ plotYieldMinusDiscards <- function(sim, sim2,
             # Include total
             y <- cbind(y, "Total" = y_total)
         }
-        plot_dat <- reshape2::melt(y, varnames = c("Year", "Species"),
-                                   value.name = "Yield")
+        plot_dat <- melt(y, varnames = c("Year", "Species"),
+                         value.name = "Yield")
         plot_dat <- subset(plot_dat, plot_dat$Yield > 0)
         # plotDataFrame() needs the columns in a particular order
         plot_dat <- plot_dat[, c(1, 3, 2)]

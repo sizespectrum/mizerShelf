@@ -12,6 +12,7 @@
 #' @param params MizerParams
 #' @param n_other Biomasses of unstructured components
 #' @param component Name of component whose contribution is requested
+#' @param ... Unused
 #'
 #' @return Array species x size with the encounter rate in g/year.
 #' @export
@@ -202,6 +203,7 @@ plotCarrionProduction <- function(params) {
 #' the abundance density multiplied by mass.
 #' 
 #' @param params MizerParams
+#' @param n_pp Detritus spectrum
 #' @return The detritus biomass in grams
 #' @export
 detritus_biomass <- function(params, n_pp = params@initial_n_pp) {
@@ -265,7 +267,7 @@ detritus_dynamics <- function(params, n, n_pp, n_other, rates, dt, ...) {
 #' use `getDetritusConsumption()`.
 #' 
 #' @param params MizerParams
-#' @param n A matrix of current species abundances (species x size)
+#' @param n_pp Detritus spectrum
 #' @param rates A list of rates as returned by [getRates()]
 #' 
 #' @return A number giving the consumption rate in grams per year.
@@ -413,6 +415,12 @@ detritus_lifetime <- function(params) {
     rescale_detritus(params, value / detritus_lifetime(params))
 }
 
+#' Proportion of carrion production that is of human origin
+#'
+#' Calculates or sets what proportion of the total carrion production is from
+#' either excess gear mortality or from discards.
+#'
+#' @param params A MizerParams object
 #' @export
 carrion_human_origin <- function(params) {
     production <- getCarrionProduction(params)
