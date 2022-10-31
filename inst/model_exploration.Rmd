@@ -1,5 +1,5 @@
 ---
-title: "Model Exploration"
+title: "Exploring scenarios"
 output:
   html_document:
     toc: yes
@@ -15,16 +15,24 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-
-library(ggplot2)
-library(dplyr)
-library(knitr)
-library(mizerShelf)
 ```
 
+In this document we will use the Northwest Mediterranean mizer model to understand the effect of various changes in fishing policy. We will reproduce the results from the paper "A model of size-spectrum dynamics to estimate the effects of improving fisheries selectivity and reducing discards in Mediterranean mixed demersal fisheries" and also explore the effect of changes in some of the unknown model parameters.
+
+We start by loading the `mizerShelf` package and some others.
 
 ```{r}
-params <- readParams("../inst/params_no_lesueurs.rds")
+library(mizerShelf)
+library(ggplot2)
+library(patchwork)
+library(dplyr)
+```
+
+## Size spectra
+
+Here is a plot of the biomass densities of all `r nrow(params@species_params)` species in the model:
+```{r}
+params <- NWMed_params
 plotlySpectra(params, resource = FALSE, ylim = c(1e-10, NA))
 ```
 
@@ -49,16 +57,18 @@ gear_params(params_s)["Horse mackerel, Main", c("l25", "l50")] <- c(15.2, 17)
 gear_params(params_s)["Blue whiting, Main", c("l25", "l50")] <- c(18.80, 22.25)
 gear_params(params_s)["Shortfin squid, Main", c("l25", "l50")] <- c(14.2, 16.5)
 gear_params(params_s)["Horned octopus, Main", c("l25", "l50")] <- c(14.20, 16.5)
-#gear_params(params_s)["Gurnards, Main", c("l25", "l50")] <- c(16.6, 18.5)
 ```
-
 
 ```{r}
 sim_s <- project(params_s, t_max = 15)
 ```
 
 ```{r}
-mizer::plotBiomass(sim_s, species = target)
+plotlyBiomassRelative(sim_s)
+```
+
+```{r}
+mizer::plotlyBiomass(sim_s, species = target)
 ```
 
 ```{r}
@@ -67,6 +77,15 @@ yield_initial <- data.frame(Year = rep(-1, 8),
                             Yield = getYield(params)[target],
                             Species = target)
 plotDataFrame(rbind(yield_initial, yield), params)
+```
+
+```{r}
+initial_yield <- data.frame(species = target,
+                            yield = getYield(params)[target])
+plotYield(sim_s, species = target) +
+    geom_hline(aes(yintercept = yield, colour = species),
+               data = initial_yield,
+               linetype = "dashed")
 ```
 
 ## Discard reduction
@@ -85,14 +104,16 @@ mizer::plotBiomass(sim_d, species = target)
 ```
 
 ```{r}
-plotlyBiomassRelative(sim_d)
+plotBiomassRelative(sim_d)
 ```
-
 
 ## Effort reduction
 
 ```{r}
-sim_e <- project(params, t_max = 15, effort = 0.6)
+params_e <- NWMed_params
+initial_effort(params_e) <- 0.6
+species_params(params_e)$gear_mort <- species_params(params)$gear_mort * 0.6
+sim_e <- project(params_e, t_max = 15)
 ```
 
 ```{r}
@@ -105,4 +126,44 @@ yield_initial <- data.frame(Year = rep(-1, 8),
                             Yield = getYield(params)[target],
                             Species = target)
 plotDataFrame(rbind(yield_initial, yield), params)
+```
+
+```{r}
+initial_yield <- data.frame(species = target,
+                            yield = getYield(params)[target])
+py_e <- plotYield(sim_e, species = target) +
+    geom_hline(aes(yintercept = yield, colour = species),
+               data = initial_yield,
+               linetype = "dashed")
+py_e
+```
+
+```{r}
+plotlyBiomassRelative(sim_e)
+
+```
+
+### Reduce detritus lifetime
+
+```{r}
+params_er <- params_e
+detritus_lifetime(params_er) <- 0.1
+sim_er <- project(params_er, t_max = 15)
+```
+
+```{r}
+py_er <- plotYield(sim_er, species = target) +
+    geom_hline(aes(yintercept = yield, colour = species),
+               data = initial_yield,
+               linetype = "dashed")
+py_e + py_er + plot_layout(guides = 'collect')
+```
+
+```{r}
+pbr_er <- plotBiomassRelative(sim_er)
+pbr_e + pbr_er + plot_layout(guides = 'collect')
+```
+
+```{r}
+plotlyBiomass(sim_e)
 ```

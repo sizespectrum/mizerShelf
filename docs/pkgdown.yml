@@ -1,8 +1,6 @@
 pandoc: '2.18'
 pkgdown: 2.0.6
 pkgdown_sha: ~
-articles:
-  model_description: model_description.html
-  model_exploration: model_exploration.html
-last_built: 2022-10-28T05:23Z
+articles: {}
+last_built: 2022-10-31T08:49Z
 
