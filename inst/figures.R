@@ -1,6 +1,6 @@
 # script to produce figures in the paper
 
-remotes::install_github("gustavdelius/mizerExperimental")
+remotes::install_github("sizespectrum/mizerExperimental")
 library(mizerExperimental)
 remotes::install_github("gustavdelius/mizerShelf")
 library(mizerShelf)
