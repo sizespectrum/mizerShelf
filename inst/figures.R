@@ -81,6 +81,8 @@ p_bio + p_yield + plot_layout(guides = 'collect')
 
 ggsave("effort.pdf", width = 18, height = 9, units = "cm", scale = 1.2)
 
-# In the following plot you will want to select a different set of species
-# to see also what effect is on other components of the ecosystem.
-plotBiomassRelative(sim_e, species = target)
+nontarget = c("Starfish", "Murex", "Angular crab", "Harbour crab", 
+           "Black goby", "Large DF worms", "Small DF crustacea",
+           "Endobenthic pred. crustacea", "Endobenthic pred. worms")
+
+plotBiomassRelative(sim_e, species = nontarget)
