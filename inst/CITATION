@@ -1,0 +1,12 @@
+citHeader("To cite mizerShelf in publications use:")
+
+citEntry(
+  entry    = "Manual",
+  title    = "mizerShelf: A Mizer Model with Carrion and Detritus Components suitable for
+continental shelf ecosystems",
+  author   = "Gustav Delius",
+  year     = "2022",
+  url      = "https://sizespectrum.org/mizerShelf/",
+  textVersion = paste("Delius G (2022). mizerShelf: A Mizer Model with Carrion and Detritus Components suitable for continental shelf ecosystems. https://sizespectrum.org/mizerShelf."
+  )
+)
