@@ -147,7 +147,7 @@ The predator/prey interaction matrix has entries equal to either 0 (if the speci
 #| fig-cap: "Species interaction matrix"
 ggplot(melt(params@interaction),
        aes(x = prey, y = reorder(predator, desc(predator)), fill = value)) + 
-    geom_tile(colour = "black", size = 0.25) +
+    geom_tile(colour = "black", linewidth = 0.25) +
     scale_fill_gradient(low = "white", high = "blue", limit = c(0, 1),
                         guide = "legend") +
     ylab("predator") +
