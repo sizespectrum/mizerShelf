@@ -1,10 +1,19 @@
 Package: mizerShelf
-Title: A Mizer Model with Carrion and Detritus Components suitable for
+Title: Mizer Models with Carrion and Detritus Components suitable for
     continental shelf ecosystems
-Version: 0.0.0.9000
-Authors@R: 
-    person("Gustav", "Delius", , "gustav.delius@york.ac.uk", role = c("cre", "aut", "cph"),
-           comment = c(ORCID = "0000-0003-4092-8228"))
+Version: 1.0.0
+Date: 2022-11-16
+Authors@R: c(
+    person("Gustav", "Delius",
+           email = "gustav.delius@york.ac.uk", 
+           role = c("cre", "aut", "cph"),
+           comment = c(ORCID = "0000-0003-4092-8228")),
+    person("Silvia", "de Juan",
+           email = "sdejuan@icm.csic.es", role = "aut",
+           comment = c(ORCID = "0000-0002-8891-8371")),
+    person("Francesc", "Maynou",
+           email = "maynouf@icm.csic.es", role = "aut",
+           comment = c(ORCID = "0000-0001-7200-6485")))
 Description: This package provides the functionality for setting up and
     exploring mizer models with detritus and carrion components and
     includes an example model for a region in the Nort-West Mediterranean.
@@ -29,6 +38,9 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
+URL: https://sizespectrum.org/mizerShelf/, https://github.com/sizespectrum/mizerShelf
+BugReports: https://github.com/sizespectrum/mizerShelf/issues
+Language: en-GB
 Collate:
     'components.R'
     'data.R'
@@ -39,3 +51,4 @@ Collate:
     'rates.R'
     'rhoControl.R'
     'steady.R'
+VignetteBuilder: knitr
