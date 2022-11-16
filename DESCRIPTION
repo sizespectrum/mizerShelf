@@ -1,7 +1,7 @@
 Package: mizerShelf
-Title: A Mizer Model with Carrion and Detritus Components suitable for
+Title: Mizer Models with Carrion and Detritus Components suitable for
     continental shelf ecosystems
-Version: 0.0.0.9000
+Version: 1.0.0
 Date: 2022-11-16
 Authors@R: c(
     person("Gustav", "Delius",
@@ -9,10 +9,10 @@ Authors@R: c(
            role = c("cre", "aut", "cph"),
            comment = c(ORCID = "0000-0003-4092-8228")),
     person("Silvia", "de Juan",
-           email = "sdejuan@icm.csic.es", role = "ctb",
+           email = "sdejuan@icm.csic.es", role = "aut",
            comment = c(ORCID = "0000-0002-8891-8371")),
     person("Francesc", "Maynou",
-           email = "maynouf@icm.csic.es", role = "ctb",
+           email = "maynouf@icm.csic.es", role = "aut",
            comment = c(ORCID = "0000-0001-7200-6485")))
 Description: This package provides the functionality for setting up and
     exploring mizer models with detritus and carrion components and
