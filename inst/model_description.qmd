@@ -20,6 +20,10 @@ format:
 library(ggplot2)
 library(dplyr)
 library(knitr)
+library(mizer)
+remotes::install_github("sizespectrum/mizerExperimental")
+library(mizerExperimental)
+remotes::install_github("gustavdelius/mizerShelf")
 library(mizerShelf)
 params <- NWMed_params
 ```
@@ -302,7 +306,7 @@ plotGrowthCurves(params, species_panel = TRUE)
 
 ## Mortality {#mortality}
 
-The mortality rate $\mu_i(w)$ of an individual of species $i$ and weight $w$ has four sources: predation mortality $\mu_{p.i}(w)$, background mortality $\mu_{ext.i}(w)$, fishing mortality $\mu_{f.i}(w)$ and excess gear mortality $\mu_{g.i}$, which combine as
+The mortality rate $\mu_i(w)$ of an individual of species $i$ and weight $w$ has four sources: predation mortality $\mu_{p.i}(w)$, external mortality $\mu_{ext.i}(w)$, fishing mortality $\mu_{f.i}(w)$ and excess gear mortality $\mu_{g.i}$, which combine as
 $$
 \mu_i(w)=\mu_{p.i}(w)+\mu_{ext,i}(w)+\mu_{f.i}(w)+\mu_{g.i}(w).
 $$ {#eq-mort} 
@@ -412,7 +416,7 @@ Note that for species that have a pelagic phase the size $w_{min}$ is the size a
 
 ### Density-dependence in reproduction
 
-Three important density-dependent mechanisms widely assumed in fisheries models are automatically captured in the mizer model that lead to an emergent stock-recruitment relationship:
+Three important density-dependent mechanisms widely assumed in fisheries models are automatically captured in the mizer model, which lead to an emergent stock-recruitment relationship:
 
 1.  High density of spawners leads to a reduced food income of the spawners and consequently reduced per-capita reproduction.
 2.  High density of larvae leads to slower growth of larvae due to food competition, exposing the larvae to high mortality for a longer time, thereby decreasing the survivorship to recruitment size.
