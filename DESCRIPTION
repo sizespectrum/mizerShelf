@@ -2,6 +2,7 @@ Package: mizerShelf
 Title: A Mizer Model with Carrion and Detritus Components suitable for
     continental shelf ecosystems
 Version: 0.0.0.9000
+Date: 2022-11-16
 Authors@R: 
     person("Gustav", "Delius", , "gustav.delius@york.ac.uk", role = c("cre", "aut", "cph"),
            comment = c(ORCID = "0000-0003-4092-8228"))
@@ -29,6 +30,9 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
+URL: https://sizespectrum.org/mizerShelf/, https://github.com/sizespectrum/mizerShelf
+BugReports: https://github.com/sizespectrum/mizerShelf/issues
+Language: en-GB
 Collate:
     'components.R'
     'data.R'
@@ -39,3 +43,4 @@ Collate:
     'rates.R'
     'rhoControl.R'
     'steady.R'
+VignetteBuilder: knitr

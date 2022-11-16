@@ -10,7 +10,7 @@ navbar:
     
 home:
   sidebar:
-    structure: [links, license, dev]
+    structure: [links, citation, license, dev]
 
 destination: docs
 
