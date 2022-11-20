@@ -18,8 +18,23 @@ which forms the basis of the paper "A model of size-spectrum dynamics to
 estimate the effects of improving fisheries selectivity and reducing discards
 in Mediterranean mixed demersal fisheries".
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://sizespectrum.org/mizerShelf/}
+  \item \url{https://github.com/sizespectrum/mizerShelf}
+  \item Report bugs at \url{https://github.com/sizespectrum/mizerShelf/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Gustav Delius \email{gustav.delius@york.ac.uk} (\href{https://orcid.org/0000-0003-4092-8228}{ORCID}) [copyright holder]
+
+Authors:
+\itemize{
+  \item Silvia de Juan \email{sdejuan@icm.csic.es} (\href{https://orcid.org/0000-0002-8891-8371}{ORCID})
+  \item Francesc Maynou \email{maynouf@icm.csic.es} (\href{https://orcid.org/0000-0001-7200-6485}{ORCID})
+}
 
 }
 \keyword{internal}

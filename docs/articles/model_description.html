@@ -41,6 +41,7 @@
 <li class="active nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/explore_scenarios.html">Exploring scenarios</a>
     <a class="dropdown-item" href="../articles/model_description.html">Model description</a>
   </div>
 </li>
@@ -95,6 +96,8 @@ Blanes in the Northwestern Mediterranean.</p>
 <div class="content-visible" when-format="html">
 <p>These parameter value sections start with a “Skip” link that allows
 you to jump over them to the next section of model description.</p>
+<p>If you prefer, you can <a href="https://github.com/sizespectrum/mizerShelf/blob/master/inst/model_description.pdf" class="external-link">view
+and download a pdf version of this document</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="species">Species<a class="anchor" aria-label="anchor" href="#species"></a>
@@ -113,10 +116,9 @@ parameters, we have used them to choose the reproduction parameters
 (discussed later) so that the steady state abundances in the model agree
 with these observations.</p>
 <p>For some species the total biomass above a certain cutoff size has
-been observed. <span class="citation">@tbl-biomass</span> gives the
-observed biomass per square meter in grams and the cutoff size in grams.
-Individuals smaller than the cutoff size were not observable by the
-method used.</p>
+been observed. The following table gives the observed biomass per square
+meter in grams and the cutoff size in grams. Individuals smaller than
+the cutoff size were not observable by the method used.</p>
 <table class="table">
 <thead><tr class="header">
 <th align="left"></th>
@@ -177,7 +179,7 @@ method used.</p>
 </tbody>
 </table>
 <p>For the other species the total number above a certain cutoff size
-has been observed instead. These are shown in <span class="citation">@tbl-numbers</span>.</p>
+has been observed instead:</p>
 <table class="table">
 <thead><tr class="header">
 <th align="left"></th>
@@ -263,9 +265,9 @@ has been observed instead. These are shown in <span class="citation">@tbl-number
 </tbody>
 </table>
 <p>For the commercial species we also have the yearly fishery yield,
-given in <span class="citation">@tbl-yields</span> in grams per square
-meter per year. For these species we calibrated the model abundances so
-that the estimated fishing mortalities lead to these yields.</p>
+given in the table below in grams per square meter per year. For these
+species we calibrated the model abundances so that the estimated fishing
+mortalities lead to these yields.</p>
 <table class="table">
 <thead><tr class="header">
 <th align="left"></th>
@@ -334,7 +336,7 @@ loss term due to fish mortality:</p>
   \frac{\partial N_i(w)}{\partial t} + \frac{\partial g_i(w)
 N_i(w)}{\partial w}
   = -\mu_i(w) N_i(w).
-\]</span> {#eq-MvF}</p>
+\]</span></p>
 <p>The individual growth rate <span class="math inline">\(g_i(w)\)</span> is described below in the <a href="#growth">Growth</a> section and the mortality rate <span class="math inline">\(\mu_i(w)\)</span> is described in the <a href="#mortality">Mortality</a> section. These rates depend on the
 density of other fish of other sizes, as well as the carrion and
 detritus biomasses, making the size-spectrum dynamics non-linear and
@@ -373,7 +375,7 @@ and <span class="math inline">\(E_{D.i}\)</span> of detritus:</p>
 <p><span class="math display">\[
   E_{i}(w) = \gamma_i(w) \int \sum_{j} \theta_{ij} N_j(w_p)
   \phi_i(w,w_p) w_p \, dw_p + E_{C.i}(w) + E_{D.i}(w).
-\]</span> {#eq-encounter}</p>
+\]</span></p>
 <p>The encounter rates for <a href="#carrion-consumption">carrion</a>
 and <a href="#detritus-consumption">detritus</a> will be described
 later.</p>
@@ -389,19 +391,19 @@ we use the lognormal predation kernel given as</p>
 <p><span class="math display">\[
 \phi_i(w, w_p) =
 \exp \left[ \frac{-(\ln(w / w_p / \beta_i))^2}{2\sigma_i^2} \right]
-\]</span> {#eq-phi_normal} if <span class="math inline">\(w/w_p\)</span>
-is larger than 1 and zero otherwise. Here <span class="math inline">\(\beta_i\)</span> is the preferred predator-prey
-mass ratio and <span class="math inline">\(\sigma_i\)</span> determines
-the width of the kernel.</p>
+\]</span> if <span class="math inline">\(w/w_p\)</span> is larger than 1
+and zero otherwise. Here <span class="math inline">\(\beta_i\)</span> is
+the preferred predator-prey mass ratio and <span class="math inline">\(\sigma_i\)</span> determines the width of the
+kernel.</p>
 <p>For some species we use a power-law kernel with sigmoidal cutoffs
 given by</p>
 <p><span class="math display">\[\phi_i(w, w_p) =
 \frac{(w/w_p)^s}{\left(1+e^{l_l}\frac{w_p}{w}\right)^{u_l}
 \left(1+e^{-l_r}\frac{w}{w_p}\right)^{u_r}}.
-\]</span> {#eq-phi_power} Here the parameters <span class="math inline">\(l_l\)</span> and <span class="math inline">\(u_l\)</span> determine the sigmoidal cutoff at low
-predator/prey mass ratio and <span class="math inline">\(l_r\)</span>
-and <span class="math inline">\(u_r\)</span> similarly determine the
-cutoff at large predator/prey mass ratio.</p>
+\]</span> Here the parameters <span class="math inline">\(l_l\)</span>
+and <span class="math inline">\(u_l\)</span> determine the sigmoidal
+cutoff at low predator/prey mass ratio and <span class="math inline">\(l_r\)</span> and <span class="math inline">\(u_r\)</span> similarly determine the cutoff at
+large predator/prey mass ratio.</p>
 <div class="section level5">
 <h5 id="parameter-values-1">Parameter values<a class="anchor" aria-label="anchor" href="#parameter-values-1"></a>
 </h5>
@@ -418,9 +420,8 @@ Species interaction matrix
 <p>The parameters for the predation kernels were estimated from stomach
 data or from the physical characteristics of the species. For the
 species that use a lognormal predation kernel, the parameters are given
-in <span class="citation">@tbl-lognormal</span>. The values for the
-detritivores were chosen so that they would have access to detritus
-throughout their life.</p>
+in the table below. The values for the detritivores were chosen so that
+they would have access to detritus throughout their life.</p>
 <table class="table">
 <thead><tr class="header">
 <th align="left"></th>
@@ -551,8 +552,8 @@ throughout their life.</p>
 </tr>
 </tbody>
 </table>
-<p>For the species that use a truncated power law predation kernel, the
-parameters are given in <span class="citation">@tbl-power</span>.</p>
+<p>For the species that use a truncated power law predation kernel. The
+parameters are:</p>
 <table class="table">
 <colgroup>
 <col width="17%">
@@ -634,12 +635,12 @@ proportion of the encountered food that is consumed. The feeding level
 is given by</p>
 <p><span class="math display">\[
   f_i(w) = \frac{E_i(w)}{E_i(w) + h_i(w)},
-\]</span> {#eq-fl} where <span class="math inline">\(h_i(w)\)</span> is
-the maximum consumption rate of a predator of species <span class="math inline">\(i\)</span> and weight <span class="math inline">\(w\)</span>. By default we assume an allometric
+\]</span> where <span class="math inline">\(h_i(w)\)</span> is the
+maximum consumption rate of a predator of species <span class="math inline">\(i\)</span> and weight <span class="math inline">\(w\)</span>. By default we assume an allometric
 form <span class="math inline">\(h_i(w) = h_i\, w^n\)</span> with <span class="math inline">\(n=0.7\)</span>. The unit of the coefficients <span class="math inline">\(h_i\)</span> are <span class="math inline">\(\text{grams}^{1-n}\)</span> per year.</p>
 <p>The rate at which food is consumed by a predator of species <span class="math inline">\(i\)</span> and weight <span class="math inline">\(w\)</span> is then <span class="math display">\[
 (1-f_i(w))E_{i}(w)=f_i(w)\, h_i(w).
-\]</span> {#eq-consumption} Only a proportion <span class="math inline">\(\alpha_i\)</span> of this consumed biomass is
+\]</span> Only a proportion <span class="math inline">\(\alpha_i\)</span> of this consumed biomass is
 retained, while a proportion <span class="math inline">\(1-\alpha_i\)</span> is expelled in the form of
 feces, which contribute to the detritus.</p>
 <div class="section level5">
@@ -822,12 +823,12 @@ activity and movement, at a rate <span class="math inline">\(\mathtt{metab}_i(w)
 made up out of standard metabolism, scaling with exponent <span class="math inline">\(p\)</span>, and loss due to activity and movement,
 scaling with exponent <span class="math inline">\(1\)</span>: <span class="math display">\[
 \mathtt{metab}_i(w) = k_{s.i}\,w^p + k_i\,w.
-\]</span> {#eq-metab} The units of the coefficients <span class="math inline">\(k_{s.i}\)</span> are <span class="math inline">\(\text{grams}^{1-p}\)</span> per year and the units
+\]</span> The units of the coefficients <span class="math inline">\(k_{s.i}\)</span> are <span class="math inline">\(\text{grams}^{1-p}\)</span> per year and the units
 of the <span class="math inline">\(k_i\)</span> is grams per year.</p>
 <p>The remaining energy, if any, is then available for growth and
 reproduction, at the rate <span class="math display">\[
   E_{r.i}(w) = \max(0, \alpha_i f_i(w)\, h_i(w) - \mathtt{metab}_i(w))
-\]</span> {#eq-Er}</p>
+\]</span></p>
 <div class="section level5">
 <h5 id="parameter-values-3">Parameter values<a class="anchor" aria-label="anchor" href="#parameter-values-3"></a>
 </h5>
@@ -1009,10 +1010,8 @@ where all available energy is used for reproduction. The expression is
 \left[1+\left(\frac{w}{w_{mat}}\right)^{-U}\right]^{-1}
 \left(\frac{w}{w_{inf}}\right)^{m-n}&amp;w&lt;w_{inf}\\
 1&amp;w\geq w_{inf}\end{cases}
-\]</span> {#eq-psi} with <span class="math inline">\(m-n = 0.3\)</span>
-and <span class="math inline">\(U=10\)</span> (which sets the steepness
-of the sigmoidal switch-on of reproduction at around the maturity weight
-<span class="math inline">\(w_{mat}\)</span>).</p>
+\]</span> with <span class="math inline">\(m-n = 0.3\)</span> and <span class="math inline">\(U=10\)</span> (which sets the steepness of the
+sigmoidal switch-on of reproduction at around the maturity weight <span class="math inline">\(w_{mat}\)</span>).</p>
 <div class="section level5">
 <h5 id="parameter-values-4">Parameter values<a class="anchor" aria-label="anchor" href="#parameter-values-4"></a>
 </h5>
@@ -1163,9 +1162,9 @@ account is invested in somatic growth. Thus the growth rate of an
 individual of species <span class="math inline">\(i\)</span> and weight
 <span class="math inline">\(w\)</span> is <span class="math display">\[
   g_i(w) = E_{r.i}(w)\left(1-\psi_i(w)\right).
-\]</span> {#eq-growth} When food supply does not cover the requirements
-of metabolism and activity, growth and reproduction stops, i.e. there is
-no negative growth.</p>
+\]</span> When food supply does not cover the requirements of metabolism
+and activity, growth and reproduction stops, i.e. there is no negative
+growth.</p>
 <div class="section level5">
 <h5 id="parameter-values-5">Parameter values<a class="anchor" aria-label="anchor" href="#parameter-values-5"></a>
 </h5>
@@ -1174,8 +1173,7 @@ no negative growth.</p>
 </div>
 <p>The values for the model parameters were chosen so that the resulting
 growth curves would be close to von Bertalanffy growth curves. The
-paramters in <span class="citation">@tbl-kvb</span> were taken from the
-literature.</p>
+parameters were taken from the literature.</p>
 <table class="table">
 <thead><tr class="header">
 <th align="left"></th>
@@ -1385,7 +1383,7 @@ predation mortality <span class="math inline">\(\mu_{p.i}(w)\)</span>,
 background mortality <span class="math inline">\(\mu_{ext.i}(w)\)</span>, fishing mortality <span class="math inline">\(\mu_{f.i}(w)\)</span> and excess gear mortality
 <span class="math inline">\(\mu_{g.i}\)</span>, which combine as <span class="math display">\[
 \mu_i(w)=\mu_{p.i}(w)+\mu_{ext,i}(w)+\mu_{f.i}(w)+\mu_{g.i}(w).
-\]</span> {#eq-mort} We will now explain each of the terms.</p>
+\]</span> We will now explain each of the terms.</p>
 <div class="section level4">
 <h4 id="predation-mortality">Predation mortality<a class="anchor" aria-label="anchor" href="#predation-mortality"></a>
 </h4>
@@ -1396,10 +1394,10 @@ which all predators of species <span class="math inline">\(j\)</span>
 consume prey of size <span class="math inline">\(w_p\)</span> is <span class="math display">\[
   \mathtt{pred\_rate}_j(w_p) = \int \phi_j(w,w_p) (1-f_j(w))
   \gamma_j(w) N_j(w) \, dw.
-\]</span> {#eq-pred_rate}</p>
+\]</span></p>
 <p>The mortality rate due to predation is then obtained as <span class="math display">\[
   \mu_{p.i}(w_p) = \sum_j \mathtt{pred\_rate}_j(w_p)\, \theta_{ji}.
-\]</span> {#eq-mup}</p>
+\]</span></p>
 </div>
 <div class="section level4">
 <h4 id="external-mortality">External mortality<a class="anchor" aria-label="anchor" href="#external-mortality"></a>
@@ -1411,14 +1409,14 @@ independent of size. The value of <span class="math inline">\(z0_i\)</span> is e
 parameter or it is assumed to depend allometrically on the asymptotic
 size: <span class="math display">\[
 z0_i = z0_{pre} w_{\infty.i}^{1-n}.
-\]</span> {#eq-z0}</p>
+\]</span></p>
 <div class="section level5">
 <h5 id="parameter-values-6">Parameter values<a class="anchor" aria-label="anchor" href="#parameter-values-6"></a>
 </h5>
 <div class="content-visible" when-format="html">
 <p>Skip to <a href="#fishing-mortality">Fishing mortality</a></p>
 </div>
-<p>We use the size-independent external mortalities give in <span class="citation">@tbl-extmort</span>.</p>
+<p>We use the size-independent external mortalities:</p>
 <table class="table">
 <thead><tr class="header">
 <th align="left"></th>
@@ -1682,7 +1680,7 @@ fishing mortality (i.e., the part where the individuals are not taken up
 to the fishing vessel but left dead in the sea) we denote as the excess
 gear mortality. <span class="math display">\[
 \mu_{g.i} = \max{\left(\mathtt{gear\_mort}_i - \mu_{f.i}(w), 0\right)}
-\]</span> {#eq-eg}</p>
+\]</span></p>
 <p>This excess gear mortality contributes to the carrion production.</p>
 <div class="section level5">
 <h5 id="parameter-values-8">Parameter values<a class="anchor" aria-label="anchor" href="#parameter-values-8"></a>
@@ -1815,7 +1813,7 @@ production of offspring <span class="math inline">\(R_{p.i}\)</span>
 (numbers per year): <span class="math display">\[
   R_{p.i} = \frac{\epsilon_i}{2 w_{min.i}} \int N_i(w)  E_{r.i}(w)
 \psi_i(w) \, dw.
-\]</span> {#eq-Rp} Here the total rate of investment is multiplied by an
+\]</span> Here the total rate of investment is multiplied by an
 efficiency factor <span class="math inline">\(\epsilon\)</span> and then
 dividing by the offspring weight <span class="math inline">\(w_{min}\)</span> to convert the energy into number
 of offspring. The result is multiplied by a factor <span class="math inline">\(1/2\)</span> to take into account that only
@@ -1851,8 +1849,8 @@ described by the common Beverton-Holt type function used in fisheries
 science:</p>
 <p><span class="math display">\[
   R_i = R_{\max.i} \frac{R_{p.i}}{R_{p.i} + R_{\max.i}},
-\]</span> {#eq-R} where <span class="math inline">\(R_{\max.i}\)</span>
-is the maximum reproduction rate of species <span class="math inline">\(i\)</span>.</p>
+\]</span> where <span class="math inline">\(R_{\max.i}\)</span> is the
+maximum reproduction rate of species <span class="math inline">\(i\)</span>.</p>
 <div class="section level5">
 <h5 id="parameter-values-9">Parameter values<a class="anchor" aria-label="anchor" href="#parameter-values-9"></a>
 </h5>
@@ -1863,10 +1861,9 @@ is the maximum reproduction rate of species <span class="math inline">\(i\)</spa
 The values were instead chosen so as to produce steady-state abundances
 of the species that are in line with observations and to give reasonable
 values for the reproduction level.</p>
-<p><span class="citation">@tbl-reproduction</span> gives the
-steady-state reproduction level which is defined as the ratio between
-the actual reproduction rate <span class="math inline">\(R_i\)</span>
-and the maximal possible reproduction rate <span class="math inline">\(R_{\max.i}\)</span>.</p>
+<p>The next table gives the steady-state reproduction level which is
+defined as the ratio between the actual reproduction rate <span class="math inline">\(R_i\)</span> and the maximal possible reproduction
+rate <span class="math inline">\(R_{\max.i}\)</span>.</p>
 <table class="table">
 <colgroup>
 <col width="35%">
@@ -2077,7 +2074,7 @@ describe its total biomass <span class="math inline">\(B_C\)</span>.</p>
 difference between the rate at which carrion biomass is produced and the
 rate at which it is consumed, so <span class="math display">\[
 \frac{dB_C}{dt}=p_C - c_C\,B_C.
-\]</span> {#eq-BC} We will discuss the production rate <span class="math inline">\(p_C\)</span> and the consumption rate <span class="math inline">\(c_CB_C\)</span> below.</p>
+\]</span> We will discuss the production rate <span class="math inline">\(p_C\)</span> and the consumption rate <span class="math inline">\(c_CB_C\)</span> below.</p>
 <div class="section level5">
 <h5 id="parameter-values-10">Parameter values<a class="anchor" aria-label="anchor" href="#parameter-values-10"></a>
 </h5>
@@ -2106,13 +2103,13 @@ allometric exponent <span class="math inline">\(n\)</span> which is
 taken to be the same as the scaling exponent of the maximum intake rate
 for consumers, <span class="math display">\[
 E_{i.C}(w)=\rho_i\, w^n\,B_C.
-\]</span> {#eq-EC}</p>
+\]</span></p>
 <p>Finally, satiation of the consumers is taken into account via their
 feeding level <span class="math inline">\(f_i(w)\)</span> that was
 described in the section on <a href="#consumption">consumption</a>. This
 gives the mass-specific carrion consumption rate <span class="math display">\[
 c_C = \sum_i\int\rho_i\, w^n N_i(w) (1-f_i(w))\,dw + d_C.
-\]</span> {#eq-cC} where <span class="math inline">\(d_C\)</span> is the
+\]</span> where <span class="math inline">\(d_C\)</span> is the
 mass-specific rate of decomposition.</p>
 <div class="section level5">
 <h5 id="parameter-values-11">Parameter values<a class="anchor" aria-label="anchor" href="#parameter-values-11"></a>
@@ -2179,7 +2176,7 @@ non-zero only for species that do at least some scavenging.</p>
 biomass is produced by the ecosystem has contributions from three
 sources, <span class="math display">\[
 p_C = p_{C.ext} + p_{C.g} + p_{C.d},
-\]</span> {#eq-pC} each of which we will now discuss.</p>
+\]</span> each of which we will now discuss.</p>
 <div class="section level4">
 <h4 id="external-mortality-1">External mortality<a class="anchor" aria-label="anchor" href="#external-mortality-1"></a>
 </h4>
@@ -2193,7 +2190,7 @@ modelled, for example mammals or sea birds. Thus only a proportion of
 the external mortality produces carrion. This is given by a carrion
 parameter <code>ext_prop</code>. So <span class="math display">\[
   p_{C.ext} = \mathtt{ext\_prop}\,\sum_i\int\mu_{ext.i}(w)N_i(w)w\,dw.
-\]</span> {#eq-pCext}</p>
+\]</span></p>
 <div class="section level5">
 <h5 id="parameter-values-12">Parameter values<a class="anchor" aria-label="anchor" href="#parameter-values-12"></a>
 </h5>
@@ -2207,7 +2204,7 @@ parameter <code>ext_prop</code>. So <span class="math display">\[
 killed by the fishing gear that are not taken up to the fishing vessel
 but left dead in the sea. Thus <span class="math display">\[
 p_{C.g} = \sum_i\int\mu_{g.i}N_i(w)w\,dw,
-\]</span> {#eq-pCg} where the excess gear mortality rate <span class="math inline">\(\mu_{g.i}\)</span> was discussed in <span class="citation">@sec-excess-gear-mortality</span>.</p>
+\]</span> where the excess gear mortality rate <span class="math inline">\(\mu_{g.i}\)</span> was discussed in <span class="citation">@sec-excess-gear-mortality</span>.</p>
 </div>
 <div class="section level4">
 <h4 id="discards">Discards<a class="anchor" aria-label="anchor" href="#discards"></a>
@@ -2217,7 +2214,7 @@ fished animals (“discards”): There is a species parameter <span class="math 
 gives the proportion of the catch biomass that is discarded. This
 biomass is added to the carrion biomass. Thus <span class="math display">\[
   p_{C.d} = \sum_i\,d_i\int\mu_{f.i}(w)N_i(w)w\,dw.
-\]</span> {#eq-pCd}</p>
+\]</span></p>
 <div class="section level5">
 <h5 id="parameter-values-13">Parameter values<a class="anchor" aria-label="anchor" href="#parameter-values-13"></a>
 </h5>
@@ -2351,19 +2348,19 @@ abundance is described by a power law between a minimum size <span class="math i
 N_D(w) \propto \begin{cases} 0 &amp; w &lt; w_0\\
 w^{-\lambda} &amp; w_0\leq w\leq w_{cutoff}\\
 0 &amp; w &gt; w_{cutoff}\end{cases}.
-\]</span> {#eq-ND}</p>
+\]</span></p>
 <p>The exponent <span class="math inline">\(\lambda\)</span> is kept
 fixed and only the coefficient of the power law changes with time to
 reflect the change in the total detritus biomass</p>
 <p><span class="math display">\[
 B_D = \int_{w_{0}}^{w_{cutoff}} N_D(w)\, w \,dw.
-\]</span> {#eq-BD}</p>
+\]</span></p>
 <p>The rate of change in the total detritus biomass is simply the
 difference between the rate at which detritus biomass is produced and
 the rate at which it is consumed, so</p>
 <p><span class="math display">\[
 \frac{dB_D}{dt}=p_D - c_D\,B_D.
-\]</span> {#eq-dBd}</p>
+\]</span></p>
 <p>We will discuss the production rate <span class="math inline">\(p_D\)</span> and the consumption rate <span class="math inline">\(c_DB_D\)</span> below.</p>
 <div class="section level5">
 <h5 id="parameter-values-14">Parameter values<a class="anchor" aria-label="anchor" href="#parameter-values-14"></a>
@@ -2388,17 +2385,17 @@ of fish. First we introduce the rate at which all predators of species
 size <span class="math inline">\(w\)</span>: <span class="math display">\[
 \mu_{D}(w_p) = \sum_j  \theta_{jD}\int \phi_j(w,w_p) (1-f_j(w))
   \gamma_j(w) N_j(w) \, dw.
-\]</span> {#eq-muD} This is analogous to the <a href="#predation-mortality">predation mortality</a> discussed earlier,
+\]</span> This is analogous to the <a href="#predation-mortality">predation mortality</a> discussed earlier,
 but with <span class="math inline">\(\theta_{jD}\)</span> determining
 the strength at which species <span class="math inline">\(j\)</span>
 feeds on detritus. To get the total rate of detritus consumption we
 multiply by the weight of the detritus particle and integrate over all
 detritus particles: <span class="math display">\[
 c_DB_D=\int_{w_0}^{w_{cutoff}}\mu_D(w_p)\,w_p\, N_D(w_p)\,dw_p.
-\]</span> {#eq-cDBD} Because we keep the size-distribution of the
-detritus fixed, this consumption rate is proportional to the total
-detritus biomass <span class="math inline">\(B_D\)</span>, as we have
-already indicated by our notation.</p>
+\]</span> Because we keep the size-distribution of the detritus fixed,
+this consumption rate is proportional to the total detritus biomass
+<span class="math inline">\(B_D\)</span>, as we have already indicated
+by our notation.</p>
 <div class="section level5">
 <h5 id="parameter-values-15">Parameter values<a class="anchor" aria-label="anchor" href="#parameter-values-15"></a>
 </h5>
@@ -2415,7 +2412,7 @@ only be selected by the very small individuals.</p>
 biomass is produced by the ecosystem has contributions from three
 sources, <span class="math display">\[
 p_D = p_{D.f} + p_{D.c} + p_{D.ext},
-\]</span> {#eq-pD} each of which we will now discuss.</p>
+\]</span> each of which we will now discuss.</p>
 <div class="section level4">
 <h4 id="feces">Feces<a class="anchor" aria-label="anchor" href="#feces"></a>
 </h4>
@@ -2425,7 +2422,7 @@ from the feces expelled by the predators. Let <span class="math inline">\(\alpha
 consumed biomass that is assimilated by species <span class="math inline">\(i\)</span> and let <span class="math inline">\(f_i(w)\)</span> be the feeding level and <span class="math inline">\(E_i(w)\)</span> the food encounter rate discussed
 in the section on <a href="#consumption">consumption</a>. Then <span class="math display">\[
 p_{D.f} = \sum_i(1-\alpha_i)\int (1-f_i(w))E_i(w)\,dw.
-\]</span> {#eq-pDf}</p>
+\]</span></p>
 </div>
 <div class="section level4">
 <h4 id="decomposing-carrion">Decomposing carrion<a class="anchor" aria-label="anchor" href="#decomposing-carrion"></a>
@@ -2436,7 +2433,7 @@ decomposed to detritus at the rate <span class="math inline">\(d_CB_C\)</span> w
 decomposition rate and <span class="math inline">\(B_C\)</span> is the
 total carrion biomass. So <span class="math display">\[
 p_{D.c}=d_CB_C.
-\]</span> {#eq-pDc}</p>
+\]</span></p>
 </div>
 <div class="section level4">
 <h4 id="external">External<a class="anchor" aria-label="anchor" href="#external"></a>
