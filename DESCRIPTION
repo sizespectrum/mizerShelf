@@ -1,8 +1,8 @@
 Package: mizerShelf
 Title: Mizer Models with Carrion and Detritus Components suitable for
     continental shelf ecosystems
-Version: 1.0.0
-Date: 2022-11-16
+Version: 1.0.1
+Date: 2022-12-22
 Authors@R: c(
     person("Gustav", "Delius",
            email = "gustav.delius@york.ac.uk", 
@@ -23,12 +23,13 @@ Depends:
 Imports:
     lubridate,
     methods,
-    mizer (>= 2.3.1),
-    mizerExperimental (>= 2.3.1.0002),
+    mizer (>= 2.4.0),
+    mizerExperimental (>= 2.4.0),
     ggplot2,
     plotly
 Suggests: 
     knitr,
+    patchwork,
     rmarkdown,
     testthat (>= 3.0.0)
 Remotes: 

@@ -170,9 +170,9 @@ plotDeath <- function(object, species = NULL, proportion = TRUE, return_data = F
     for (iSpecies in species)
     {
         fish_idx_full <- (params@w_full >= params@species_params[iSpecies, "w_min"]) &
-            (params@w_full <= params@species_params[iSpecies, "w_inf"])
+            (params@w_full <= params@species_params[iSpecies, "w_max"])
         fish_idx <- (params@w >= params@species_params[iSpecies, "w_min"]) &
-            (params@w <= params@species_params[iSpecies, "w_inf"])
+            (params@w <= params@species_params[iSpecies, "w_max"])
         predation <- params@interaction[, iSpecies] *
             pred_rate[, fish_idx_full]
         fishing <- f_mort[iSpecies, fish_idx]

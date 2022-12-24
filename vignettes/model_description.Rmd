@@ -245,12 +245,12 @@ params@species_params %>%
 
 ### Investment into reproduction {#sec:repro}
 
-A proportion $\psi_i(w)$ of the energy available for growth and reproduction is used for reproduction. This proportion changes from zero below the weight $w_{m.i}$ of maturation to one at the asymptotic weight $w_{\infty.i}$, where all available energy is used for reproduction. The expression is 
+A proportion $\psi_i(w)$ of the energy available for growth and reproduction is used for reproduction. This proportion changes from zero below the weight $w_{m.i}$ of maturation to one at the maximum weight $w_{max.i}$, where all available energy is used for reproduction. The expression is 
 $$ 
 \psi_i(w) = \begin{cases}
 \left[1+\left(\frac{w}{w_{mat}}\right)^{-U}\right]^{-1}
-\left(\frac{w}{w_{inf}}\right)^{m-n}&w<w_{inf}\\
-1&w\geq w_{inf}\end{cases}
+\left(\frac{w}{w_{max}}\right)^{m-n}&w<w_{max}\\
+1&w\geq w_{max}\end{cases}
 $$
 with $m-n = 0.3$ and $U=10$ (which sets the steepness of the sigmoidal switch-on of reproduction at around the maturity weight $w_{mat}$).
 
@@ -264,7 +264,7 @@ Skip to [Somatic growth](#somatic-growth)
 #| label: tbl-repro
 #| tbl-cap: Parameters determining the investment into reproduction.
 params@species_params %>%
-    select(w_mat, w_inf) %>%
+    select(w_mat, w_max) %>%
     kable()
 ```
 
@@ -288,7 +288,7 @@ The values for the model parameters were chosen so that the resulting growth cur
 #| label: tbl-kvb
 #| tbl-cap: Parameters for observed vonBertalanffy growth curves and length-weight relationships
 params@species_params %>%
-    select(k_vb, t0, a, b) %>%
+    select(k_vb, w_inf, t0, a, b) %>%
     kable()
 ```
 
@@ -323,9 +323,9 @@ $$
 
 ### External mortality
 
-External mortality $\mu_{ext.i}(w)$ is independent of the abundances. By default, mizer assumes that the external mortality is a species-specific constant $z0_i$ independent of size. The value of $z0_i$ is either specified as a species parameter or it is assumed to depend allometrically on the asymptotic size: 
+External mortality $\mu_{ext.i}(w)$ is independent of the abundances. By default, mizer assumes that the external mortality is a species-specific constant $z0_i$ independent of size. The value of $z0_i$ is either specified as a species parameter or it is assumed to depend allometrically on the maximum size: 
 $$
-z0_i = z0_{pre} w_{\infty.i}^{1-n}.
+z0_i = z0_{pre} w_{max.i}^{1-n}.
 $$
 
 #### Parameter values
