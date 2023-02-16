@@ -3,6 +3,7 @@
 export("carrion_human_origin<-")
 export("carrion_lifetime<-")
 export("detritus_lifetime<-")
+export(addSpecies)
 export(carrion_biomass)
 export(carrion_consumption_ms)
 export(carrion_dynamics)
