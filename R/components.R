@@ -517,7 +517,20 @@ tune_carrion_detritus <- function(params) {
     params
 }
 
+#' Scale Model Parameters
+#'
+#' This function scales various model parameters by a given factor.
+#'
+#' @param params a mizer model object
+#' @param factor a numeric value by which to scale the model
+#'
+#' @return a mizer model object with scaled parameters
+#'
 #' @export
+#'
+#' @examples
+#' params <- scaleModel(NWMed_params, 0.5)
+#'
 scaleModel <- function(params, factor) {
     params@other_params[["carrion"]]$rho <- 
         params@other_params[["carrion"]]$rho / factor

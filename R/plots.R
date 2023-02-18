@@ -137,10 +137,24 @@ plotlyBiomass <- function(sim,
              tooltip = c("Species", "Year", "Biomass"))
 }
 
-#' Plot Death
-#' 
-#' @import ggplot2
+#' Plot death rates
+#'
+#' @param object A MizerSim or MizerParams object.
+#' @param species A character vector of species to plot. If NULL, all species in
+#'   the model will be plotted.
+#' @param proportion A logical value indicating whether to plot death rates as
+#'   proportions of total mortality.
+#' @param return_data A logical value indicating whether to return the data used
+#'   to plot.
+#' @return If \code{return_data = TRUE}, a data frame with the values used to
+#'   plot.
 #' @export
+#'
+#' @examples
+#'
+#' \dontrun{
+#' plotDeath(NWMed_params, species = "Hake")
+#' }
 plotDeath <- function(object, species = NULL, proportion = TRUE, return_data = FALSE)
 {
     if (is(object, "MizerSim")) {
@@ -228,7 +242,23 @@ plotlyDeath <- function(object,
              tooltip = c("value", "Cause", "w"))
 }
 
+
+#' Plot yield minus discards
+#'
+#' @param sim An \code{\link{Sim}} object.
+#' @param sim2 Optional second \code{\link{Sim}} object.
+#' @param species Species to plot.
+#' @param total Logical; should total yield be included in plot?
+#' @param log Logical; should the y-axis be log-transformed?
+#' @param highlight Name of species to highlight in plot.
+#' @param return_data Logical; should the underlying data be returned?
+#' @param ... Other arguments passed to \code{\link[Sims]{getYield}}.
+#' @return If \code{return_data = TRUE}, a data frame of the underlying
+#'   data is returned.
 #' @export
+#'
+#' @examples
+#' plotYieldMinusDiscards(sim_instance)
 plotYieldMinusDiscards <- function(sim, sim2,
                       species = NULL,
                       total = FALSE, log = TRUE,
