@@ -14,7 +14,7 @@
 #' @param component Name of component whose contribution is requested
 #' @param ... Unused
 #'
-#' @return Array species x size with the encounter rate in g/year.
+#' @return Array (species x size) with the encounter rate in g/year.
 #' @export
 encounter_contribution <- function(params, n_other, component, ...) {
     params@other_params[[component]]$rho * n_other[[component]]

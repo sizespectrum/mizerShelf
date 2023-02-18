@@ -8,10 +8,12 @@
 #' @return A MizerParams object
 #' @export
 newDetritusCarrionParams <- function(
+        species_params,
         w_min_detritus = NA, w_max_detritus = 1,
         n = 0.7, ...) {
     
     params <- newMultispeciesParams(
+        species_params = species_params,
         min_w_pp = w_min_detritus,
         w_pp_cutoff = w_max_detritus,
         n = n, p = n, 
