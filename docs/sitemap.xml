@@ -25,6 +25,9 @@
     <loc>/reference/NWMed_params.html</loc>
   </url>
   <url>
+    <loc>/reference/addSpecies.html</loc>
+  </url>
+  <url>
     <loc>/reference/carrion_biomass.html</loc>
   </url>
   <url>
@@ -97,6 +100,9 @@
     <loc>/reference/plotDetritusProduction.html</loc>
   </url>
   <url>
+    <loc>/reference/plotYieldMinusDiscards.html</loc>
+  </url>
+  <url>
     <loc>/reference/removeSpecies.html</loc>
   </url>
   <url>
@@ -104,6 +110,9 @@
   </url>
   <url>
     <loc>/reference/rescale_detritus.html</loc>
+  </url>
+  <url>
+    <loc>/reference/scaleModel.html</loc>
   </url>
   <url>
     <loc>/reference/seMort.html</loc>

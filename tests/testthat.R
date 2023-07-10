@@ -7,6 +7,8 @@
 # * https://testthat.r-lib.org/reference/test_package.html#special-files
 
 library(testthat)
+library(mizer)
+library(mizerExperimental)
 library(mizerShelf)
 
 test_check("mizerShelf")

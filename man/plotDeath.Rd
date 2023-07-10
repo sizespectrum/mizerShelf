@@ -3,12 +3,34 @@
 \name{plotDeath}
 \alias{plotDeath}
 \alias{plotlyDeath}
-\title{Plot Death}
+\title{Plot death rates}
 \usage{
 plotDeath(object, species = NULL, proportion = TRUE, return_data = FALSE)
 
 plotlyDeath(object, species = NULL, proportion = TRUE, ...)
 }
+\arguments{
+\item{object}{A MizerSim or MizerParams object.}
+
+\item{species}{A character vector of species to plot. If NULL, all species in
+the model will be plotted.}
+
+\item{proportion}{A logical value indicating whether to plot death rates as
+proportions of total mortality.}
+
+\item{return_data}{A logical value indicating whether to return the data used
+to plot.}
+}
+\value{
+If \code{return_data = TRUE}, a data frame with the values used to
+plot.
+}
 \description{
-Plot Death
+Plot death rates
+}
+\examples{
+
+\dontrun{
+plotDeath(NWMed_params, species = "Hake")
+}
 }

@@ -4,9 +4,17 @@
 \alias{newDetritusCarrionParams}
 \title{Create new mizer model with detritus and carrion components}
 \usage{
-newDetritusCarrionParams(w_min_detritus = NA, w_max_detritus = 1, n = 0.7, ...)
+newDetritusCarrionParams(
+  species_params,
+  w_min_detritus = NA,
+  w_max_detritus = 1,
+  n = 0.7,
+  ...
+)
 }
 \arguments{
+\item{species_params}{A species parameter data frame}
+
 \item{w_min_detritus}{Minimum size of detritus in grams}
 
 \item{w_max_detritus}{Maximum size of detritus in grams}
@@ -14,8 +22,6 @@ newDetritusCarrionParams(w_min_detritus = NA, w_max_detritus = 1, n = 0.7, ...)
 \item{n}{Growth exponent (also used as metabolic exponent p)}
 
 \item{...}{Extra parameters to be passed to \code{\link[=newMultispeciesParams]{newMultispeciesParams()}}}
-
-\item{species_params}{A species parameter data frame}
 }
 \value{
 A MizerParams object

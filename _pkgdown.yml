@@ -31,6 +31,8 @@ reference:
 - contents:
   - encounter_contribution
   - removeSpecies
+  - addSpecies
+  - scaleModel
 - title: Example model
 - contents:
   - matches("NWMed")

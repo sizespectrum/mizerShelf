@@ -16,7 +16,7 @@ encounter_contribution(params, n_other, component, ...)
 \item{...}{Unused}
 }
 \value{
-Array species x size with the encounter rate in g/year.
+Array (species x size) with the encounter rate in g/year.
 }
 \description{
 The encounter rate \eqn{E_i(w)} for an unstructured resource like for example
