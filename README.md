@@ -30,11 +30,10 @@ before trying again to install mizerShelf.
 
 You may be prompted to update some of your existing packages. The two packages that you should always update are `mizer` and `mizerExperimental`, because the mizerShelf package will always be designed to work with the most recent version of these.
 
-```{=html}
-<!--This started a private repository with code for the paper [Net selectivity and discarding: a size-spectrum model for effects on a Mediterranean shelf ecosystem](https://www.overleaf.com/project/5bc776493743d141063d0c9f)
+
+<!--This started as a private repository with code for the paper [Net selectivity and discarding: a size-spectrum model for effects on a Mediterranean shelf ecosystem](https://www.overleaf.com/project/5bc776493743d141063d0c9f)
 
 [Files related to the collection of model parameters](https://drive.google.com/drive/folders/1rHvx-tqEDAebSoCbETw03QQ0ffxJZuTS?usp=sharing) can be found on Google Drive.
 
 Work on this code was previously conducted at <https://github.com/gustavdelius/mizer/tree/blanes3/inst/blanes>. This in particular includes scripts used in preparing the MizerParams object. The history can be seen in the [commit log](https://github.com/gustavdelius/mizer/commits/blanes3/inst/blanes).
 --->
-```
