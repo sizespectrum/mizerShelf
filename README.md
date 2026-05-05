@@ -16,17 +16,9 @@ This package was developed to support the creation and exploration of a model fo
 
 You can install the mizerShelf package from GitHub with
 
-```{r}
+```r
 remotes::install_github("gustavdelius/mizerShelf")
 ```
-
-If this gives an error saying "there is no package called remotes" then you also need to do
-
-```{r}
-install.packages("remotes")
-```
-
-before trying again to install mizerShelf.
 
 You may be prompted to update some of your existing packages. The two packages that you should always update are `mizer` and `mizerExperimental`, because the mizerShelf package will always be designed to work with the most recent version of these.
 
