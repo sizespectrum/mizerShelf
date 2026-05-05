@@ -21,7 +21,7 @@ newDetritusCarrionParams(
 
 \item{n}{Growth exponent (also used as metabolic exponent p)}
 
-\item{...}{Extra parameters to be passed to \code{\link[=newMultispeciesParams]{newMultispeciesParams()}}}
+\item{...}{Extra parameters to be passed to \code{\link[mizer:newMultispeciesParams]{newMultispeciesParams()}}}
 }
 \value{
 A MizerParams object

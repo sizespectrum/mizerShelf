@@ -15,7 +15,7 @@ detritus_consumption(
 
 \item{n_pp}{Detritus spectrum}
 
-\item{rates}{A list of rates as returned by \code{\link[=getRates]{getRates()}}}
+\item{rates}{A list of rates as returned by \code{\link[mizer:getRates]{getRates()}}}
 }
 \value{
 A number giving the consumption rate in grams per year.

@@ -18,7 +18,7 @@ getDetritusProduction(
 
 \item{n_other}{Other dynamic components. Only \code{n_other$carrion} is used.}
 
-\item{rates}{A list of rates as returned by \code{\link[=getRates]{getRates()}}}
+\item{rates}{A list of rates as returned by \code{\link[mizer:getRates]{getRates()}}}
 }
 \value{
 A vector with named entries "external",

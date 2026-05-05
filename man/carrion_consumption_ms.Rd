@@ -11,7 +11,7 @@ carrion_consumption_ms(params, n = params@initial_n, rates = getRates(params))
 
 \item{n}{A matrix of current species abundances (species x size)}
 
-\item{rates}{A list of rates as returned by \code{\link[=getRates]{getRates()}}}
+\item{rates}{A list of rates as returned by \code{\link[mizer:getRates]{getRates()}}}
 }
 \value{
 A number giving the mass-specific consumption rate in grams per year.

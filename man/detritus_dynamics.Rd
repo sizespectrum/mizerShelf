@@ -7,7 +7,7 @@
 detritus_dynamics(params, n, n_pp, n_other, rates, dt, ...)
 }
 \arguments{
-\item{params}{A \link{MizerParams} object}
+\item{params}{A \link[mizer:MizerParams]{MizerParams} object}
 
 \item{n}{A matrix of current species abundances (species x size)}
 
@@ -15,7 +15,7 @@ detritus_dynamics(params, n, n_pp, n_other, rates, dt, ...)
 
 \item{n_other}{Other dynamic components. Only \code{n_other$carrion} is used.}
 
-\item{rates}{A list of rates as returned by \code{\link[=getRates]{getRates()}}}
+\item{rates}{A list of rates as returned by \code{\link[mizer:getRates]{getRates()}}}
 
 \item{dt}{Time step size}
 

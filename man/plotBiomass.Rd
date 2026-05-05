@@ -74,7 +74,7 @@ returned.
 After running a projection, the biomass of each species and each unstructured
 component can be plotted against time. The biomass is calculated within user
 defined size limits (min_w, max_w, min_l, max_l, see
-\code{\link[=get_size_range_array]{get_size_range_array()}}).
+\code{\link[mizer:get_size_range_array]{get_size_range_array()}}).
 }
 \examples{
 \donttest{

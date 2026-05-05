@@ -32,6 +32,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Gustav Delius \email{gustav.delius@york.ac.uk} (\href{https://orcid.org/0000-0003-4092-8228}{ORCID}) [copyright holder]
   \item Silvia de Juan \email{sdejuan@icm.csic.es} (\href{https://orcid.org/0000-0002-8891-8371}{ORCID})
   \item Francesc Maynou \email{maynouf@icm.csic.es} (\href{https://orcid.org/0000-0001-7200-6485}{ORCID})
 }
