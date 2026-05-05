@@ -55,6 +55,7 @@ plotBiomass <- function(sim, species = NULL,
                         total = FALSE, background = TRUE, 
                         highlight = NULL, return_data = FALSE,
                         ...) {
+    params <- sim@params
     # If there is no carrion component then call the mizer function
     if (is.null(getComponent(params, "carrion"))) {
         return(mizer::plotBiomass(sim, species = species,
@@ -65,14 +66,6 @@ plotBiomass <- function(sim, species = NULL,
                                   return_data = return_data, ...))
     }
     
-    df <- mizer::plotBiomass(sim, species = species,
-                             start_time = start_time, end_time = end_time,
-                             y_ticks = y_ticks, ylim = ylim,
-                             total = total, background = background,
-                             highlight = highlight, 
-                             return_data = TRUE, ...)
-    
-    params <- sim@params
     species <- valid_species_arg(sim, species)
     if (missing(start_time)) start_time <- 
         as.numeric(dimnames(sim@n)[[1]][1])
@@ -81,6 +74,13 @@ plotBiomass <- function(sim, species = NULL,
     if (start_time >= end_time) {
         stop("start_time must be less than end_time")
     }
+
+    df <- mizer::plotBiomass(sim, species = species,
+                             start_time = start_time, end_time = end_time,
+                             y_ticks = y_ticks, ylim = ylim,
+                             total = total, background = background,
+                             highlight = highlight, 
+                             return_data = TRUE, ...)
     
     # detritus
     d_biomass <- rowSums(sweep(sim@n_pp, 2, params@dw_full * params@w_full, "*"))
