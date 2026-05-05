@@ -44,7 +44,8 @@ nontarget = c("Starfish", "Murex", "Angular crab", "Harbour crab",
            "Black goby", "Large DF worms", "Small DF crustacea",
            "Endobenthic pred. crustacea", "Endobenthic pred. worms")
 
-plotlySpectra(NWMed_params, resource = FALSE, species = target, ylim = c(1e-7, NA))
+plotlySpectra(NWMed_params, resource = FALSE, species = target, 
+              ylim = c(1e-7, NA), wlim = c(1e-1, 1e4))
 ```
 
 ## Parameter choices
