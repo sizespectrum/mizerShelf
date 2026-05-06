@@ -20,7 +20,7 @@
 #' @name removeSpecies
 removeSpecies.mizerShelf <- function(params, species, ...) {
     keep <- !valid_species_arg(params, species, return.logical = TRUE)
-    p <- new("mizerShelf", NextMethod())
+    p <- NextMethod()
     p@other_params$carrion$rho <-
         p@other_params$carrion$rho[keep, , drop = FALSE]
     p
@@ -99,7 +99,7 @@ addSpecies.mizerShelf <- function(params, species_params, ..., steady = FALSE) {
     # Let the base method handle all standard bookkeeping.
     # We pass steady = FALSE so it skips steadySingleSpecies, which would fail
     # because rho still has the old species dimensions at that point.
-    p <- new("mizerShelf", NextMethod())
+    p <- NextMethod()
 
     new_sp <- (no_old_sp + 1):(no_old_sp + no_new_sp)
     no_w <- length(p@w)

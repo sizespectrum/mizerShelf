@@ -47,8 +47,8 @@ records the extension in `params@extensions` and coerces the result to
 the `mizerShelf` marker class:
 
 ``` r
-params@extensions <- c(mizerShelf = as.character(packageVersion("mizerShelf")))
-new("mizerShelf", params)
+params@extensions <- getRegisteredExtensions()
+params <- coerceToExtensionClass(params)
 ```
 
 Recording the extension in `params@extensions` is what allows mizer to
@@ -432,7 +432,9 @@ newDetritusCarrionParams <- function(species_params,
     # 4. Marker class: enables S3 dispatch for shelf-specific methods
     params <- setColours(params,
                          c(Detritus = "forestgreen", carrion = "peru"))
-    new("mizerShelf", params)
+    
+    params@extensions <- getRegisteredExtensions()
+    params <- coerceToExtensionClass(params)
 }
 ```
 

@@ -15,10 +15,10 @@ steady.mizerShelf <- function(params, t_max = 100, t_per = 1.5, dt = 0.1,
                               tol = 0.1 * dt, return_sim = FALSE, ...) {
     result <- NextMethod()
     if (return_sim) {
-        sim <- new("mizerShelfSim", result)
-        sim@params <- tune_carrion_detritus(new("mizerShelf", sim@params))
+        sim <- result
+        sim@params <- tune_carrion_detritus(sim@params)
         return(sim)
     } else {
-        tune_carrion_detritus(new("mizerShelf", result))
+        tune_carrion_detritus(result)
     }
 }
