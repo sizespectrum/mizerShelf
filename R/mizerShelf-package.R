@@ -19,3 +19,8 @@
 #' @md
 #' @keywords internal
 "_PACKAGE"
+
+.onLoad <- function(libname, pkgname) {
+    registerExtensions(stats::setNames(as.character(utils::packageVersion(pkgname)),
+                                       pkgname))
+}

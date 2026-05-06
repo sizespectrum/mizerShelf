@@ -17,28 +17,6 @@ setClass("mizerShelf", contains = "MizerParams")
 #' @export
 setClass("mizerShelfSim", contains = "MizerSim")
 
-# validParams -------------------------------------------------------------
-
-#' @method validParams mizerShelf
-#' @export
-validParams.mizerShelf <- function(params, ...) {
-    new("mizerShelf", NextMethod())
-}
-
-# project -----------------------------------------------------------------
-
-#' @method project mizerShelf
-#' @export
-project.mizerShelf <- function(params, ...) {
-    new("mizerShelfSim", NextMethod())
-}
-
-#' @method project mizerShelfSim
-#' @export
-project.mizerShelfSim <- function(sim, ...) {
-    new("mizerShelfSim", NextMethod())
-}
-
 # getBiomass --------------------------------------------------------------
 
 #' Get biomass of species and components for a shelf model
