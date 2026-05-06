@@ -41,19 +41,38 @@ project.mizerShelfSim <- function(sim, ...) {
 
 # getBiomass --------------------------------------------------------------
 
-#' Get biomass of species and components through time for a shelf model
+#' Get biomass of species and components for a shelf model
 #'
-#' Extends [mizer::getBiomass()] for `mizerShelfSim` objects by adding the
-#' detritus (resource spectrum) and any scalar other-component biomasses (e.g.
-#' carrion) as extra columns.
+#' Extends [mizer::getBiomass()] for `mizerShelf` and `mizerShelfSim` objects
+#' by adding the detritus (resource spectrum) and any scalar other-component
+#' biomasses (e.g. carrion).
 #'
-#' @param object A `mizerShelfSim` object.
+#' @param object A `mizerShelf` or `mizerShelfSim` object.
 #' @param ... Passed to the base [mizer::getBiomass()] method.
-#' @return An `ArraySpeciesByTime` matrix (time x species/component) with
-#'   species biomasses followed by Detritus and other component biomasses.
-#' @method getBiomass mizerShelfSim
+#' @return For `mizerShelf`: a named numeric vector of species/component
+#'   biomasses. For `mizerShelfSim`: an `ArraySpeciesByTime` matrix
+#'   (time x species/component) with species biomasses followed by Detritus
+#'   and other component biomasses.
+#' @method getBiomass mizerShelf
 #' @export
 #' @name getBiomass
+getBiomass.mizerShelf <- function(object, ...) {
+    params <- object
+    b <- NextMethod()
+
+    d_biomass <- sum(params@initial_n_pp * params@dw_full * params@w_full)
+    b <- c(b, Detritus = d_biomass)
+
+    other <- params@initial_n_other
+    scalar_other <- Filter(function(x) is.numeric(x) && length(x) == 1, other)
+    if (length(scalar_other) > 0) {
+        b <- c(b, unlist(scalar_other))
+    }
+    b
+}
+
+#' @method getBiomass mizerShelfSim
+#' @export
 getBiomass.mizerShelfSim <- function(object, ...) {
     sim <- object
     params <- sim@params
