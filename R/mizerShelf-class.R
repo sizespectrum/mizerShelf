@@ -53,11 +53,12 @@ project.mizerShelfSim <- function(sim, ...) {
 #'   species biomasses followed by Detritus and other component biomasses.
 #' @method getBiomass mizerShelfSim
 #' @export
-#' @rdname getBiomass
+#' @name getBiomass
 getBiomass.mizerShelfSim <- function(object, ...) {
     sim <- object
     params <- sim@params
     b <- unclass(NextMethod())
+    dimname_names <- names(dimnames(b))
 
     # Add detritus (resource spectrum n_pp)
     d_biomass <- rowSums(sweep(sim@n_pp, 2,
@@ -73,6 +74,7 @@ getBiomass.mizerShelfSim <- function(object, ...) {
         colnames(comp_mat) <- comp_names
         b <- cbind(b, comp_mat)
     }
+    names(dimnames(b)) <- dimname_names
 
     ArraySpeciesByTime(b, value_name = "Biomass", units = "g",
                        params = params)
