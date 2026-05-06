@@ -1,23 +1,25 @@
-#' Remove some species from the model
-#' 
-#' This calls `mizer::removeSpecies()` and in addition removes the relevant
-#' row from the carrion consumption array `rho`.
-#' @param params A MizerParams object
+#' Remove some species from a shelf model
+#'
+#' Extends [mizer::removeSpecies()] for `mizerShelf` objects: after removing
+#' the species it also removes the corresponding rows from the carrion
+#' encounter rate matrix `rho`.
+#'
+#' @param params A `mizerShelf` params object.
 #' @param species The species to be removed. A vector of species names, or a
 #'   numeric vector of species indices, or a logical vector indicating for each
 #'   species whether it is to be removed (TRUE) or not.
-#' @return A MizerParams object with fewer species.
+#' @param ... Passed to [mizer::removeSpecies()].
+#' @return A `mizerShelf` params object with fewer species.
+#' @method removeSpecies mizerShelf
 #' @examples
 #' params <- NWMed_params
 #' species_params(params)$species
 #' params <- removeSpecies(params, c("Poor cod", "Horse mackerel"))
 #' species_params(params)$species
 #' @export
-removeSpecies <- function(params, species) {
-    p <- mizer::removeSpecies(params, species)
-    species <- valid_species_arg(params, species,
-                                 return.logical = TRUE)
-    keep <- !species
+removeSpecies.mizerShelf <- function(params, species, ...) {
+    keep <- !valid_species_arg(params, species, return.logical = TRUE)
+    p <- new("mizerShelf", NextMethod())
     p@other_params$carrion$rho <-
         p@other_params$carrion$rho[keep, , drop = FALSE]
     p
@@ -70,7 +72,6 @@ removeSpecies <- function(params, species) {
 #'   changed with [setBevertonHolt()]
 #'
 #' @seealso [removeSpecies()]
-#' @export
 #' @examples
 #' params <- newTraitParams()
 #' species_params <- data.frame(
@@ -85,7 +86,10 @@ removeSpecies <- function(params, species) {
 #' )
 #' params <- addSpecies(params, species_params)
 #' plotSpectra(params)
-addSpecies <- function(params, species_params,
+#' @rdname addSpecies
+#' @method addSpecies mizerShelf
+#' @export
+addSpecies.mizerShelf <- function(params, species_params,
                        gear_params = data.frame(), initial_effort,
                        interaction) {
   # check validity of parameters ----

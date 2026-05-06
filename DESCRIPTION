@@ -42,6 +42,7 @@ URL: https://sizespectrum.org/mizerShelf/, https://github.com/sizespectrum/mizer
 BugReports: https://github.com/sizespectrum/mizerShelf/issues
 Language: en-GB
 Collate:
+    'mizerShelf-class.R'
     'components.R'
     'data.R'
     'helpers.R'
