@@ -8,17 +8,20 @@ getDetritusProduction(
   params,
   n = params@initial_n,
   n_other = params@initial_n_other,
-  rates = getRates(params)
+  rates = getRates(params),
+  ...
 )
 }
 \arguments{
-\item{params}{MizerParams}
+\item{params}{A \link[mizer:MizerParams]{MizerParams} object.}
 
 \item{n}{A matrix of current species abundances (species x size)}
 
 \item{n_other}{Other dynamic components. Only \code{n_other$carrion} is used.}
 
 \item{rates}{A list of rates as returned by \code{\link[mizer:getRates]{getRates()}}}
+
+\item{...}{Unused}
 }
 \value{
 A vector with named entries "external",
@@ -26,7 +29,7 @@ A vector with named entries "external",
 is produced by these sources in grams per year.
 }
 \description{
-Gives a named vector with the rates at which different components of the
+Returns a named vector with the rates at which different components of the
 ecosystem produce detritus:
 \enumerate{
 \item biomass not assimilated by predators ("feces"),

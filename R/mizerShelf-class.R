@@ -53,6 +53,7 @@ project.mizerShelfSim <- function(sim, ...) {
 #'   species biomasses followed by Detritus and other component biomasses.
 #' @method getBiomass mizerShelfSim
 #' @export
+#' @rdname getBiomass
 getBiomass.mizerShelfSim <- function(object, ...) {
     sim <- object
     params <- sim@params

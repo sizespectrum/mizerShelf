@@ -4,20 +4,21 @@
 \alias{getCarrionConsumption}
 \title{Get carrion consumption rates}
 \usage{
-getCarrionConsumption(params)
+getCarrionConsumption(params, ...)
 }
 \arguments{
-\item{params}{MizerParams}
+\item{params}{A \link[mizer:MizerParams]{MizerParams} object.}
+
+\item{...}{Unused}
 }
 \value{
 A named vector with the consumption rates from all species and
 decomposition.
 }
 \description{
-This function returns a named vector with one component for each species
-giving the rate in grams/year at which that species consumes carrion, as well
-as a component named \code{decompose} with the rate in grams/year at which carrion
-is decomposed by bacteria and other processes.
+Returns a named vector with one entry for each species giving the rate in
+grams/year at which that species consumes carrion, plus a \code{decompose} entry
+for bacterial decomposition.
 }
 \seealso{
 \code{\link[=getCarrionProduction]{getCarrionProduction()}}, \code{\link[=carrion_dynamics]{carrion_dynamics()}}, \code{\link[=getDetritusConsumption]{getDetritusConsumption()}}

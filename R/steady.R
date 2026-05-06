@@ -10,6 +10,7 @@
 #'   `return_sim = TRUE`).
 #' @method steady mizerShelf
 #' @export
+#' @rdname steady
 steady.mizerShelf <- function(params, t_max = 100, t_per = 1.5, dt = 0.1,
                               tol = 0.1 * dt, return_sim = FALSE, ...) {
     result <- NextMethod()

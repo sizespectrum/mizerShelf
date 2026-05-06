@@ -24,7 +24,7 @@ newDetritusCarrionParams(
 \item{...}{Extra parameters to be passed to \code{\link[mizer:newMultispeciesParams]{newMultispeciesParams()}}}
 }
 \value{
-A MizerParams object
+A \code{mizerShelf} object
 }
 \description{
 Create new mizer model with detritus and carrion components

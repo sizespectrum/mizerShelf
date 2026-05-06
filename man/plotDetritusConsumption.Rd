@@ -2,7 +2,7 @@
 % Please edit documentation in R/components.R
 \name{plotDetritusConsumption}
 \alias{plotDetritusConsumption}
-\title{Plot carrion consumption rates}
+\title{Plot detritus consumption rates}
 \usage{
 plotDetritusConsumption(params)
 }
@@ -13,5 +13,5 @@ plotDetritusConsumption(params)
 A pie chart.
 }
 \description{
-Plot carrion consumption rates
+Plot detritus consumption rates
 }

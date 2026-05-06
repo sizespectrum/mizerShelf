@@ -17,6 +17,7 @@
 #' params <- removeSpecies(params, c("Poor cod", "Horse mackerel"))
 #' species_params(params)$species
 #' @export
+#' @rdname removeSpecies
 removeSpecies.mizerShelf <- function(params, species, ...) {
     keep <- !valid_species_arg(params, species, return.logical = TRUE)
     p <- new("mizerShelf", NextMethod())
