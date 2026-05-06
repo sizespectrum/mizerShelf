@@ -53,6 +53,12 @@ project.mizerShelfSim <- function(sim, ...) {
 #'   biomasses. For `mizerShelfSim`: an `ArraySpeciesByTime` matrix
 #'   (time x species/component) with species biomasses followed by Detritus
 #'   and other component biomasses.
+#' @examples
+#' getBiomass(NWMed_params)
+#' \donttest{
+#' sim <- project(NWMed_params, t_max = 3)
+#' getBiomass(sim)
+#' }
 #' @method getBiomass mizerShelf
 #' @export
 #' @name getBiomass

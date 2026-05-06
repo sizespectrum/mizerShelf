@@ -39,3 +39,9 @@ data is returned.
 \description{
 Plot yield minus discards
 }
+\examples{
+\donttest{
+sim <- project(NWMed_params, t_max = 3)
+plotYieldMinusDiscards(sim)
+}
+}

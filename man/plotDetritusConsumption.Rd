@@ -15,3 +15,6 @@ A pie chart.
 \description{
 Plot detritus consumption rates
 }
+\examples{
+plotDetritusConsumption(NWMed_params)
+}

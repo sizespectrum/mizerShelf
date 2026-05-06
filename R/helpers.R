@@ -17,7 +17,7 @@
 #' params <- removeSpecies(params, c("Poor cod", "Horse mackerel"))
 #' species_params(params)$species
 #' @export
-#' @rdname removeSpecies
+#' @name removeSpecies
 removeSpecies.mizerShelf <- function(params, species, ...) {
     keep <- !valid_species_arg(params, species, return.logical = TRUE)
     p <- new("mizerShelf", NextMethod())
@@ -87,7 +87,7 @@ removeSpecies.mizerShelf <- function(params, species, ...) {
 #' )
 #' params <- addSpecies(params, species_params)
 #' plotSpectra(params)
-#' @rdname addSpecies
+#' @name addSpecies
 #' @method addSpecies mizerShelf
 #' @export
 addSpecies.mizerShelf <- function(params, species_params, ..., steady = FALSE) {

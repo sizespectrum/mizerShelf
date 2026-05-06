@@ -29,8 +29,5 @@ plot.
 Plot death rates
 }
 \examples{
-
-\dontrun{
 plotDeath(NWMed_params, species = "Hake")
-}
 }

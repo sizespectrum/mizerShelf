@@ -131,6 +131,8 @@ getCarrionConsumption <- function(params, ...) {
 #'
 #' @param params MizerParams
 #' @return A pie chart.
+#' @examples
+#' plotCarrionConsumption(NWMed_params)
 #' @export
 plotCarrionConsumption <- function(params) {
     consumption <- getCarrionConsumption(params)
@@ -183,6 +185,8 @@ getCarrionProduction <- function(params, n = params@initial_n,
 #'
 #' @param params MizerParams
 #' @return A pie chart.
+#' @examples
+#' plotCarrionProduction(NWMed_params)
 #' @export
 plotCarrionProduction <- function(params) {
     production <- getCarrionProduction(params)
@@ -302,6 +306,8 @@ getDetritusConsumption <- function(params, ...) {
 #'
 #' @param params MizerParams
 #' @return A pie chart.
+#' @examples
+#' plotDetritusConsumption(NWMed_params)
 #' @export
 plotDetritusConsumption <- function(params) {
     consumption <- getDetritusConsumption(params)
@@ -356,6 +362,8 @@ getDetritusProduction <- function(params, n = params@initial_n,
 #'
 #' @param params MizerParams
 #' @return A pie chart.
+#' @examples
+#' plotDetritusProduction(NWMed_params)
 #' @export
 plotDetritusProduction <- function(params) {
     production <- getDetritusProduction(params)
@@ -532,10 +540,10 @@ tune_carrion_detritus <- function(params) {
 #' @return A `mizerShelf` params object with scaled parameters.
 #' @method scaleModel mizerShelf
 #' @export
+#' @name scaleModel
 #'
 #' @examples
 #' params <- scaleModel(NWMed_params, 0.5)
-#' @rdname scaleModel
 scaleModel.mizerShelf <- function(params, factor, ...) {
     p <- new("mizerShelf", NextMethod())
     p@other_params[["carrion"]]$rho <- p@other_params[["carrion"]]$rho / factor

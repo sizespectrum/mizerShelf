@@ -5,7 +5,7 @@
 \title{mizerShelf marker classes}
 \description{
 S4 marker subclasses of \link[mizer:MizerParams]{MizerParams} and \link[mizer:MizerSim]{MizerSim} that enable S3 dispatch
-for shelf-specific methods such as \code{\link[mizer:steady]{steady()}}, \code{\link[=scaleModel]{scaleModel()}},
+for shelf-specific methods such as \code{\link[=steady]{steady()}}, \code{\link[=scaleModel]{scaleModel()}},
 \code{\link[=removeSpecies]{removeSpecies()}}, \code{\link[=addSpecies]{addSpecies()}}, and \code{\link[=getBiomass]{getBiomass()}}.
 }
 \details{

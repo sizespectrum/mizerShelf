@@ -12,10 +12,7 @@
 #' @export
 #'
 #' @examples
-#'
-#' \dontrun{
 #' plotDeath(NWMed_params, species = "Hake")
-#' }
 plotDeath <- function(object, species = NULL, proportion = TRUE, return_data = FALSE)
 {
     if (is(object, "MizerSim")) {
@@ -116,6 +113,11 @@ plotlyDeath <- function(object,
 #' @param ... Other arguments passed to \code{\link[mizer]{getYield}}.
 #' @return If \code{return_data = TRUE}, a data frame of the underlying
 #'   data is returned.
+#' @examples
+#' \donttest{
+#' sim <- project(NWMed_params, t_max = 3)
+#' plotYieldMinusDiscards(sim)
+#' }
 #' @export
 plotYieldMinusDiscards <- function(sim, sim2,
                       species = NULL,
