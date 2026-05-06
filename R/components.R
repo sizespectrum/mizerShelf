@@ -535,14 +535,13 @@ tune_carrion_detritus <- function(params) {
 #'
 #' @examples
 #' params <- scaleModel(NWMed_params, 0.5)
+#' @rdname scaleModel
 scaleModel.mizerShelf <- function(params, factor, ...) {
-    params@other_params[["carrion"]]$rho <-
-        params@other_params[["carrion"]]$rho / factor
-    params@species_params$rho_carrion <-
-        params@species_params$rho_carrion / factor
-    params@other_params$detritus$external <-
-        params@other_params$detritus$external * factor
-    new("mizerShelf", scaleModel(methods::as(params, "MizerParams"), factor, ...))
+    p <- new("mizerShelf", NextMethod())
+    p@other_params[["carrion"]]$rho <- p@other_params[["carrion"]]$rho / factor
+    p@species_params$rho_carrion <- p@species_params$rho_carrion / factor
+    p@other_params$detritus$external <- p@other_params$detritus$external * factor
+    p
 }
 
 #' @export
