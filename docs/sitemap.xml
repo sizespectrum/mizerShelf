@@ -1,123 +1,48 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/articles/explore_scenarios.html</loc>
-  </url>
-  <url>
-    <loc>/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>/articles/model_description.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/NWMed_catch.html</loc>
-  </url>
-  <url>
-    <loc>/reference/NWMed_params.html</loc>
-  </url>
-  <url>
-    <loc>/reference/addSpecies.html</loc>
-  </url>
-  <url>
-    <loc>/reference/carrion_biomass.html</loc>
-  </url>
-  <url>
-    <loc>/reference/carrion_consumption_ms.html</loc>
-  </url>
-  <url>
-    <loc>/reference/carrion_dynamics.html</loc>
-  </url>
-  <url>
-    <loc>/reference/carrion_human_origin.html</loc>
-  </url>
-  <url>
-    <loc>/reference/carrion_lifetime.html</loc>
-  </url>
-  <url>
-    <loc>/reference/detritus_biomass.html</loc>
-  </url>
-  <url>
-    <loc>/reference/detritus_consumption.html</loc>
-  </url>
-  <url>
-    <loc>/reference/detritus_dynamics.html</loc>
-  </url>
-  <url>
-    <loc>/reference/detritus_lifetime.html</loc>
-  </url>
-  <url>
-    <loc>/reference/encounter_contribution.html</loc>
-  </url>
-  <url>
-    <loc>/reference/gearMort.html</loc>
-  </url>
-  <url>
-    <loc>/reference/getCarrionConsumption.html</loc>
-  </url>
-  <url>
-    <loc>/reference/getCarrionProduction.html</loc>
-  </url>
-  <url>
-    <loc>/reference/getDetritusConsumption.html</loc>
-  </url>
-  <url>
-    <loc>/reference/getDetritusProduction.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/mizerShelf-package.html</loc>
-  </url>
-  <url>
-    <loc>/reference/newDetritusCarrionParams.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotBiomass.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotCarrionConsumption.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotCarrionProduction.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotDeath.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotDetritusConsumption.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotDetritusProduction.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotYieldMinusDiscards.html</loc>
-  </url>
-  <url>
-    <loc>/reference/removeSpecies.html</loc>
-  </url>
-  <url>
-    <loc>/reference/rescale_carrion.html</loc>
-  </url>
-  <url>
-    <loc>/reference/rescale_detritus.html</loc>
-  </url>
-  <url>
-    <loc>/reference/scaleModel.html</loc>
-  </url>
-  <url>
-    <loc>/reference/seMort.html</loc>
-  </url>
-  <url>
-    <loc>/reference/tune_carrion_detritus.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://sizespectrum.org/mizerShelf/404.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/articles/explore_scenarios.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/articles/extension_mechanism.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/articles/index.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/articles/model_description.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/authors.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/index.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/NWMed_catch.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/NWMed_params.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/addSpecies.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/carrion_biomass.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/carrion_consumption_ms.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/carrion_dynamics.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/carrion_human_origin.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/carrion_lifetime.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/detritus_biomass.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/detritus_consumption.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/detritus_dynamics.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/detritus_lifetime.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/encounter_contribution.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/gearMort.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/getBiomass.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/getBiomass.mizerShelfSim.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/getCarrionConsumption.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/getCarrionProduction.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/getDetritusConsumption.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/getDetritusProduction.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/index.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/mizerShelf-class.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/mizerShelf-package.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/newDetritusCarrionParams.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/plotBiomass.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/plotCarrionConsumption.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/plotCarrionProduction.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/plotDeath.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/plotDetritusConsumption.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/plotDetritusProduction.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/plotYieldMinusDiscards.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/removeSpecies.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/rescale_carrion.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/rescale_detritus.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/scaleModel.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/seMort.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/steady.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/tune_carrion_detritus.html</loc></url>
 </urlset>
+

@@ -6,7 +6,12 @@ template:
 navbar:
   structure:
     left: [home, reference, articles]
-    right: [github]
+    right: [mizer, github]
+  components:
+    home: ~
+    mizer:
+      text: mizer Home
+      href: https://sizespectrum.org/mizer
     
 home:
   sidebar:
