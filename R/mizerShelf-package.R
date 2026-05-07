@@ -21,6 +21,5 @@
 "_PACKAGE"
 
 .onLoad <- function(libname, pkgname) {
-    registerExtensions(stats::setNames(as.character(utils::packageVersion(pkgname)),
-                                       pkgname))
+    mizer::registerExtension(pkgname, requirement = "sizespectrum/mizerShelf")
 }

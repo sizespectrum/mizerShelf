@@ -33,6 +33,7 @@ extension mechanisms described in `vignette("extensions", package = "mizer")`:
 
 | Extension mechanism | Used for |
 |---|---|
+| `.onLoad` + `registerExtension()` | Register the package with mizer so params objects know which extensions they need |
 | `setRateFunction()` | Replace standard mortality with shelf mortality that includes excess gear mortality |
 | Resource dynamics override | Implement detritus dynamics in place of the default semi-chemostat resource |
 | `setComponent()` | Add carrion as a scalar dynamical component that contributes to the encounter rate |
@@ -54,6 +55,28 @@ These classes carry no extra slots. Their purpose is to trigger S3 dispatch so
 that shelf-specific behaviour is used automatically whenever a user calls a
 mizer generic on a `mizerShelf` object. The classes are marker classes in the
 sense described in `vignette("extensions", package = "mizer")`.
+
+## Registration via `.onLoad`
+
+For mizer to recognise mizerShelf as an extension, the package must register
+itself when it is loaded. This happens automatically via `.onLoad` in
+`R/mizerShelf-package.R`:
+
+```r
+.onLoad <- function(libname, pkgname) {
+    mizer::registerExtension(pkgname, requirement = "sizespectrum/mizerShelf")
+}
+```
+
+`registerExtension()` adds an entry to mizer's internal registry of known
+extensions. The `requirement` argument records the GitHub repository
+(`"sizespectrum/mizerShelf"`) so that mizer can warn users if they load a
+`params` object that needs mizerShelf but the package is not installed.
+
+This registration is what makes the subsequent call to `getRegisteredExtensions()`
+inside `newDetritusCarrionParams()` return `"mizerShelf"` — it is not a scan of
+installed packages but a lookup of packages that have explicitly announced
+themselves to mizer.
 
 `newDetritusCarrionParams()` records the extension in `params@extensions` and
 coerces the result to the `mizerShelf` marker class:
