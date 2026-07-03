@@ -13,27 +13,22 @@
 \item{species_params}{Data frame with the species parameters of the new
 species we want to add to the system.}
 
-\item{interaction}{Interaction matrix. A square matrix giving either the
-interaction coefficients between all species or only those between the new
-species. In the latter case all interaction between an old and a new
-species are set to 1. If this argument is missing, all interactions
-involving a new species are set to 1.}
+\item{...}{Passed to \code{\link[mizer:addSpecies]{mizer::addSpecies()}}, for example \code{interaction},
+\code{gear_params} or \code{initial_effort}.}
 
-\item{gear_params}{Data frame with the gear parameters for the new
-species. If not provided then the new species will not be fished.}
-
-\item{initial_effort}{A named vector with the effort for new fishing gear
-introduced in \code{gear_params}. New gear for which no effort is set via this
-vector will have an initial effort of 0. Should not include effort values
-for existing gear.}
+\item{steady}{Ignored. This method always adds the new species with
+\code{steady = FALSE} because at that point the carrion encounter rate matrix
+\code{rho} still has the old species dimensions, which would make
+\code{steadySingleSpecies()} fail. The steady state for the new species is
+computed separately afterwards.}
 }
 \value{
-An object of type \linkS4class{MizerParams}
+An object of type \link[mizer:MizerParams]{MizerParams}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-Takes a \linkS4class{MizerParams} object and adds additional species with
+Takes a \link[mizer:MizerParams]{MizerParams} object and adds additional species with
 given parameters to the ecosystem. It sets the initial values for these new
 species to their steady-state solution in the given initial state of the
 existing ecosystem. This will be close to the true steady state if the

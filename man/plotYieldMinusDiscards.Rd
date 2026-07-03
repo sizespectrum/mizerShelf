@@ -16,9 +16,9 @@ plotYieldMinusDiscards(
 )
 }
 \arguments{
-\item{sim}{An \code{\link{MizerSim}} object.}
+\item{sim}{An \link[mizer:MizerSim]{MizerSim} object.}
 
-\item{sim2}{Optional second \code{\link{MizerSim}} object.}
+\item{sim2}{Optional second \link[mizer:MizerSim]{MizerSim} object.}
 
 \item{species}{Species to plot.}
 

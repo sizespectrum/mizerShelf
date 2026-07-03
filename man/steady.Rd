@@ -33,6 +33,9 @@ production RDI over \code{t_per} years is less than \code{tol} for every species
 \item{return_sim}{If TRUE, the function returns the MizerSim object holding
 the result of the simulation run, saved at intervals of \code{t_per}. If FALSE (default) the function returns
 a MizerParams object with the "initial" slots set to the steady state.}
+
+\item{...}{Passed to \code{\link[mizer:steady]{mizer::steady()}}, for example \code{preserve},
+\code{progress_bar}, \code{info_level} or \code{method}.}
 }
 \value{
 An updated \code{mizerShelf} object (or a \code{mizerShelfSim} when

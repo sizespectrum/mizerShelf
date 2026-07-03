@@ -1,7 +1,7 @@
 Package: mizerShelf
 Title: Mizer Models with Carrion and Detritus Components suitable for
     continental shelf ecosystems
-Version: 1.0.1
+Version: 1.0.2
 Date: 2022-12-22
 Authors@R: c(
     person("Gustav", "Delius",
@@ -19,21 +19,25 @@ Description: This package provides the functionality for setting up and
     includes an example model for a region in the Nort-West Mediterranean.
 License: GPL-3
 Depends: 
-    mizer (>= 2.5.4.9125),
+    mizer (>= 3.1),
     R (>= 3.5.0)
 Imports:
     lubridate,
     methods,
-    mizer (>= 2.4.0),
+    mizerEcopath,
     mizerExperimental (>= 2.4.0),
     ggplot2,
-    plotly
-Suggests: 
+    plotly,
+    reshape2,
+    shiny
+Suggests:
+    dplyr,
     knitr,
     patchwork,
     rmarkdown,
     testthat (>= 3.0.0)
-Remotes: 
+Remotes:
+    gustavdelius/mizerEcopath,
     sizespectrum/mizerExperimental
 Config/testthat/edition: 3
 Encoding: UTF-8

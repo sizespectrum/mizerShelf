@@ -12,7 +12,7 @@
 #' estimate the effects of improving fisheries selectivity and reducing discards
 #' in Mediterranean mixed demersal fisheries".
 #'
-#' @import mizer mizerExperimental ggplot2
+#' @import mizer mizerExperimental ggplot2 shiny
 #' @importFrom plotly ggplotly
 #' @importFrom lubridate now
 #' @importFrom methods is

@@ -11,9 +11,11 @@
 #' @name mizerShelf-class
 NULL
 
+#' @rdname mizerShelf-class
 #' @export
 setClass("mizerShelf", contains = "MizerParams")
 
+#' @rdname mizerShelf-class
 #' @export
 setClass("mizerShelfSim", contains = "MizerSim")
 

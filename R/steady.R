@@ -6,6 +6,8 @@
 #'
 #' @param params A `mizerShelf` params object.
 #' @inheritParams mizer::steady
+#' @param ... Passed to [mizer::steady()], for example `preserve`,
+#'   `progress_bar`, `info_level` or `method`.
 #' @return An updated `mizerShelf` object (or a `mizerShelfSim` when
 #'   `return_sim = TRUE`).
 #' @method steady mizerShelf

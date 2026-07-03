@@ -140,7 +140,7 @@ plotCarrionConsumption <- function(params) {
     consumption <- consumption[consumption > total/100]
     df <- data.frame(Consumer = names(consumption),
                      Rate = consumption)
-    ggplot(df, aes(x = "", y = Rate, fill = Consumer)) +
+    ggplot(df, aes(x = "", y = .data$Rate, fill = .data$Consumer)) +
         geom_bar(stat = "identity", width = 1) +
         coord_polar("y", start = 0) +
         labs(title = "Carrion consumption rate [g/year]",
@@ -192,7 +192,7 @@ plotCarrionProduction <- function(params) {
     production <- getCarrionProduction(params)
     df <- data.frame(Producer = names(production),
                      Rate = production)
-    ggplot(df, aes(x = "", y = Rate, fill = Producer)) +
+    ggplot(df, aes(x = "", y = .data$Rate, fill = .data$Producer)) +
         geom_bar(stat = "identity", width = 1) +
         coord_polar("y", start = 0) +
         labs(title = "Carrion production rate [g/year]",
@@ -315,7 +315,7 @@ plotDetritusConsumption <- function(params) {
     consumption <- consumption[consumption > total/100]
     df <- data.frame(Consumer = names(consumption),
                      Rate = consumption)
-    ggplot(df, aes(x = "", y = Rate, fill = Consumer)) +
+    ggplot(df, aes(x = "", y = .data$Rate, fill = .data$Consumer)) +
         geom_bar(stat = "identity", width = 1) +
         coord_polar("y", start = 0) +
         labs(title = "Detritus consumption rate [g/year]",
@@ -369,7 +369,7 @@ plotDetritusProduction <- function(params) {
     production <- getDetritusProduction(params)
     df <- data.frame(Producer = names(production),
                      Rate = production)
-    ggplot(df, aes(x = "", y = Rate, fill = Producer)) +
+    ggplot(df, aes(x = "", y = .data$Rate, fill = .data$Producer)) +
         geom_bar(stat = "identity", width = 1) +
         coord_polar("y", start = 0) +
         labs(title = "Detritus production rate [g/year]",
@@ -438,6 +438,9 @@ carrion_human_origin <- function(params) {
     (production[["gear_mort"]] + production[["discards"]]) / sum(production)
 }
 
+#' @param value The desired proportion of carrion production that is of
+#'   human origin.
+#' @rdname carrion_human_origin
 #' @export
 `carrion_human_origin<-` <- function(params, value) {
     lifetime <- carrion_lifetime(params)
@@ -495,6 +498,15 @@ rescale_detritus <- function(params, factor) {
     params
 }
 
+#' Rescale carrion and detritus biomass without changing anything else
+#'
+#' A convenience wrapper that calls [rescale_carrion()] and
+#' [rescale_detritus()].
+#'
+#' @param params A MizerParams object
+#' @param carrion_factor A number by which to multiply the carrion biomass
+#' @param detritus_factor A number by which to multiply the detritus biomass
+#' @return An updated MizerParams object
 #' @export
 rescaleComponents <- function(params, carrion_factor = 1, detritus_factor = 1) {
     rescale_carrion(rescale_detritus(params, detritus_factor),
@@ -552,6 +564,18 @@ scaleModel.mizerShelf <- function(params, factor, ...) {
     p
 }
 
+#' Keep a component's abundance constant
+#'
+#' A dynamics function for use as `other_dynamics` for a component that is
+#' held at its current value, i.e. it never changes over time.
+#'
+#' @param params A MizerParams object
+#' @param n_other A list with the current biomasses/abundances of the other
+#'   components
+#' @param component The name of the component whose abundance is returned
+#'   unchanged
+#' @param ... Unused
+#' @return The unchanged abundance of `component`
 #' @export
 constant_dynamics <- function(params, n_other, component, ...) {
     n_other[[component]]

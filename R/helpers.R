@@ -30,7 +30,7 @@ removeSpecies.mizerShelf <- function(params, species, ...) {
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#'   Takes a \linkS4class{MizerParams} object and adds additional species with
+#'   Takes a [MizerParams] object and adds additional species with
 #'   given parameters to the ecosystem. It sets the initial values for these new
 #'   species to their steady-state solution in the given initial state of the
 #'   existing ecosystem. This will be close to the true steady state if the
@@ -42,19 +42,15 @@ removeSpecies.mizerShelf <- function(params, species, ...) {
 #' @param params A mizer params object for the original system.
 #' @param species_params Data frame with the species parameters of the new
 #'   species we want to add to the system.
-#' @param interaction Interaction matrix. A square matrix giving either the
-#'   interaction coefficients between all species or only those between the new
-#'   species. In the latter case all interaction between an old and a new
-#'   species are set to 1. If this argument is missing, all interactions
-#'   involving a new species are set to 1.
-#' @param gear_params Data frame with the gear parameters for the new
-#'   species. If not provided then the new species will not be fished.
-#' @param initial_effort A named vector with the effort for new fishing gear
-#'   introduced in `gear_params`. New gear for which no effort is set via this
-#'   vector will have an initial effort of 0. Should not include effort values
-#'   for existing gear.
+#' @param ... Passed to [mizer::addSpecies()], for example `interaction`,
+#'   `gear_params` or `initial_effort`.
+#' @param steady Ignored. This method always adds the new species with
+#'   `steady = FALSE` because at that point the carrion encounter rate matrix
+#'   `rho` still has the old species dimensions, which would make
+#'   `steadySingleSpecies()` fail. The steady state for the new species is
+#'   computed separately afterwards.
 #'
-#' @return An object of type \linkS4class{MizerParams}
+#' @return An object of type [MizerParams]
 #'
 #' @details The resulting MizerParams object will use the same size grid where
 #'   possible, but if one of the new species needs a larger range of w (either

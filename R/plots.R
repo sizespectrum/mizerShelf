@@ -7,6 +7,7 @@
 #'   proportions of total mortality.
 #' @param return_data A logical value indicating whether to return the data used
 #'   to plot.
+#' @param ... For `plotlyDeath`, passed to `plotDeath`.
 #' @return If \code{return_data = TRUE}, a data frame with the values used to
 #'   plot.
 #' @export
@@ -103,8 +104,8 @@ plotlyDeath <- function(object,
 
 #' Plot yield minus discards
 #'
-#' @param sim An \code{\link{MizerSim}} object.
-#' @param sim2 Optional second \code{\link{MizerSim}} object.
+#' @param sim An [MizerSim] object.
+#' @param sim2 Optional second [MizerSim] object.
 #' @param species Species to plot.
 #' @param total Logical; should total yield be included in plot?
 #' @param log Logical; should the y-axis be log-transformed?

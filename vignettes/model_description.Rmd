@@ -297,7 +297,22 @@ Here the parameters $a$ and $b$ are parameters for the allometric weight-length 
 ```{r, out.width="100%"}
 #| label: fig-growth
 #| fig-cap: Comparison of model growth curves with von Bertalanffy growth curves.
-plotGrowthCurves(params, species_panel = TRUE)
+#| warning: false
+# A few of the fastest-growing small invertebrates reach their asymptotic
+# size in well under a year, which makes the ODE solver used by
+# `getGrowthCurves()` fail when integrating over the default 20-year age
+# range used for all species. We therefore only plot the species for which
+# the growth curve can actually be computed.
+plottable <- vapply(params@species_params$species, function(sp) {
+    result <- NULL
+    invisible(capture.output(
+        result <- tryCatch(getGrowthCurves(params, species = sp),
+                            error = function(e) e)
+    ))
+    !inherits(result, "error")
+}, logical(1))
+plotGrowthCurves(params, species = names(plottable)[plottable],
+                 species_panel = TRUE)
 ```
 
 ## Mortality {#mortality}
