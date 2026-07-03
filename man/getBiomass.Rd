@@ -14,7 +14,7 @@
 }
 \value{
 For \code{mizerShelf}: a named numeric vector of species/component
-biomasses. For \code{mizerShelfSim}: an \code{ArraySpeciesByTime} matrix
+biomasses. For \code{mizerShelfSim}: an \code{ArrayTimeBySpecies} matrix
 (time x species/component) with species biomasses followed by Detritus
 and other component biomasses.
 }

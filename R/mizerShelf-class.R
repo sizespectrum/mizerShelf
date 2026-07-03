@@ -28,7 +28,7 @@ setClass("mizerShelfSim", contains = "MizerSim")
 #' @param object A `mizerShelf` or `mizerShelfSim` object.
 #' @param ... Passed to the base [mizer::getBiomass()] method.
 #' @return For `mizerShelf`: a named numeric vector of species/component
-#'   biomasses. For `mizerShelfSim`: an `ArraySpeciesByTime` matrix
+#'   biomasses. For `mizerShelfSim`: an `ArrayTimeBySpecies` matrix
 #'   (time x species/component) with species biomasses followed by Detritus
 #'   and other component biomasses.
 #' @examples
@@ -79,6 +79,6 @@ getBiomass.mizerShelfSim <- function(object, ...) {
     }
     names(dimnames(b)) <- dimname_names
 
-    ArraySpeciesByTime(b, value_name = "Biomass", units = "g",
+    ArrayTimeBySpecies(b, value_name = "Biomass", units = "g",
                        params = params)
 }
