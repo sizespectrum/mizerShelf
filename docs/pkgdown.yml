@@ -1,11 +1,11 @@
-pandoc: 3.6.3
+pandoc: 3.8.3
 pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   explore_scenarios: explore_scenarios.html
   extension_mechanism: extension_mechanism.html
   model_description: model_description.html
-last_built: 2026-05-06T20:16Z
+last_built: 2026-07-03T12:31Z
 urls:
   reference: https://sizespectrum.org/mizerShelf/reference
   article: https://sizespectrum.org/mizerShelf/articles

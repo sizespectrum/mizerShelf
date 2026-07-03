@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mizerShelf</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,13 +95,13 @@ of the five extension mechanisms described in
 <tbody>
 <tr class="odd">
 <td>
-<code>.onLoad</code> + <code>registerExtension()</code>
+<code>.onLoad</code> + <code><a href="https://sizespectrum.org/mizer/reference/registerExtension.html" class="external-link">registerExtension()</a></code>
 </td>
 <td>Register the package with mizer so params objects know which
 extensions they need</td>
 </tr>
 <tr class="even">
-<td><code>setRateFunction()</code></td>
+<td><code><a href="https://sizespectrum.org/mizer/reference/setRateFunction.html" class="external-link">setRateFunction()</a></code></td>
 <td>Replace standard mortality with shelf mortality that includes excess
 gear mortality</td>
 </tr>
@@ -111,7 +111,7 @@ gear mortality</td>
 resource</td>
 </tr>
 <tr class="even">
-<td><code>setComponent()</code></td>
+<td><code><a href="https://sizespectrum.org/mizer/reference/setComponent.html" class="external-link">setComponent()</a></code></td>
 <td>Add carrion as a scalar dynamical component that contributes to the
 encounter rate</td>
 </tr>
@@ -149,13 +149,13 @@ register itself when it is loaded. This happens automatically via
 <code class="sourceCode R"><span><span class="va">.onLoad</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">libname</span>, <span class="va">pkgname</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu">mizer</span><span class="fu">::</span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/registerExtension.html" class="external-link">registerExtension</a></span><span class="op">(</span><span class="va">pkgname</span>, requirement <span class="op">=</span> <span class="st">"sizespectrum/mizerShelf"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p><code>registerExtension()</code> adds an entry to mizer’s internal
+<p><code><a href="https://sizespectrum.org/mizer/reference/registerExtension.html" class="external-link">registerExtension()</a></code> adds an entry to mizer’s internal
 registry of known extensions. The <code>requirement</code> argument
 records the GitHub repository (<code>"sizespectrum/mizerShelf"</code>)
 so that mizer can warn users if they load a <code>params</code> object
 that needs mizerShelf but the package is not installed.</p>
 <p>This registration is what makes the subsequent call to
-<code>getRegisteredExtensions()</code> inside
+<code><a href="https://sizespectrum.org/mizer/reference/getRegisteredExtensions.html" class="external-link">getRegisteredExtensions()</a></code> inside
 <code><a href="../reference/newDetritusCarrionParams.html">newDetritusCarrionParams()</a></code> return <code>"mizerShelf"</code>
 — it is not a scan of installed packages but a lookup of packages that
 have explicitly announced themselves to mizer.</p>
@@ -163,13 +163,13 @@ have explicitly announced themselves to mizer.</p>
 <code>params@extensions</code> and coerces the result to the
 <code>mizerShelf</code> marker class:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">extensions</span> <span class="op">&lt;-</span> <span class="fu">getRegisteredExtensions</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu">coerceToExtensionClass</span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">extensions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/getRegisteredExtensions.html" class="external-link">getRegisteredExtensions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/coerceToExtensionClass.html" class="external-link">coerceToExtensionClass</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span></code></pre></div>
 <p>Recording the extension in <code>params@extensions</code> is what
 allows mizer to automatically produce a <code>mizerShelfSim</code>
-whenever <code>project()</code> is called: mizer’s own
-<code>MizerSim()</code> constructor calls
-<code>coerceToExtensionClass()</code>, which reads
+whenever <code><a href="https://sizespectrum.org/mizer/reference/project.html" class="external-link">project()</a></code> is called: mizer’s own
+<code><a href="https://sizespectrum.org/mizer/reference/MizerSim.html" class="external-link">MizerSim()</a></code> constructor calls
+<code><a href="https://sizespectrum.org/mizer/reference/coerceToExtensionClass.html" class="external-link">coerceToExtensionClass()</a></code>, which reads
 <code>params@extensions</code>, sees <code>mizerShelf</code>, and
 coerces the new sim object to <code>mizerShelfSim</code>.</p>
 </div>
@@ -238,7 +238,7 @@ biomasses:</p>
 <span>    <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">scalar_other</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">b</span>, <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">scalar_other</span><span class="op">)</span><span class="op">)</span></span>
 <span>    <span class="va">b</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>Because <code>plotBiomass()</code> calls <code><a href="../reference/getBiomass.html">getBiomass()</a></code>
+<p>Because <code><a href="https://sizespectrum.org/mizer/reference/plotBiomass.html" class="external-link">plotBiomass()</a></code> calls <code><a href="../reference/getBiomass.html">getBiomass()</a></code>
 internally, this single override makes biomass plots show detritus and
 carrion alongside fish species without any further changes.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -246,8 +246,8 @@ carrion alongside fish species without any further changes.</p>
 <span><span class="co">#&gt;     Small DF worms Small DF crustacea           DF worms </span></span>
 <span><span class="co">#&gt;          0.6514945          0.1603410          0.7829609</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">project</span><span class="op">(</span><span class="va">NWMed_params</span>, t_max <span class="op">=</span> <span class="fl">3</span>, t_save <span class="op">=</span> <span class="fl">0.5</span>, progress_bar <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="fu">plotBiomass</span><span class="op">(</span><span class="va">sim</span>, species <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Nut clam"</span>, <span class="st">"Detritus"</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/project.html" class="external-link">project</a></span><span class="op">(</span><span class="va">NWMed_params</span>, t_max <span class="op">=</span> <span class="fl">3</span>, t_save <span class="op">=</span> <span class="fl">0.5</span>, progress_bar <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://sizespectrum.org/mizer/reference/plotBiomass.html" class="external-link">plotBiomass</a></span><span class="op">(</span><span class="va">sim</span>, species <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Nut clam"</span>, <span class="st">"Detritus"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Removed 7 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_line()`).</span></span></code></pre></div>
 <p><img src="extension_mechanism_files/figure-html/plotBiomass-example-1.png" class="r-plt" alt="" width="672"></p>
@@ -261,9 +261,9 @@ carrion alongside fish species without any further changes.</p>
 carrying capacity. mizerShelf replaces this with
 <code><a href="../reference/detritus_dynamics.html">detritus_dynamics()</a></code>, which is registered via the
 <code>resource_dynamics</code> argument to
-<code>newMultispeciesParams()</code>:</p>
+<code><a href="https://sizespectrum.org/mizer/reference/newMultispeciesParams.html" class="external-link">newMultispeciesParams()</a></code>:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu">newMultispeciesParams</span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/newMultispeciesParams.html" class="external-link">newMultispeciesParams</a></span><span class="op">(</span></span>
 <span>    species_params <span class="op">=</span> <span class="va">species_params</span>,</span>
 <span>    resource_dynamics <span class="op">=</span> <span class="st">"detritus_dynamics"</span>,</span>
 <span>    <span class="va">...</span></span>
@@ -298,7 +298,7 @@ sedimentation from pelagic waters, stored in
 </ul>
 <p><code><a href="../reference/detritus_dynamics.html">detritus_dynamics()</a></code> solves this ODE analytically within
 each time step to avoid the instabilities of a simple Euler step:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>+</mo><mi>Δ</mi><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>B</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><msup><mi>e</mi><mrow><mi>−</mi><mi>c</mi><mspace width="0.167em"></mspace><mi>Δ</mi><mi>t</mi></mrow></msup><mo>+</mo><mfrac><mi>p</mi><mi>c</mi></mfrac><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><msup><mi>e</mi><mrow><mi>−</mi><mi>c</mi><mspace width="0.167em"></mspace><mi>Δ</mi><mi>t</mi></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">B(t + \Delta t) = B(t)\,e^{-c\,\Delta t} + \frac{p}{c}\left(1 - e^{-c\,\Delta t}\right)</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo>+</mo><mi mathvariant="normal">Δ</mi><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>B</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><msup><mi>e</mi><mrow><mi>−</mi><mi>c</mi><mspace width="0.167em"></mspace><mi mathvariant="normal">Δ</mi><mi>t</mi></mrow></msup><mo>+</mo><mfrac><mi>p</mi><mi>c</mi></mfrac><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><msup><mi>e</mi><mrow><mi>−</mi><mi>c</mi><mspace width="0.167em"></mspace><mi mathvariant="normal">Δ</mi><mi>t</mi></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">B(t + \Delta t) = B(t)\,e^{-c\,\Delta t} + \frac{p}{c}\left(1 - e^{-c\,\Delta t}\right)</annotation></semantics></math></p>
 <p>where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>
 is the mass-specific consumption rate and
@@ -345,7 +345,7 @@ grams.</li>
 <li>
 <code>detritus_lifetime(params)</code> — the expected time a unit of
 detritus survives before being consumed, equal to
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mi>/</mi><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="normal">consumption rate</mtext><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">B / (\text{consumption rate})</annotation></semantics></math>.</li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mtext mathvariant="normal">consumption rate</mtext><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">B / (\text{consumption rate})</annotation></semantics></math>.</li>
 <li>
 <code>detritus_lifetime(params) &lt;- value</code> — rescales
 detritus abundance while keeping total consumption unchanged (by
@@ -363,9 +363,9 @@ adjusting <code>interaction_resource</code>).</li>
 it is a scalar total biomass (not size-structured), produced by
 mortality and consumed by scavengers with a species- and size-dependent
 encounter rate. It is registered as an <em>other</em> component via
-<code>setComponent()</code>:</p>
+<code><a href="https://sizespectrum.org/mizer/reference/setComponent.html" class="external-link">setComponent()</a></code>:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu">setComponent</span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/setComponent.html" class="external-link">setComponent</a></span><span class="op">(</span></span>
 <span>    <span class="va">params</span>, <span class="st">"carrion"</span>,</span>
 <span>    initial_value  <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>    dynamics_fun   <span class="op">=</span> <span class="st">"carrion_dynamics"</span>,</span>
@@ -393,9 +393,9 @@ carrion’s contribution to each species’ encounter rate.</li>
 at body size
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>w</mi><annotation encoding="application/x-tex">w</annotation></semantics></math>
 is</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>E</mi><mi>i</mi><mtext mathvariant="normal">carrion</mtext></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>w</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>ρ</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>w</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><msub><mi>B</mi><mtext mathvariant="normal">carrion</mtext></msub></mrow><annotation encoding="application/x-tex">E_i^{\text{carrion}}(w) = \rho_i(w)\,B_{\text{carrion}}</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>E</mi><mi>i</mi><mtext mathvariant="normal">carrion</mtext></msubsup><mo stretchy="false" form="prefix">(</mo><mi>w</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msub><mi>ρ</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>w</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><msub><mi>B</mi><mtext mathvariant="normal">carrion</mtext></msub></mrow><annotation encoding="application/x-tex">E_i^{\text{carrion}}(w) = \rho_i(w)\,B_{\text{carrion}}</annotation></semantics></math></p>
 <p>where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ρ</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>w</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\rho_i(w)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ρ</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>w</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\rho_i(w)</annotation></semantics></math>
 is a species- and size-dependent encounter rate coefficient stored in
 the component parameters. The function
 <code><a href="../reference/encounter_contribution.html">encounter_contribution()</a></code> is a generic helper that works for
@@ -491,14 +491,14 @@ carrion) to hit the target.</li>
 extracted from the water. Continental shelf fisheries also kill animals
 that remain on the seabed after contact with bottom-trawl gear.
 mizerShelf captures this distinction with a custom mortality function
-registered via <code>setRateFunction()</code>:</p>
+registered via <code><a href="https://sizespectrum.org/mizer/reference/setRateFunction.html" class="external-link">setRateFunction()</a></code>:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu">setRateFunction</span><span class="op">(</span><span class="va">params</span>, <span class="st">"Mort"</span>, <span class="st">"seMort"</span><span class="op">)</span></span></code></pre></div>
-<p><code><a href="../reference/seMort.html">seMort()</a></code> calls the standard <code>mizerMort()</code> and
+<code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/setRateFunction.html" class="external-link">setRateFunction</a></span><span class="op">(</span><span class="va">params</span>, <span class="st">"Mort"</span>, <span class="st">"seMort"</span><span class="op">)</span></span></code></pre></div>
+<p><code><a href="../reference/seMort.html">seMort()</a></code> calls the standard <code><a href="https://sizespectrum.org/mizer/reference/mizerMort.html" class="external-link">mizerMort()</a></code> and
 adds the excess gear mortality on top:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">seMort</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">params</span>, <span class="va">n</span>, <span class="va">n_pp</span>, <span class="va">n_other</span>, <span class="va">t</span>, <span class="va">f_mort</span>, <span class="va">pred_mort</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="fu">mizerMort</span><span class="op">(</span><span class="va">params</span>, <span class="va">n</span>, <span class="va">n_pp</span>, <span class="va">n_other</span>, <span class="va">t</span>, <span class="va">f_mort</span>, <span class="va">pred_mort</span>, <span class="va">...</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://sizespectrum.org/mizer/reference/mizerMort.html" class="external-link">mizerMort</a></span><span class="op">(</span><span class="va">params</span>, <span class="va">n</span>, <span class="va">n_pp</span>, <span class="va">n_other</span>, <span class="va">t</span>, <span class="va">f_mort</span>, <span class="va">pred_mort</span>, <span class="va">...</span><span class="op">)</span> <span class="op">+</span></span>
 <span>        <span class="fu"><a href="../reference/gearMort.html">gearMort</a></span><span class="op">(</span><span class="va">params</span>, f_mort <span class="op">=</span> <span class="va">f_mort</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p><code><a href="../reference/gearMort.html">gearMort()</a></code> returns
@@ -509,7 +509,7 @@ enters total mortality and also enters the carrion production (via
 <code><a href="../reference/getCarrionProduction.html">getCarrionProduction()</a></code>). When fishing mortality exceeds
 <code>gear_mort</code>, excess gear mortality is zero.</p>
 <p>The custom rate function receives and returns exactly the same array
-shape as <code>mizerMort()</code> (species × size), so it is a drop-in
+shape as <code><a href="https://sizespectrum.org/mizer/reference/mizerMort.html" class="external-link">mizerMort()</a></code> (species × size), so it is a drop-in
 replacement that adds one ecological process without changing anything
 else.</p>
 </div>
@@ -525,7 +525,7 @@ constructor:</p>
 <span>                                     <span class="va">w_max_detritus</span> <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>                                     <span class="va">n</span> <span class="op">=</span> <span class="fl">0.7</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="co"># 1. Detritus: override resource dynamics</span></span>
-<span>    <span class="va">params</span> <span class="op">&lt;-</span> <span class="fu">newMultispeciesParams</span><span class="op">(</span></span>
+<span>    <span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/newMultispeciesParams.html" class="external-link">newMultispeciesParams</a></span><span class="op">(</span></span>
 <span>        species_params   <span class="op">=</span> <span class="va">species_params</span>,</span>
 <span>        min_w_pp         <span class="op">=</span> <span class="va">w_min_detritus</span>,</span>
 <span>        w_pp_cutoff      <span class="op">=</span> <span class="va">w_max_detritus</span>,</span>
@@ -534,34 +534,34 @@ constructor:</p>
 <span>        <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span>    <span class="co"># Initialise rho so each species can reach feeding level f0 at max size</span></span>
-<span>    <span class="va">f0</span>  <span class="op">&lt;-</span> <span class="fu">set_species_param_default</span><span class="op">(</span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span>, <span class="st">"f0"</span>, <span class="fl">0.6</span><span class="op">)</span><span class="op">$</span><span class="va">f0</span></span>
-<span>    <span class="va">ic</span>  <span class="op">&lt;-</span> <span class="fu">set_species_param_default</span><span class="op">(</span></span>
+<span>    <span class="va">f0</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/set_species_param_default.html" class="external-link">set_species_param_default</a></span><span class="op">(</span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span>, <span class="st">"f0"</span>, <span class="fl">0.6</span><span class="op">)</span><span class="op">$</span><span class="va">f0</span></span>
+<span>    <span class="va">ic</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/set_species_param_default.html" class="external-link">set_species_param_default</a></span><span class="op">(</span></span>
 <span>               <span class="va">params</span><span class="op">@</span><span class="va">species_params</span>, <span class="st">"interaction_carrion"</span>, <span class="fl">1</span><span class="op">)</span><span class="op">$</span><span class="va">interaction_carrion</span></span>
-<span>    <span class="va">E</span>   <span class="op">&lt;-</span> <span class="fu">getEncounter</span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">params</span><span class="op">@</span><span class="va">w</span><span class="op">)</span><span class="op">]</span> <span class="op">/</span></span>
+<span>    <span class="va">E</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/getEncounter.html" class="external-link">getEncounter</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">params</span><span class="op">@</span><span class="va">w</span><span class="op">)</span><span class="op">]</span> <span class="op">/</span></span>
 <span>               <span class="op">(</span><span class="va">params</span><span class="op">@</span><span class="va">w</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">params</span><span class="op">@</span><span class="va">w</span><span class="op">)</span><span class="op">]</span> <span class="op">^</span> <span class="va">n</span><span class="op">)</span></span>
 <span>    <span class="va">rho</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">f0</span> <span class="op">*</span> <span class="va">params</span><span class="op">@</span><span class="va">species_params</span><span class="op">$</span><span class="va">h</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">f0</span><span class="op">)</span> <span class="op">-</span> <span class="va">E</span><span class="op">)</span> <span class="op">*</span> <span class="va">ic</span></span>
 <span>    <span class="va">params</span><span class="op">@</span><span class="va">species_params</span><span class="op">$</span><span class="va">rho_carrion</span> <span class="op">&lt;-</span> <span class="va">rho</span></span>
 <span>    <span class="va">rho</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/outer.html" class="external-link">outer</a></span><span class="op">(</span><span class="va">params</span><span class="op">@</span><span class="va">species_params</span><span class="op">$</span><span class="va">rho_carrion</span>, <span class="va">params</span><span class="op">@</span><span class="va">w</span> <span class="op">^</span> <span class="va">n</span><span class="op">)</span></span>
 <span></span>
 <span>    <span class="co"># 2. Mortality: custom rate function adds excess gear mortality</span></span>
-<span>    <span class="va">params</span> <span class="op">&lt;-</span> <span class="fu">setRateFunction</span><span class="op">(</span><span class="va">params</span>, <span class="st">"Mort"</span>, <span class="st">"seMort"</span><span class="op">)</span></span>
+<span>    <span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/setRateFunction.html" class="external-link">setRateFunction</a></span><span class="op">(</span><span class="va">params</span>, <span class="st">"Mort"</span>, <span class="st">"seMort"</span><span class="op">)</span></span>
 <span></span>
 <span>    <span class="co"># 3. Carrion: scalar dynamical component</span></span>
-<span>    <span class="va">params</span> <span class="op">&lt;-</span> <span class="fu">setComponent</span><span class="op">(</span></span>
+<span>    <span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/setComponent.html" class="external-link">setComponent</a></span><span class="op">(</span></span>
 <span>        <span class="va">params</span>, <span class="st">"carrion"</span>, initial_value <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>        dynamics_fun     <span class="op">=</span> <span class="st">"carrion_dynamics"</span>,</span>
 <span>        encounter_fun    <span class="op">=</span> <span class="st">"encounter_contribution"</span>,</span>
 <span>        component_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rho <span class="op">=</span> <span class="va">rho</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span>    <span class="co"># 4. Marker class: enables S3 dispatch for shelf-specific methods</span></span>
-<span>    <span class="va">params</span> <span class="op">&lt;-</span> <span class="fu">setColours</span><span class="op">(</span><span class="va">params</span>,</span>
+<span>    <span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/setColours.html" class="external-link">setColours</a></span><span class="op">(</span><span class="va">params</span>,</span>
 <span>                         <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>Detritus <span class="op">=</span> <span class="st">"forestgreen"</span>, carrion <span class="op">=</span> <span class="st">"peru"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span>    <span class="va">params</span><span class="op">@</span><span class="va">extensions</span> <span class="op">&lt;-</span> <span class="fu">getRegisteredExtensions</span><span class="op">(</span><span class="op">)</span></span>
-<span>    <span class="va">params</span> <span class="op">&lt;-</span> <span class="fu">coerceToExtensionClass</span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span>
+<span>    <span class="va">params</span><span class="op">@</span><span class="va">extensions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/getRegisteredExtensions.html" class="external-link">getRegisteredExtensions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>    <span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sizespectrum.org/mizer/reference/coerceToExtensionClass.html" class="external-link">coerceToExtensionClass</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p>The order matters. The resource dynamics are set inside
-<code>newMultispeciesParams()</code> before mizer computes initial
+<code><a href="https://sizespectrum.org/mizer/reference/newMultispeciesParams.html" class="external-link">newMultispeciesParams()</a></code> before mizer computes initial
 rates, so the detritus shape is consistent from the start. The carrion
 component is registered after the species parameters are set, so that
 <code>rho</code> can be computed from the initial encounter rates. The
@@ -577,14 +577,14 @@ mechanisms working together:</p>
 <li><p><strong>Resource dynamics override</strong> — detritus reuses
 mizer’s resource spectrum infrastructure with a custom ODE that tracks
 total biomass and rescales the spectrum shape.</p></li>
-<li><p><strong><code>setRateFunction()</code></strong> — the custom
+<li><p><strong><code><a href="https://sizespectrum.org/mizer/reference/setRateFunction.html" class="external-link">setRateFunction()</a></code></strong> — the custom
 <code><a href="../reference/seMort.html">seMort()</a></code> adds excess gear mortality to the standard
 mortality calculation with a single-line wrapper around
-<code>mizerMort()</code>.</p></li>
-<li><p><strong><code>setComponent()</code></strong> — carrion is a
+<code><a href="https://sizespectrum.org/mizer/reference/mizerMort.html" class="external-link">mizerMort()</a></code>.</p></li>
+<li><p><strong><code><a href="https://sizespectrum.org/mizer/reference/setComponent.html" class="external-link">setComponent()</a></code></strong> — carrion is a
 scalar dynamical variable whose biomass evolves each time step and whose
 encounter-rate contribution is automatically included in
-<code>getEncounter()</code> and <code>getDiet()</code>.</p></li>
+<code><a href="https://sizespectrum.org/mizer/reference/getEncounter.html" class="external-link">getEncounter()</a></code> and <code><a href="https://sizespectrum.org/mizer/reference/getDiet.html" class="external-link">getDiet()</a></code>.</p></li>
 <li><p><strong>S4 marker classes + S3 dispatch</strong> —
 <code>mizerShelf</code> and <code>mizerShelfSim</code> ensure that
 shelf-specific methods (<code>getBiomass</code>, <code>steady</code>,
