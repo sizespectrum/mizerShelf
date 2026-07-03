@@ -15,3 +15,6 @@ A pie chart.
 \description{
 Plot carrion production rates
 }
+\examples{
+plotCarrionProduction(NWMed_params)
+}

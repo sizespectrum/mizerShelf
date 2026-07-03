@@ -1,14 +1,14 @@
 #' Contribution of unstructured components to the encounter rate
-#' 
+#'
 #' The encounter rate \eqn{E_i(w)} for an unstructured resource like for example
 #' carrion is proportional to the total biomass \eqn{B} with a coefficient
 #' \eqn{\rhi_i(w)} that depends on the predator species \eqn{i} and the size of
 #' the predator:
 #' \deqn{E_i(w) = \rho_i(w) B.}
-#' 
+#'
 #' The coefficient \eqn{\rhi_i(w)} is stored as a matrix (species x size) in
 #' the `rho` parameter of the component. It has units 1/year.
-#' 
+#'
 #' @param params MizerParams
 #' @param n_other Biomasses of unstructured components
 #' @param component Name of component whose contribution is requested
@@ -21,7 +21,7 @@ encounter_contribution <- function(params, n_other, component, ...) {
 }
 
 #' Carrion biomass
-#' 
+#'
 #' @param params MizerParams
 #' @return The carrion biomass in grams
 #' @export
@@ -63,10 +63,10 @@ carrion_biomass <- function(params) {
 #' @export
 carrion_dynamics <-
     function(params, n, n_other, rates, dt, ...) {
-        
+
         consumption <- carrion_consumption_ms(params, n, rates)
         production <- sum(getCarrionProduction(params, n, rates))
-        
+
         if (consumption) {
             et <- exp(-consumption * dt)
             return(n_other$carrion * et + production / consumption  * (1 - et))
@@ -75,63 +75,64 @@ carrion_dynamics <-
     }
 
 #' Mass-specific carrion consumption rate
-#' 
+#'
 #' This includes both the consumption by fish and the decomposition by smaller
-#' organisms. 
-#' 
+#' organisms.
+#'
 #' This mass-specific consumption rate is used in `carrion_dynamics()` to
 #' calculate the carrion biomass at the next time step. To get the
 #' non-mass-specific consumption rate, use `getCarrionConsumption()`.
-#' 
-#' The consumption rate by fish is determined by 
+#'
+#' The consumption rate by fish is determined by
 #' `other_params(params)$carrion$rho`
 #' and the decomposition rate is given by
 #' `other_params(params)$carrion$decompose`.
-#' 
+#'
 #' @param params MizerParams
 #' @param n A matrix of current species abundances (species x size)
 #' @param rates A list of rates as returned by [getRates()]
-#' 
+#'
 #' @return A number giving the mass-specific consumption rate in grams per year.
 #' @export
-carrion_consumption_ms <- function(params, n = params@initial_n, 
+carrion_consumption_ms <- function(params, n = params@initial_n,
                          rates = getRates(params)) {
     sum((params@other_params$carrion$rho * n *
-             (1 - rates$feeding_level)) %*% 
+             (1 - rates$feeding_level)) %*%
             params@dw) +
         params@other_params$carrion$decompose
 }
 
 #' Get carrion consumption rates
-#' 
-#' This function returns a named vector with one component for each species
-#' giving the rate in grams/year at which that species consumes carrion, as well
-#' as a component named `decompose` with the rate in grams/year at which carrion
-#' is decomposed by bacteria and other processes. 
-#' @param params MizerParams
+#'
+#' Returns a named vector with one entry for each species giving the rate in
+#' grams/year at which that species consumes carrion, plus a `decompose` entry
+#' for bacterial decomposition.
+#'
+#' @param params A [MizerParams] object.
+#' @param ... Unused
 #' @return A named vector with the consumption rates from all species and
 #'   decomposition.
 #' @seealso [getCarrionProduction()], [carrion_dynamics()], [getDetritusConsumption()]
 #' @export
-getCarrionConsumption <- function(params) {
-    # consumption by consumers
+getCarrionConsumption <- function(params, ...) {
     feeding_level <- getFeedingLevel(params)
     consumption <- (params@other_params$carrion$rho * params@initial_n *
         (1 - feeding_level)) %*% params@dw
     names(consumption) <- params@species_params$species
     # add decomposition
-    consumption <- c(consumption, 
+    consumption <- c(consumption,
                      decompose = params@other_params$carrion$decompose)
     # Convert from mass specific rate to total rates
     consumption <- consumption * params@initial_n_other$carrion
-    
     return(consumption)
 }
 
 #' Plot carrion consumption rates
-#' 
+#'
 #' @param params MizerParams
 #' @return A pie chart.
+#' @examples
+#' plotCarrionConsumption(NWMed_params)
 #' @export
 plotCarrionConsumption <- function(params) {
     consumption <- getCarrionConsumption(params)
@@ -139,7 +140,7 @@ plotCarrionConsumption <- function(params) {
     consumption <- consumption[consumption > total/100]
     df <- data.frame(Consumer = names(consumption),
                      Rate = consumption)
-    ggplot(df, aes(x = "", y = Rate, fill = Consumer)) +
+    ggplot(df, aes(x = "", y = .data$Rate, fill = .data$Consumer)) +
         geom_bar(stat = "identity", width = 1) +
         coord_polar("y", start = 0) +
         labs(title = "Carrion consumption rate [g/year]",
@@ -147,31 +148,32 @@ plotCarrionConsumption <- function(params) {
 }
 
 #' Carrion production rate
-#' 
+#'
 #' This is the rate in grams/year at which the rest of the system produces carrion
 #' biomass. The production comes from three sources:
-#' 
+#'
 #' 1. animals that have died by natural causes other than predation ("ext_mort"),
-#' 2. animals killed by the fishing gear ("gear_mort"),  
+#' 2. animals killed by the fishing gear ("gear_mort"),
 #' 3. discards from fishing ("discards").
-#' 
+#'
 #' The function returns a vector with the individual contributions. These
 #' can be summed with `sum()` to get the total production rate.
-#' 
-#' @param params MizerParams
+#'
+#' @param params A [MizerParams] object.
 #' @param n A matrix of current species abundances (species x size)
 #' @param rates A list of rates as returned by [getRates()]
-#' 
+#' @param ... Unused
+#'
 #' @return A vector with named entries "external",
 #' "gear_mort" and "discards", each given the rate at which carrion biomass
 #' is produced by these sources in grams per year.
 #' @seealso [getCarrionConsumption()], [carrion_dynamics()], [getDetritusProduction()]
 #' @export
 getCarrionProduction <- function(params, n = params@initial_n,
-                                 rates = getRates(params)) {
+                                 rates = getRates(params), ...) {
     c(ext_mort = sum((params@mu_b * n) %*% (params@w * params@dw)) *
           params@other_params$carrion$ext_prop,
-      gear_mort = sum((gearMort(params, rates$f_mort) * n) %*% 
+      gear_mort = sum((gearMort(params, rates$f_mort) * n) %*%
                           (params@w * params@dw)),
       discards = sum(((rates$f_mort * n) %*% (params@w * params@dw)) *
                          params@species_params$discard)
@@ -180,15 +182,17 @@ getCarrionProduction <- function(params, n = params@initial_n,
 
 
 #' Plot carrion production rates
-#' 
+#'
 #' @param params MizerParams
 #' @return A pie chart.
+#' @examples
+#' plotCarrionProduction(NWMed_params)
 #' @export
 plotCarrionProduction <- function(params) {
     production <- getCarrionProduction(params)
     df <- data.frame(Producer = names(production),
                      Rate = production)
-    ggplot(df, aes(x = "", y = Rate, fill = Producer)) +
+    ggplot(df, aes(x = "", y = .data$Rate, fill = .data$Producer)) +
         geom_bar(stat = "identity", width = 1) +
         coord_polar("y", start = 0) +
         labs(title = "Carrion production rate [g/year]",
@@ -196,12 +200,12 @@ plotCarrionProduction <- function(params) {
 }
 
 #' Detritus biomass
-#' 
+#'
 #' The detritus is internally described by a size spectrum in order to reflect
 #' the fact that it is available to small predators but becomes unavailable to
 #' large predators. The total biomass is thus obtained by integrating over
 #' the abundance density multiplied by mass.
-#' 
+#'
 #' @param params MizerParams
 #' @param n_pp Detritus spectrum
 #' @return The detritus biomass in grams
@@ -222,7 +226,7 @@ detritus_biomass <- function(params, n_pp = params@initial_n_pp) {
 #' \deqn{dB/dt = \tt{production} - \tt{consumption} * B + \tt{external}}{dB/dt = production - consumption * B + external}
 #' where
 #' * `consumption` is the mass-specific rate of consumption.
-#' * `production` is the rate at which the rest of the system produces 
+#' * `production` is the rate at which the rest of the system produces
 #'   detritus biomass.
 #'
 #' The dynamical equation is solved analytically to
@@ -249,7 +253,7 @@ detritus_dynamics <- function(params, n, n_pp, n_other, rates, dt, ...) {
     current_biomass <- detritus_biomass(params, n_pp = n_pp)
     consumption <- detritus_consumption(params, n_pp, rates) / current_biomass
     production <- sum(getDetritusProduction(params, n, n_other, rates))
-    
+
     if (consumption) {
         et <- exp(-consumption * dt)
         next_biomass <- current_biomass * et + production / consumption  * (1 - et)
@@ -260,46 +264,50 @@ detritus_dynamics <- function(params, n, n_pp, n_other, rates, dt, ...) {
 }
 
 #' Detritus consumption rate
-#' 
+#'
 #' An internal helper function. This returns the total detritus consumption rate
 #' and is used in `detritus_dynamics()` to calculate the detritus abundance at
 #' the next time step. To get the consumption rate split up by consumer species,
 #' use `getDetritusConsumption()`.
-#' 
+#'
 #' @param params MizerParams
 #' @param n_pp Detritus spectrum
 #' @param rates A list of rates as returned by [getRates()]
-#' 
+#'
 #' @return A number giving the consumption rate in grams per year.
 #' @export
-detritus_consumption <- function(params, n_pp = params@initial_n_pp, 
+detritus_consumption <- function(params, n_pp = params@initial_n_pp,
                                   rates = getRates(params)) {
     sum(rates$resource_mort * n_pp * params@w_full * params@dw_full)
 }
 
 #' Get detritus consumption rates by consumer species
-#' 
-#' This function returns a named vector with one component for each species
-#' giving the rate in grams/year at which that species consumes detritus. 
-#' @param params MizerParams
+#'
+#' Returns a named vector with one entry for each species giving the rate in
+#' grams/year at which that species consumes detritus.
+#'
+#' @param params A [MizerParams] object.
+#' @param ... Unused
 #' @return A named vector with the consumption rates from all species
 #' @seealso [getDetritusProduction()], [detritus_dynamics()], [getCarrionConsumption()]
 #' @export
-getDetritusConsumption <- function(params) {
+getDetritusConsumption <- function(params, ...) {
     pred_rate <- getPredRate(params)
-    consumption <- sweep(pred_rate, 1, 
+    consumption <- sweep(pred_rate, 1,
                          params@species_params$interaction_resource,
                          "*")
-    consumption <- consumption %*% 
+    consumption <- consumption %*%
         (params@initial_n_pp * params@w_full * params@dw_full)
-    
+
     return(consumption[, 1])
 }
 
-#' Plot carrion consumption rates
-#' 
+#' Plot detritus consumption rates
+#'
 #' @param params MizerParams
 #' @return A pie chart.
+#' @examples
+#' plotDetritusConsumption(NWMed_params)
 #' @export
 plotDetritusConsumption <- function(params) {
     consumption <- getDetritusConsumption(params)
@@ -307,7 +315,7 @@ plotDetritusConsumption <- function(params) {
     consumption <- consumption[consumption > total/100]
     df <- data.frame(Consumer = names(consumption),
                      Rate = consumption)
-    ggplot(df, aes(x = "", y = Rate, fill = Consumer)) +
+    ggplot(df, aes(x = "", y = .data$Rate, fill = .data$Consumer)) +
         geom_bar(stat = "identity", width = 1) +
         coord_polar("y", start = 0) +
         labs(title = "Detritus consumption rate [g/year]",
@@ -316,31 +324,32 @@ plotDetritusConsumption <- function(params) {
 
 
 #' Detritus production rate
-#' 
-#' Gives a named vector with the rates at which different components of the 
+#'
+#' Returns a named vector with the rates at which different components of the
 #' ecosystem produce detritus:
 #' 1. biomass not assimilated by predators ("feces"),
-#' 2. decomposing carrion ("carrion"),  
+#' 2. decomposing carrion ("carrion"),
 #' 3. the pelagic zone ("external").
-#' 
+#'
 #' The function returns a vector with the individual contributions. These
 #' can be summed with `sum()` to get the total production rate.
-#' 
-#' @param params MizerParams
+#'
+#' @param params A [MizerParams] object.
 #' @param n A matrix of current species abundances (species x size)
 #' @param n_other Other dynamic components. Only `n_other$carrion` is used.
 #' @param rates A list of rates as returned by [getRates()]
-#' 
+#' @param ... Unused
+#'
 #' @return A vector with named entries "external",
 #' "feces" and "carrion", giving the rates at which carrion biomass
 #' is produced by these sources in grams per year.
 #' @export
 getDetritusProduction <- function(params, n = params@initial_n,
-                                    n_other = params@initial_n_other,
-                                    rates = getRates(params)) {
+                                  n_other = params@initial_n_other,
+                                  rates = getRates(params), ...) {
     consumption <- sweep((1 - rates$feeding_level) * rates$encounter * n, 2,
                          params@dw, "*", check.margin = FALSE)
-    feces <- sweep(consumption, 1, (1 - params@species_params$alpha), "*", 
+    feces <- sweep(consumption, 1, (1 - params@species_params$alpha), "*",
                    check.margin = FALSE)
     carrion <- params@other_params$carrion$decompose * n_other$carrion
     c(feces = sum(feces),
@@ -350,15 +359,17 @@ getDetritusProduction <- function(params, n = params@initial_n,
 }
 
 #' Plot detritus production rates
-#' 
+#'
 #' @param params MizerParams
 #' @return A pie chart.
+#' @examples
+#' plotDetritusProduction(NWMed_params)
 #' @export
 plotDetritusProduction <- function(params) {
     production <- getDetritusProduction(params)
     df <- data.frame(Producer = names(production),
                      Rate = production)
-    ggplot(df, aes(x = "", y = Rate, fill = Producer)) +
+    ggplot(df, aes(x = "", y = .data$Rate, fill = .data$Producer)) +
         geom_bar(stat = "identity", width = 1) +
         coord_polar("y", start = 0) +
         labs(title = "Detritus production rate [g/year]",
@@ -366,8 +377,8 @@ plotDetritusProduction <- function(params) {
 }
 
 #' Expected carrion lifetime
-#' 
-#' The expected carrion lifetime is defined as the inverse of the 
+#'
+#' The expected carrion lifetime is defined as the inverse of the
 #' mass-specific carrion consumption rate.
 #' @param params A MizerParams object
 #' @return The number giving the expected lifetime in years.
@@ -379,9 +390,9 @@ carrion_lifetime <- function(params) {
 #' @rdname carrion_lifetime
 #' @param params A MizerParams object
 #' @param value A number with the new value for the expected lifetime in years.
-#' 
+#'
 #' Assigning a new value to the carrion lifetime rescales the carrion
-#' abundance while keeping the total consumption and decomposition of carrion 
+#' abundance while keeping the total consumption and decomposition of carrion
 #' the same (by adjusting the interaction strength of species with carrion
 #' and the mass-specific decomposition rate).
 #' @export
@@ -390,23 +401,23 @@ carrion_lifetime <- function(params) {
 }
 
 #' Expected detritus lifetime
-#' 
-#' The expected detritus lifetime is defined as the inverse of the 
+#'
+#' The expected detritus lifetime is defined as the inverse of the
 #' mass-specific detritus consumption rate.
 #' @param params A MizerParams object
 #' @return The number giving the expected lifetime in years.
 #' @export
 detritus_lifetime <- function(params) {
     detritus_biomass(params) /
-        detritus_consumption(params, 
-                              n_pp = params@initial_n_pp, 
+        detritus_consumption(params,
+                              n_pp = params@initial_n_pp,
                               rates = getRates(params))
 }
 
 #' @rdname detritus_lifetime
 #' @param params A MizerParams object
 #' @param value A number with the new value for the expected lifetime in years
-#' 
+#'
 #' Assigning a new value to the detritus lifetime rescales the detritus
 #' abundance while keeping the total consumption of detritus the same (by
 #' adjusting the interaction strength of species with detritus).
@@ -427,6 +438,9 @@ carrion_human_origin <- function(params) {
     (production[["gear_mort"]] + production[["discards"]]) / sum(production)
 }
 
+#' @param value The desired proportion of carrion production that is of
+#'   human origin.
+#' @rdname carrion_human_origin
 #' @export
 `carrion_human_origin<-` <- function(params, value) {
     lifetime <- carrion_lifetime(params)
@@ -446,7 +460,7 @@ carrion_human_origin <- function(params) {
 }
 
 #' Rescale carrion biomass without changing anything else
-#' 
+#'
 #' This multiplies the carrion biomass by a factor and divides the
 #' interaction between all species and the carrion by the same
 #' factor, so as to keep the total consumption of carrion unchanged.
@@ -457,11 +471,11 @@ carrion_human_origin <- function(params) {
 #' @return An updated MizerParams object
 #' @export
 rescale_carrion <- function(params, factor) {
-    params@initial_n_other[["carrion"]] <- 
+    params@initial_n_other[["carrion"]] <-
         params@initial_n_other[["carrion"]] * factor
-    params@species_params$rho_carrion <- 
+    params@species_params$rho_carrion <-
         params@species_params$rho_carrion / factor
-    params@other_params[["carrion"]]$rho <- 
+    params@other_params[["carrion"]]$rho <-
         params@other_params[["carrion"]]$rho / factor
     params@other_params$carrion$decompose <-
         params@other_params$carrion$decompose / factor
@@ -469,7 +483,7 @@ rescale_carrion <- function(params, factor) {
 }
 
 #' Rescale detritus biomass without changing detritus consumption
-#' 
+#'
 #' This multiplies the detritus abundance by a factor and divides the
 #' interaction between all species and the detritus by the same
 #' factor, so as to keep the total consumption of detritus unchanged.
@@ -484,6 +498,15 @@ rescale_detritus <- function(params, factor) {
     params
 }
 
+#' Rescale carrion and detritus biomass without changing anything else
+#'
+#' A convenience wrapper that calls [rescale_carrion()] and
+#' [rescale_detritus()].
+#'
+#' @param params A MizerParams object
+#' @param carrion_factor A number by which to multiply the carrion biomass
+#' @param detritus_factor A number by which to multiply the detritus biomass
+#' @return An updated MizerParams object
 #' @export
 rescaleComponents <- function(params, carrion_factor = 1, detritus_factor = 1) {
     rescale_carrion(rescale_detritus(params, detritus_factor),
@@ -491,12 +514,12 @@ rescaleComponents <- function(params, carrion_factor = 1, detritus_factor = 1) {
 }
 
 #' Tune carrion and detritus to steady state
-#' 
-#' This first sets the rate of decomposition of carrion so that for the given 
+#'
+#' This first sets the rate of decomposition of carrion so that for the given
 #' abundances, the carrion is at steady state. It then sets the rate at which
 #' detritus flows in from external sources (e.g. the pelagic zone) so that for
 #' the given abundances the detritus is at steady state.
-#' 
+#'
 #' @param params A MizerParams object
 #' @return An updated MizerParams object
 #' @export
@@ -517,30 +540,42 @@ tune_carrion_detritus <- function(params) {
     params
 }
 
-#' Scale Model Parameters
+#' Scale model parameters
 #'
-#' This function scales various model parameters by a given factor.
+#' Extends [mizer::scaleModel()] for `mizerShelf` objects: adjusts the
+#' carrion encounter rates and the external detritus input before delegating
+#' to the base method.
 #'
-#' @param params a mizer model object
-#' @param factor a numeric value by which to scale the model
-#'
-#' @return a mizer model object with scaled parameters
-#'
+#' @param params A `mizerShelf` params object.
+#' @param factor A numeric value by which to scale the model.
+#' @param ... Passed to [mizer::scaleModel()].
+#' @return A `mizerShelf` params object with scaled parameters.
+#' @method scaleModel mizerShelf
 #' @export
+#' @name scaleModel
 #'
 #' @examples
 #' params <- scaleModel(NWMed_params, 0.5)
-#'
-scaleModel <- function(params, factor) {
-    params@other_params[["carrion"]]$rho <- 
-        params@other_params[["carrion"]]$rho / factor
-    params@species_params$rho_carrion <-
-        params@species_params$rho_carrion / factor
-    params@other_params$detritus$external <-
-        params@other_params$detritus$external * factor
-    mizer::scaleModel(params, factor)
+scaleModel.mizerShelf <- function(params, factor, ...) {
+    p <- NextMethod()
+    p@other_params[["carrion"]]$rho <- p@other_params[["carrion"]]$rho / factor
+    p@species_params$rho_carrion <- p@species_params$rho_carrion / factor
+    p@other_params$detritus$external <- p@other_params$detritus$external * factor
+    p
 }
 
+#' Keep a component's abundance constant
+#'
+#' A dynamics function for use as `other_dynamics` for a component that is
+#' held at its current value, i.e. it never changes over time.
+#'
+#' @param params A MizerParams object
+#' @param n_other A list with the current biomasses/abundances of the other
+#'   components
+#' @param component The name of the component whose abundance is returned
+#'   unchanged
+#' @param ... Unused
+#' @return The unchanged abundance of `component`
 #' @export
 constant_dynamics <- function(params, n_other, component, ...) {
     n_other[[component]]

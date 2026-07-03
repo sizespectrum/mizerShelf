@@ -2,15 +2,10 @@
 % Please edit documentation in R/helpers.R
 \name{addSpecies}
 \alias{addSpecies}
+\alias{addSpecies.mizerShelf}
 \title{Add new species}
 \usage{
-addSpecies(
-  params,
-  species_params,
-  gear_params = data.frame(),
-  initial_effort,
-  interaction
-)
+\method{addSpecies}{mizerShelf}(params, species_params, ..., steady = FALSE)
 }
 \arguments{
 \item{params}{A mizer params object for the original system.}
@@ -18,27 +13,22 @@ addSpecies(
 \item{species_params}{Data frame with the species parameters of the new
 species we want to add to the system.}
 
-\item{gear_params}{Data frame with the gear parameters for the new
-species. If not provided then the new species will not be fished.}
+\item{...}{Passed to \code{\link[mizer:addSpecies]{mizer::addSpecies()}}, for example \code{interaction},
+\code{gear_params} or \code{initial_effort}.}
 
-\item{initial_effort}{A named vector with the effort for new fishing gear
-introduced in \code{gear_params}. New gear for which no effort is set via this
-vector will have an initial effort of 0. Should not include effort values
-for existing gear.}
-
-\item{interaction}{Interaction matrix. A square matrix giving either the
-interaction coefficients between all species or only those between the new
-species. In the latter case all interaction between an old and a new
-species are set to 1. If this argument is missing, all interactions
-involving a new species are set to 1.}
+\item{steady}{Ignored. This method always adds the new species with
+\code{steady = FALSE} because at that point the carrion encounter rate matrix
+\code{rho} still has the old species dimensions, which would make
+\code{steadySingleSpecies()} fail. The steady state for the new species is
+computed separately afterwards.}
 }
 \value{
-An object of type \linkS4class{MizerParams}
+An object of type \link[mizer:MizerParams]{MizerParams}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-Takes a \linkS4class{MizerParams} object and adds additional species with
+Takes a \link[mizer:MizerParams]{MizerParams} object and adds additional species with
 given parameters to the ecosystem. It sets the initial values for these new
 species to their steady-state solution in the given initial state of the
 existing ecosystem. This will be close to the true steady state if the
@@ -60,7 +50,7 @@ parameters, then these will be preserved. Only the rates for the new
 species will be calculated from their species parameters.
 
 After adding the new species, the background species are not retuned and
-the system is not run to steady state. This could be done with \code{\link[mizer:steady]{steady()}}.
+the system is not run to steady state. This could be done with \code{\link[=steady]{steady()}}.
 The new species will have a reproduction level of 1/4, this can then be
 changed with \code{\link[mizer:setBevertonHolt]{setBevertonHolt()}}
 }

@@ -20,6 +20,8 @@ proportions of total mortality.}
 
 \item{return_data}{A logical value indicating whether to return the data used
 to plot.}
+
+\item{...}{For \code{plotlyDeath}, passed to \code{plotDeath}.}
 }
 \value{
 If \code{return_data = TRUE}, a data frame with the values used to
@@ -29,8 +31,5 @@ plot.
 Plot death rates
 }
 \examples{
-
-\dontrun{
 plotDeath(NWMed_params, species = "Hake")
-}
 }

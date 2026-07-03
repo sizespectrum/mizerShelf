@@ -1,4 +1,4 @@
-url: ~
+url: https://sizespectrum.org/mizerShelf
 template:
   bootstrap: 5
   bootswatch: cerulean
@@ -6,7 +6,12 @@ template:
 navbar:
   structure:
     left: [home, reference, articles]
-    right: [github]
+    right: [mizer, github]
+  components:
+    home: ~
+    mizer:
+      text: mizer Home
+      href: https://sizespectrum.org/mizer
     
 home:
   sidebar:
@@ -29,7 +34,12 @@ reference:
   - matches("Mort")
 - title: Others
 - contents:
+  - mizerShelf-class
   - encounter_contribution
+- title: Extended mizer methods
+- contents:
+  - getBiomass
+  - steady
   - removeSpecies
   - addSpecies
   - scaleModel

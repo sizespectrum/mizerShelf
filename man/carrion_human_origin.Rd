@@ -2,12 +2,18 @@
 % Please edit documentation in R/components.R
 \name{carrion_human_origin}
 \alias{carrion_human_origin}
+\alias{carrion_human_origin<-}
 \title{Proportion of carrion production that is of human origin}
 \usage{
 carrion_human_origin(params)
+
+carrion_human_origin(params) <- value
 }
 \arguments{
 \item{params}{A MizerParams object}
+
+\item{value}{The desired proportion of carrion production that is of
+human origin.}
 }
 \description{
 Calculates or sets what proportion of the total carrion production is from

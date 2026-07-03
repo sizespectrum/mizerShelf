@@ -15,3 +15,6 @@ A pie chart.
 \description{
 Plot carrion consumption rates
 }
+\examples{
+plotCarrionConsumption(NWMed_params)
+}

@@ -4,14 +4,21 @@
 \alias{getCarrionProduction}
 \title{Carrion production rate}
 \usage{
-getCarrionProduction(params, n = params@initial_n, rates = getRates(params))
+getCarrionProduction(
+  params,
+  n = params@initial_n,
+  rates = getRates(params),
+  ...
+)
 }
 \arguments{
-\item{params}{MizerParams}
+\item{params}{A \link[mizer:MizerParams]{MizerParams} object.}
 
 \item{n}{A matrix of current species abundances (species x size)}
 
 \item{rates}{A list of rates as returned by \code{\link[mizer:getRates]{getRates()}}}
+
+\item{...}{Unused}
 }
 \value{
 A vector with named entries "external",

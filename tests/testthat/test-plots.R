@@ -47,7 +47,7 @@ test_that("plotBiomass data includes carrion", {
 test_that("plotBiomass errors when start_time >= end_time", {
     sim <- project(params, t_max = 2, t_per = 1)
     expect_error(plotBiomass(sim, start_time = 2, end_time = 1),
-                 "start_time must be less than end_time")
+                 "tlim\\[1\\] must be less than tlim\\[2\\]")
 })
 
 test_that("plotBiomass returns a ggplot object", {

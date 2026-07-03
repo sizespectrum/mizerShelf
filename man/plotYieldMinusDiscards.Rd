@@ -16,9 +16,9 @@ plotYieldMinusDiscards(
 )
 }
 \arguments{
-\item{sim}{An \code{\link{Sim}} object.}
+\item{sim}{An \link[mizer:MizerSim]{MizerSim} object.}
 
-\item{sim2}{Optional second \code{\link{Sim}} object.}
+\item{sim2}{Optional second \link[mizer:MizerSim]{MizerSim} object.}
 
 \item{species}{Species to plot.}
 
@@ -30,7 +30,7 @@ plotYieldMinusDiscards(
 
 \item{return_data}{Logical; should the underlying data be returned?}
 
-\item{...}{Other arguments passed to \code{\link[Sims]{getYield}}.}
+\item{...}{Other arguments passed to \code{\link[mizer]{getYield}}.}
 }
 \value{
 If \code{return_data = TRUE}, a data frame of the underlying
@@ -40,5 +40,8 @@ data is returned.
 Plot yield minus discards
 }
 \examples{
-plotYieldMinusDiscards(sim_instance)
+\donttest{
+sim <- project(NWMed_params, t_max = 3)
+plotYieldMinusDiscards(sim)
+}
 }

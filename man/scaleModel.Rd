@@ -2,22 +2,26 @@
 % Please edit documentation in R/components.R
 \name{scaleModel}
 \alias{scaleModel}
-\title{Scale Model Parameters}
+\alias{scaleModel.mizerShelf}
+\title{Scale model parameters}
 \usage{
-scaleModel(params, factor)
+\method{scaleModel}{mizerShelf}(params, factor, ...)
 }
 \arguments{
-\item{params}{a mizer model object}
+\item{params}{A \code{mizerShelf} params object.}
 
-\item{factor}{a numeric value by which to scale the model}
+\item{factor}{A numeric value by which to scale the model.}
+
+\item{...}{Passed to \code{\link[mizer:scaleModel]{mizer::scaleModel()}}.}
 }
 \value{
-a mizer model object with scaled parameters
+A \code{mizerShelf} params object with scaled parameters.
 }
 \description{
-This function scales various model parameters by a given factor.
+Extends \code{\link[mizer:scaleModel]{mizer::scaleModel()}} for \code{mizerShelf} objects: adjusts the
+carrion encounter rates and the external detritus input before delegating
+to the base method.
 }
 \examples{
 params <- scaleModel(NWMed_params, 0.5)
-
 }

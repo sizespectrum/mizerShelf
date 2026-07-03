@@ -4,17 +4,19 @@
 \alias{getDetritusConsumption}
 \title{Get detritus consumption rates by consumer species}
 \usage{
-getDetritusConsumption(params)
+getDetritusConsumption(params, ...)
 }
 \arguments{
-\item{params}{MizerParams}
+\item{params}{A \link[mizer:MizerParams]{MizerParams} object.}
+
+\item{...}{Unused}
 }
 \value{
 A named vector with the consumption rates from all species
 }
 \description{
-This function returns a named vector with one component for each species
-giving the rate in grams/year at which that species consumes detritus.
+Returns a named vector with one entry for each species giving the rate in
+grams/year at which that species consumes detritus.
 }
 \seealso{
 \code{\link[=getDetritusProduction]{getDetritusProduction()}}, \code{\link[=detritus_dynamics]{detritus_dynamics()}}, \code{\link[=getCarrionConsumption]{getCarrionConsumption()}}
