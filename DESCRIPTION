@@ -19,7 +19,7 @@ Description: This package provides the functionality for setting up and
     includes an example model for a region in the Nort-West Mediterranean.
 License: GPL-3
 Depends: 
-    mizer (>= 3.1),
+    mizer (>= 3.1.0.9001),
     R (>= 3.5.0)
 Imports:
     lubridate,
