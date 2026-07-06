@@ -22,4 +22,11 @@
 
 .onLoad <- function(libname, pkgname) {
     mizer::registerExtension(pkgname, requirement = "sizespectrum/mizerShelf")
+    if (exists("NWMed_params", envir = asNamespace(pkgname), inherits = FALSE)) {
+        ns <- asNamespace(pkgname)
+        raw_NWMed_params <- get("NWMed_params", envir = ns)
+        makeActiveBinding("NWMed_params",
+                          fun = function() mizer::coerceToExtensionClass(raw_NWMed_params),
+                          env = ns)
+    }
 }
