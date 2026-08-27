@@ -44,9 +44,9 @@ test_that("plotBiomass data includes carrion", {
     expect_true("carrion" %in% df$Species)
 })
 
-test_that("plotBiomass errors when start_time >= end_time", {
+test_that("plotBiomass errors when tlim is not increasing", {
     sim <- project(params, t_max = 2, t_per = 1)
-    expect_error(plotBiomass(sim, start_time = 2, end_time = 1),
+    expect_error(plotBiomass(sim, tlim = c(2, 1)),
                  "tlim\\[1\\] must be less than tlim\\[2\\]")
 })
 

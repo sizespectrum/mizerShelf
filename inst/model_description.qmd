@@ -443,7 +443,7 @@ The reproduction parameters $\epsilon_i$ and $R_{max.i}$ are not directly observ
 #| label: tbl-reproduction
 #| tbl-cap: Parameters determining reproduction
 df <- params@species_params
-df$reproduction_level <- getReproductionLevel(params)
+df$reproduction_level <- reproduction_level(params)
 df %>%
     select(w_min, erepro, R_max, reproduction_level) %>%
     kable()
