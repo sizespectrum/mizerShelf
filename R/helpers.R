@@ -64,7 +64,8 @@ removeSpecies.mizerShelf <- function(params, species, ...) {
 #'   species will be calculated from their species parameters.
 #'
 #'   After adding the new species, the background species are not retuned and
-#'   the system is not run to steady state. This could be done with [steady()].
+#'   the system is not run to steady state. This could be done with
+#'   [tuneSteadyState()].
 #'   The new species will have a reproduction level of 1/4, this can then be
 #'   changed with [setBevertonHolt()]
 #'

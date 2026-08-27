@@ -3,16 +3,23 @@
 \name{steady}
 \alias{steady}
 \alias{steady.mizerShelf}
-\title{Drive a shelf model to steady state}
+\title{Drive a shelf model to steady state (superseded)}
 \usage{
 \method{steady}{mizerShelf}(
   params,
   t_max = 100,
   t_per = 1.5,
   dt = 0.1,
+  t_save = dt,
   tol = 0.1 * dt,
+  amplitude_tol = 0.01,
+  amp_rel_tol = 0.01,
+  extinction_threshold = 1e-06,
   return_sim = FALSE,
-  ...
+  preserve = c("reproduction_level", "erepro", "R_max"),
+  progress_bar = TRUE,
+  info_level = default_info_level(),
+  method = c("euler", "predictor_corrector", "tr_bdf2")
 )
 }
 \arguments{
@@ -20,29 +27,70 @@
 
 \item{t_max}{The maximum number of years to run the simulation. Default is 100.}
 
-\item{t_per}{The simulation is broken up into shorter runs of \code{t_per} years,
-after each of which we check for convergence. Default value is 1.5. This
-should be chosen as an odd multiple of the timestep \code{dt} in order to be
-able to detect period 2 cycles.}
+\item{t_per}{The interval in years at which convergence is checked, and hence
+also the interval at which the trajectory is saved when
+\code{return_sim = TRUE}. In \code{\link[mizer:projectUntilSettled]{projectUntilSettled()}} these two roles have been
+separated into \code{t_check} and \code{t_save}.}
 
 \item{dt}{The time step to use in \code{project()}.}
 
+\item{t_save}{Has no effect. It briefly controlled how finely the biomass
+series used for limit-cycle detection was sampled; that series is now
+sampled at every time step, which is what its default \code{dt} gave.}
+
 \item{tol}{The simulation stops when the relative change in the egg
-production RDI over \code{t_per} years is less than \code{tol} for every species.}
+production RDI over t_per years is less than tol for every species.}
+
+\item{amplitude_tol}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+The minimum relative biomass amplitude for a persistent oscillation to be
+reported as a limit cycle rather than treated as an (effectively steady)
+fixed point. This is a fraction of mean biomass and is kept separate from
+\code{distance_tol} (which measures convergence to a fixed point on a different
+scale).
+Default \code{0.01}.}
+
+\item{amp_rel_tol}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Maximum relative change of amplitude between successive periods for the
+cycle to count as settled. Default \code{0.01}.}
+
+\item{extinction_threshold}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+A species is treated as going extinct, stopping the run, once its
+reproduction rate (RDD) falls below this fraction of its value at the start
+of the run. For example the default \code{1e-6} treats a species as extinct once
+its reproduction has collapsed to a millionth of its initial level. Because
+it is relative to the initial reproduction, a species that starts with zero
+reproduction is flagged immediately, and (in \code{\link[mizer:tuneSteadyState]{tuneSteadyState()}}, where
+reproduction is held constant) a healthy species is never flagged.}
 
 \item{return_sim}{If TRUE, the function returns the MizerSim object holding
-the result of the simulation run, saved at intervals of \code{t_per}. If FALSE (default) the function returns
-a MizerParams object with the "initial" slots set to the steady state.}
+the result of the simulation run, saved at intervals of \code{t_per}. If FALSE
+(default) the function returns a MizerParams object with the "initial"
+slots set to the steady state.}
 
-\item{...}{Passed to \code{\link[mizer:steady]{mizer::steady()}}, for example \code{preserve},
-\code{progress_bar}, \code{info_level} or \code{method}.}
+\item{preserve}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Specifies whether the \code{reproduction_level} should be preserved (default)
+or the maximum reproduction rate \code{R_max} or the reproductive
+efficiency \code{erepro}. See \code{\link[mizer:setBevertonHolt]{setBevertonHolt()}} for an explanation
+of the \code{reproduction_level}.}
+
+\item{progress_bar}{A shiny progress object to implement a progress bar in a
+shiny app. Default FALSE.}
+
+\item{info_level}{Controls the amount of information messages that are shown.
+Higher levels lead to more messages, \code{info_level = 0} gives silence. The
+default is taken from the \code{mizer_info_level} option, see
+\code{\link[mizer:default_info_level]{default_info_level()}}.}
+
+\item{method}{The numerical method to use for the consumer density update.
+See \code{\link[mizer:project]{project()}}.}
 }
 \value{
 An updated \code{mizerShelf} object (or a \code{mizerShelfSim} when
 \code{return_sim = TRUE}).
 }
 \description{
-Extends \code{\link[mizer:steady]{mizer::steady()}} for \code{mizerShelf} objects: after the fish
-abundances have converged, \code{\link[=tune_carrion_detritus]{tune_carrion_detritus()}} is called so that the
-carrion and detritus components are also at steady state.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}} Use \code{\link[=tuneSteadyState]{tuneSteadyState()}} instead, which is
+the mizerShelf method that does the same job under the name mizer now
+prefers. This method is kept so that scripts written against the older
+\code{\link[mizer:steady]{mizer::steady()}} keep working unchanged.
 }

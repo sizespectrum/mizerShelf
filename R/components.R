@@ -20,6 +20,51 @@ encounter_contribution <- function(params, n_other, component, ...) {
     params@other_params[[component]]$rho * n_other[[component]]
 }
 
+# Fill in the rates a carrion or detritus calculation needs but was not given.
+#
+# `project()` hands the dynamics functions the complete list from `getRates()`,
+# but mizer's steady-state diagnostics (`getSteadyResidual()`, `isSteady()` and
+# the steady-state line of `summary()`) call the resource and component
+# dynamics with only the rates that the resource mortality depends on, which
+# leaves out the fishing mortality that the carrion production is calculated
+# from. Each entry is only computed when it is missing, so this costs nothing
+# on the path through `project()`.
+complete_rates <- function(rates, params, n = params@initial_n,
+                           n_pp = params@initial_n_pp,
+                           n_other = params@initial_n_other,
+                           t = 0, need = character(0)) {
+    if ("encounter" %in% need && is.null(rates$encounter)) {
+        rates$encounter <- getEncounter(params, n = n, n_pp = n_pp,
+                                        n_other = n_other, t = t)
+    }
+    if ("feeding_level" %in% need && is.null(rates$feeding_level)) {
+        rates$feeding_level <- getFeedingLevel(params, n = n, n_pp = n_pp,
+                                               n_other = n_other, t = t)
+    }
+    if ("f_mort" %in% need && is.null(rates$f_mort)) {
+        rates$f_mort <- getFMort(params, effort = params@initial_effort,
+                                 n = n, n_pp = n_pp, n_other = n_other, t = t)
+    }
+    if ("resource_mort" %in% need && is.null(rates$resource_mort)) {
+        rates$resource_mort <- getResourceMort(params, n = n, n_pp = n_pp,
+                                               n_other = n_other, t = t)
+    }
+    rates
+}
+
+# Integral over the consumer size spectrum, one value per species.
+#
+# Calculates \eqn{\int N_i(w) K_i(w)\,dw} the way [mizer::sizeIntegral()] does,
+# so that it uses the quadrature scheme the model is actually on. It is gated
+# on `bin_average_weight()`, which returns the weighting unchanged unless
+# second-order bin-averaging is switched on, so nothing changes for a model on
+# the default scheme.
+#
+# `weighting` must be a species x size matrix.
+size_integral <- function(params, n, weighting) {
+    drop((bin_average_weight(weighting, params) * n) %*% params@dw)
+}
+
 #' Carrion biomass
 #'
 #' @param params MizerParams
@@ -96,9 +141,9 @@ carrion_dynamics <-
 #' @export
 carrion_consumption_ms <- function(params, n = params@initial_n,
                          rates = getRates(params)) {
-    sum((params@other_params$carrion$rho * n *
-             (1 - rates$feeding_level)) %*%
-            params@dw) +
+    rates <- complete_rates(rates, params, n = n, need = "feeding_level")
+    sum(size_integral(params, n, params@other_params$carrion$rho *
+                          (1 - rates$feeding_level))) +
         params@other_params$carrion$decompose
 }
 
@@ -116,8 +161,9 @@ carrion_consumption_ms <- function(params, n = params@initial_n,
 #' @export
 getCarrionConsumption <- function(params, ...) {
     feeding_level <- getFeedingLevel(params)
-    consumption <- (params@other_params$carrion$rho * params@initial_n *
-        (1 - feeding_level)) %*% params@dw
+    consumption <- size_integral(params, params@initial_n,
+                                 params@other_params$carrion$rho *
+                                     (1 - feeding_level))
     names(consumption) <- params@species_params$species
     # add decomposition
     consumption <- c(consumption,
@@ -171,11 +217,17 @@ plotCarrionConsumption <- function(params) {
 #' @export
 getCarrionProduction <- function(params, n = params@initial_n,
                                  rates = getRates(params), ...) {
-    c(ext_mort = sum((params@mu_b * n) %*% (params@w * params@dw)) *
+    rates <- complete_rates(rates, params, n = n, need = "f_mort")
+    # Each contribution is the biomass killed per year, so each weighting
+    # carries a factor of the body weight.
+    biomass_killed <- function(mort) {
+        size_integral(params, n, sweep(mort, 2, params@w, "*",
+                                       check.margin = FALSE))
+    }
+    c(ext_mort = sum(biomass_killed(params@mu_b)) *
           params@other_params$carrion$ext_prop,
-      gear_mort = sum((gearMort(params, rates$f_mort) * n) %*%
-                          (params@w * params@dw)),
-      discards = sum(((rates$f_mort * n) %*% (params@w * params@dw)) *
+      gear_mort = sum(biomass_killed(gearMort(params, rates$f_mort))),
+      discards = sum(biomass_killed(rates$f_mort) *
                          params@species_params$discard)
     )
 }
@@ -263,6 +315,38 @@ detritus_dynamics <- function(params, n, n_pp, n_other, rates, dt, ...) {
     n_pp * next_biomass / current_biomass
 }
 
+#' Balance the detritus resource
+#'
+#' Mizer calls a `balance_<resource_dynamics>()` function whenever it restores a
+#' resource, to adjust the resource rate or the resource capacity so that the
+#' stored resource abundance is a steady state of the resource dynamics. It
+#' warns when no such function exists, because a custom resource would then
+#' silently come back off its own fixed point.
+#'
+#' [detritus_dynamics()] reads neither the resource rate `rr_pp` nor the
+#' resource capacity `cc_pp`: the detritus is held at a fixed power law whose
+#' total biomass follows a production-minus-consumption balance. There is
+#' therefore nothing for mizer to balance, and this function returns both
+#' unchanged. What does make the stored detritus abundance a steady state is
+#' the external detritus inflow `other_params(params)$detritus$external`, which
+#' is set by [tune_carrion_detritus()].
+#'
+#' @param params A `mizerShelf` params object.
+#' @param resource_rate The resource rate requested by the caller, or `NULL` to
+#'   keep the stored one.
+#' @param resource_capacity The resource capacity requested by the caller, or
+#'   `NULL` to keep the stored one.
+#' @return A list with entries `resource_rate` and `resource_capacity`.
+#' @seealso [tune_carrion_detritus()], [detritus_dynamics()]
+#' @export
+balance_detritus_dynamics <- function(params, resource_rate = NULL,
+                                      resource_capacity = NULL) {
+    list(resource_rate = if (is.null(resource_rate)) params@rr_pp
+                         else resource_rate,
+         resource_capacity = if (is.null(resource_capacity)) params@cc_pp
+                             else resource_capacity)
+}
+
 #' Detritus consumption rate
 #'
 #' An internal helper function. This returns the total detritus consumption rate
@@ -278,6 +362,8 @@ detritus_dynamics <- function(params, n, n_pp, n_other, rates, dt, ...) {
 #' @export
 detritus_consumption <- function(params, n_pp = params@initial_n_pp,
                                   rates = getRates(params)) {
+    rates <- complete_rates(rates, params, n_pp = n_pp,
+                            need = "resource_mort")
     sum(rates$resource_mort * n_pp * params@w_full * params@dw_full)
 }
 
@@ -347,10 +433,12 @@ plotDetritusConsumption <- function(params) {
 getDetritusProduction <- function(params, n = params@initial_n,
                                   n_other = params@initial_n_other,
                                   rates = getRates(params), ...) {
-    consumption <- sweep((1 - rates$feeding_level) * rates$encounter * n, 2,
-                         params@dw, "*", check.margin = FALSE)
-    feces <- sweep(consumption, 1, (1 - params@species_params$alpha), "*",
-                   check.margin = FALSE)
+    rates <- complete_rates(rates, params, n = n, n_other = n_other,
+                            need = c("encounter", "feeding_level"))
+    feces <- size_integral(
+        params, n,
+        sweep((1 - rates$feeding_level) * rates$encounter, 1,
+              1 - params@species_params$alpha, "*", check.margin = FALSE))
     carrion <- params@other_params$carrion$decompose * n_other$carrion
     c(feces = sum(feces),
       carrion = carrion,
