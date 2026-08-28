@@ -38,8 +38,8 @@ yield <- plotYield(sim_s, species = target, return_data = TRUE)
 yield_initial <- data.frame(Year = rep(-1, length(target)),
                             Yield = getYield(params)[target],
                             Species = target)
-p_yield <- plotDataFrame(rbind(yield_initial, yield), params,
-                         ylab = "Yield [g/yr]")
+p_yield <- plotDataFrame(rbind(yield_initial, yield[names(yield_initial)]),
+                         params, ylab = "Yield [g/yr]")
 
 p_bio + p_yield + plot_layout(guides = 'collect')
 
@@ -57,8 +57,9 @@ sim_d <- project(params_d, t_max = 15)
 # I think we decided not to include this boring graph in the paper
 mizer::plotBiomass(sim_d, species = target)
 
-# But may be this one?
-plotBiomassRelative(sim_d, species = target)
+# But may be this one? It is shown relative to a run of the unchanged model.
+sim_0 <- project(params, t_max = 15)
+plotRelative(getBiomass(sim_0), getBiomass(sim_d), species = target)
 
 # Effort reduction ----
 
@@ -74,8 +75,8 @@ yield <- plotYield(sim_e, species = target, return_data = TRUE)
 yield_initial <- data.frame(Year = rep(-1, length(target)),
                             Yield = getYield(params)[target],
                             Species = target)
-p_yield <- plotDataFrame(rbind(yield_initial, yield), params,
-                         ylab = "Yield [g/yr]")
+p_yield <- plotDataFrame(rbind(yield_initial, yield[names(yield_initial)]),
+                         params, ylab = "Yield [g/yr]")
 
 p_bio + p_yield + plot_layout(guides = 'collect')
 
@@ -85,4 +86,4 @@ nontarget = c("Starfish", "Murex", "Angular crab", "Harbour crab",
            "Black goby", "Large DF worms", "Small DF crustacea",
            "Endobenthic pred. crustacea", "Endobenthic pred. worms")
 
-plotBiomassRelative(sim_e, species = nontarget)
+plotRelative(getBiomass(sim_0), getBiomass(sim_e), species = nontarget)
