@@ -276,3 +276,22 @@ test_that("constant_dynamics returns the component value unchanged", {
     result <- constant_dynamics(params, params@initial_n_other, "carrion")
     expect_equal(result, params@initial_n_other$carrion)
 })
+
+# ---- second-order bin-averaging ----
+
+test_that("the component integrals respond to second-order bin-averaging", {
+    p <- params
+    second_order_w(p) <- list(flux = "upwind", bin_average = TRUE)
+    expect_false(isTRUE(all.equal(carrion_consumption_ms(p),
+                                  carrion_consumption_ms(params))))
+    expect_false(isTRUE(all.equal(getCarrionProduction(p),
+                                  getCarrionProduction(params))))
+    expect_false(isTRUE(all.equal(getDetritusProduction(p),
+                                  getDetritusProduction(params))))
+})
+
+test_that("a bin-averaged shelf model can still be projected", {
+    p <- params
+    second_order_w(p) <- list(flux = "upwind", bin_average = TRUE)
+    expect_s4_class(project(p, t_max = 1, t_save = 1), "mizerShelfSim")
+})

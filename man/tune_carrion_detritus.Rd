@@ -18,3 +18,27 @@ abundances, the carrion is at steady state. It then sets the rate at which
 detritus flows in from external sources (e.g. the pelagic zone) so that for
 the given abundances the detritus is at steady state.
 }
+\details{
+Note that this reaches a steady state by changing \emph{parameters} — the carrion
+decomposition rate and the external detritus inflow — so that the stored
+abundances become a fixed point. That is what is needed after a steady-state
+finder that holds the components fixed, and it is why \code{\link[=tuneSteadyState]{tuneSteadyState()}}
+and \code{\link[=steady]{steady()}} have mizerShelf methods that call this function:
+\itemize{
+\item \code{\link[=tuneSteadyState]{tuneSteadyState()}} and \code{\link[=steady]{steady()}} hold the carrion at its stored value
+while they work, so the mizerShelf methods call this afterwards. They
+leave the components exactly at a fixed point.
+\item \code{\link[mizer:findSteadyState]{mizer::findSteadyState()}} with the default \code{solver = "project"}, and
+\code{\link[mizer:projectUntilSettled]{mizer::projectUntilSettled()}}, advance the carrion like every other state
+variable, so they settle it themselves, to within their convergence
+tolerance, and leave the parameters alone. They have no mizerShelf method
+and do not need one. Calling this function after one of them would
+re-solve for parameters the model has just been settled against.
+\item \code{\link[mizer:findSteadyState]{mizer::findSteadyState()}} with \code{solver = "newton"} declines a model with
+custom resource dynamics, which includes every mizerShelf model, and says
+so.
+}
+}
+\seealso{
+\code{\link[=tuneSteadyState]{tuneSteadyState()}}, \code{\link[=carrion_lifetime]{carrion_lifetime()}}, \code{\link[=detritus_lifetime]{detritus_lifetime()}}
+}

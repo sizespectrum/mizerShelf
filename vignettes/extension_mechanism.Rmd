@@ -100,7 +100,8 @@ The following S3 methods are dispatched on `mizerShelf` or `mizerShelfSim`:
 |---|---|
 | `getBiomass.mizerShelf()` | Adds detritus and carrion biomasses to the species biomasses |
 | `getBiomass.mizerShelfSim()` | Same, as a time series |
-| `steady.mizerShelf()` | Calls `tune_carrion_detritus()` after convergence |
+| `tuneSteadyState.mizerShelf()` | Calls `tune_carrion_detritus()` after convergence |
+| `steady.mizerShelf()` | The same, under the name that mizer has superseded |
 | `scaleModel.mizerShelf()` | Adjusts carrion encounter rates and external detritus input when rescaling abundances |
 | `removeSpecies.mizerShelf()` | Updates the carrion encounter-rate matrix `rho` |
 | `addSpecies.mizerShelf()` | Computes the initial `rho_carrion` for new species |
@@ -213,8 +214,9 @@ current abundances the detritus is at steady state (`dB/dt = 0`):
 params@other_params$detritus$external <- outflow - production
 ```
 
-This function is called automatically by `steady.mizerShelf()` after mizer's
-own steady-state iteration converges.
+This function is called automatically by `tuneSteadyState.mizerShelf()` (and by
+the superseded `steady.mizerShelf()`) after mizer's own steady-state iteration
+converges.
 
 ## User-facing controls
 
@@ -433,7 +435,8 @@ together:
    included in `getEncounter()` and `getDiet()`.
 
 4. **S4 marker classes + S3 dispatch** — `mizerShelf` and `mizerShelfSim`
-   ensure that shelf-specific methods (`getBiomass`, `steady`, `scaleModel`,
+   ensure that shelf-specific methods (`getBiomass`, `tuneSteadyState`,
+   `scaleModel`,
    `addSpecies`, `removeSpecies`) are dispatched automatically, while every
    override delegates to `NextMethod()` so that the full mizer pipeline remains
    intact.

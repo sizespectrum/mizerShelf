@@ -452,7 +452,7 @@ The next table gives the steady-state reproduction level which is defined as the
 
 ```{r}
 df <- params@species_params
-df$reproduction_level <- getReproductionLevel(params)
+df$reproduction_level <- reproduction_level(params)
 df %>%
     select(w_min, erepro, R_max, reproduction_level) %>%
     kable()

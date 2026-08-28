@@ -39,6 +39,7 @@ reference:
 - title: Extended mizer methods
 - contents:
   - getBiomass
+  - tuneSteadyState
   - steady
   - removeSpecies
   - addSpecies

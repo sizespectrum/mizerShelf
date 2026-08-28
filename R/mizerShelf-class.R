@@ -1,7 +1,8 @@
 #' mizerShelf marker classes
 #'
 #' S4 marker subclasses of [MizerParams] and [MizerSim] that enable S3 dispatch
-#' for shelf-specific methods such as [steady()], [scaleModel()],
+#' for shelf-specific methods such as [tuneSteadyState()],
+#' [scaleModel()],
 #' [removeSpecies()], [addSpecies()], and [getBiomass()].
 #'
 #' Objects of class `mizerShelf` are created by [newDetritusCarrionParams()].

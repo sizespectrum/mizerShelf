@@ -17,8 +17,7 @@
 plotDeath <- function(object, species = NULL, proportion = TRUE, return_data = FALSE)
 {
     if (is(object, "MizerSim")) {
-        params <- object@params
-        params <- setInitialValues(params, object)
+        params <- finalParams(object)
     } else if (is(object, "MizerParams")) {
         params <- validParams(object)
     }
@@ -127,7 +126,10 @@ plotYieldMinusDiscards <- function(sim, sim2,
                       ...) {
     params <- sim@params
     species <- valid_species_arg(sim, species)
-    if (missing(sim2)) {
+
+    # The discard fraction has to be taken off the yield array, before it is
+    # melted into the long form that plotDataFrame() wants.
+    landings <- function(sim) {
         y <- getYield(sim, ...)
         y <- sweep(y, 2, 1 - sim@params@species_params$discard, "*")
         y_total <- rowSums(y)
@@ -138,10 +140,14 @@ plotYieldMinusDiscards <- function(sim, sim2,
             y <- cbind(y, "Total" = y_total)
         }
         plot_dat <- reshape2::melt(y, varnames = c("Year", "Species"),
-                         value.name = "Yield")
+                                   value.name = "Yield")
         plot_dat <- subset(plot_dat, plot_dat$Yield > 0)
         # plotDataFrame() needs the columns in a particular order
-        plot_dat <- plot_dat[, c(1, 3, 2)]
+        plot_dat[, c("Year", "Yield", "Species")]
+    }
+
+    if (missing(sim2)) {
+        plot_dat <- landings(sim)
 
         if (nrow(plot_dat) == 0) {
             warning("There is no yield to include.")
@@ -157,14 +163,8 @@ plotYieldMinusDiscards <- function(sim, sim2,
         if (!all(dimnames(sim@n)$time == dimnames(sim2@n)$time)) {
             stop("The two simulations do not have the same times")
         }
-        ym <- plotYield(sim, species = species,
-                        total = total, log = log,
-                        highlight = highlight, return_data = TRUE, ...)
-        ym <- sweep(ym, 2, 1 - sim@params@species_params$discard, "*")
-        ym2 <- plotYield(sim2, species = species,
-                         total = total, log = log,
-                         highlight = highlight, return_data = TRUE, ...)
-        ym2 <- sweep(ym2, 2, 1 - sim@params@species_params$discard, "*")
+        ym <- landings(sim)
+        ym2 <- landings(sim2)
         ym$Simulation <- rep(1, nrow(ym))
         ym2$Simulation <- rep(2, nrow(ym2))
         ym <- rbind(ym, ym2)
