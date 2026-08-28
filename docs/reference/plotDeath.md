@@ -30,6 +30,10 @@ plotlyDeath(object, species = NULL, proportion = TRUE, ...)
 
   A logical value indicating whether to return the data used to plot.
 
+- ...:
+
+  For `plotlyDeath`, passed to `plotDeath`.
+
 ## Value
 
 If `return_data = TRUE`, a data frame with the values used to plot.

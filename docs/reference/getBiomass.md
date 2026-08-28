@@ -28,7 +28,7 @@ getBiomass(object, ...)
 ## Value
 
 For `mizerShelf`: a named numeric vector of species/component biomasses.
-For `mizerShelfSim`: an `ArraySpeciesByTime` matrix (time x
+For `mizerShelfSim`: an `ArrayTimeBySpecies` matrix (time x
 species/component) with species biomasses followed by Detritus and other
 component biomasses.
 
@@ -68,32 +68,18 @@ getBiomass(NWMed_params)
 sim <- project(NWMed_params, t_max = 3)
 getBiomass(sim)
 #> Biomass (4 times x 27 species) [g] 
-#>   Small DF worms: min=0.651 mean=0.652 max=0.652
-#>   Small DF crustacea: min=0.16 mean=0.161 max=0.161
-#>   DF worms: min=0.783 mean=0.783 max=0.783
-#>   Endobenthic pred. crustacea: min=0.0714 mean=0.0714 max=0.0714
-#>   Suprabenthic crustacea: min=0.0307 mean=0.0307 max=0.0307
-#>   Endobenthic pred. worms: min=0.378 mean=0.378 max=0.378
-#>   Large DF worms: min=6.47 mean=6.47 max=6.47
-#>   Starfish: min=0.0604 mean=0.0604 max=0.0604
-#>   Nut clam: min=0.00312 mean=0.00312 max=0.00312
-#>   Murex: min=0.124 mean=0.124 max=0.124
-#>   Angular crab: min=0.136 mean=0.136 max=0.136
-#>   Harbour crab: min=0.0714 mean=0.0714 max=0.0714
-#>   Red snapping shrimp: min=0.0686 mean=0.0686 max=0.0686
-#>   Spotted flounder: min=0.183 mean=0.183 max=0.183
-#>   Black goby: min=0.069 mean=0.069 max=0.069
-#>   Gurnards: min=0.144 mean=0.144 max=0.144
-#>   Red mullet: min=0.00608 mean=0.00608 max=0.00608
-#>   Striped red mullet: min=0.00307 mean=0.00307 max=0.00307
-#>   Hake: min=0.015 mean=0.015 max=0.015
-#>   Angler fish: min=0.00496 mean=0.00496 max=0.00496
-#>   Poor cod: min=0.005 mean=0.00501 max=0.00501
-#>   Horse mackerel: min=0.0128 mean=0.0128 max=0.0128
-#>   Shortfin squid: min=0.0085 mean=0.0085 max=0.0085
-#>   Blue whiting: min=0.00974 mean=0.00974 max=0.00974
-#>   Horned octopus: min=0.0154 mean=0.0154 max=0.0154
-#>   Detritus: min=254 mean=255 max=255
-#>   carrion: min=0.0465 mean=0.0465 max=0.0465
+#>     sp
+#> time Small DF worms Small DF crustacea  DF worms Endobenthic pred. crustacea
+#>    0      0.6514945          0.1603410 0.7829609                  0.07135015
+#>    1      0.6514892          0.1605437 0.7829316                  0.07136983
+#>    2      0.6515196          0.1606731 0.7829557                  0.07137636
+#>    3      0.6515006          0.1607657 0.7829388                  0.07138660
+#>     sp
+#> time Suprabenthic crustacea Endobenthic pred. worms Large DF worms   Starfish
+#>    0             0.03067995               0.3784602       6.473529 0.06038226
+#>    1             0.03067721               0.3784432       6.473344 0.06039681
+#>    2             0.03067501               0.3784540       6.473474 0.06040589
+#>    3             0.03067453               0.3784561       6.473475 0.06041705
+#> ... showing 8 of 27 species (Nut clam, Murex, Angular crab, Harbour crab, Red snapping shrimp, ...); use as.data.frame() for the full data. 
 # }
 ```

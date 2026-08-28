@@ -26,6 +26,8 @@ reference:
 - title: Carrion
 - contents:
   - matches("arrion")
+  - rhoControl
+  - setRho
 - title: Plots
 - contents:
   - matches("plot")
@@ -36,6 +38,8 @@ reference:
 - contents:
   - mizerShelf-class
   - encounter_contribution
+  - constant_dynamics
+  - rescaleComponents
 - title: Extended mizer methods
 - contents:
   - getBiomass

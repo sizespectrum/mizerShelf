@@ -21,11 +21,14 @@ plotYieldMinusDiscards(
 
 - sim:
 
-  An `MizerSim` object.
+  An [MizerSim](https://sizespectrum.org/mizer/reference/MizerSim.html)
+  object.
 
 - sim2:
 
-  Optional second `MizerSim` object.
+  Optional second
+  [MizerSim](https://sizespectrum.org/mizer/reference/MizerSim.html)
+  object.
 
 - species:
 

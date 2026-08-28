@@ -6,9 +6,9 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>How mizerShelf extends mizer • mizerShelf</title>
-<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<script src="../deps/jquery-3.6.1/jquery-3.6.1.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="How mizerShelf extends mizer">
 </head>
@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mizerShelf</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -197,20 +197,24 @@ coerces the new sim object to <code>mizerShelfSim</code>.</p>
 <td>Same, as a time series</td>
 </tr>
 <tr class="odd">
-<td><code><a href="../reference/steady.html">steady.mizerShelf()</a></code></td>
+<td><code><a href="../reference/tuneSteadyState.html">tuneSteadyState.mizerShelf()</a></code></td>
 <td>Calls <code><a href="../reference/tune_carrion_detritus.html">tune_carrion_detritus()</a></code> after convergence</td>
 </tr>
 <tr class="even">
+<td><code><a href="../reference/steady.html">steady.mizerShelf()</a></code></td>
+<td>The same, under the name that mizer has superseded</td>
+</tr>
+<tr class="odd">
 <td><code><a href="../reference/scaleModel.html">scaleModel.mizerShelf()</a></code></td>
 <td>Adjusts carrion encounter rates and external detritus input when
 rescaling abundances</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code><a href="../reference/removeSpecies.html">removeSpecies.mizerShelf()</a></code></td>
 <td>Updates the carrion encounter-rate matrix <code>rho</code>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code><a href="../reference/addSpecies.html">addSpecies.mizerShelf()</a></code></td>
 <td>Computes the initial <code>rho_carrion</code> for new species</td>
 </tr>
@@ -298,7 +302,7 @@ sedimentation from pelagic waters, stored in
 </ul>
 <p><code><a href="../reference/detritus_dynamics.html">detritus_dynamics()</a></code> solves this ODE analytically within
 each time step to avoid the instabilities of a simple Euler step:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo>+</mo><mi mathvariant="normal">Δ</mi><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>B</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><msup><mi>e</mi><mrow><mi>−</mi><mi>c</mi><mspace width="0.167em"></mspace><mi mathvariant="normal">Δ</mi><mi>t</mi></mrow></msup><mo>+</mo><mfrac><mi>p</mi><mi>c</mi></mfrac><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><msup><mi>e</mi><mrow><mi>−</mi><mi>c</mi><mspace width="0.167em"></mspace><mi mathvariant="normal">Δ</mi><mi>t</mi></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">B(t + \Delta t) = B(t)\,e^{-c\,\Delta t} + \frac{p}{c}\left(1 - e^{-c\,\Delta t}\right)</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>+</mo><mi>Δ</mi><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>B</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><msup><mi>e</mi><mrow><mo>−</mo><mi>c</mi><mspace width="0.167em"></mspace><mi>Δ</mi><mi>t</mi></mrow></msup><mo>+</mo><mfrac><mi>p</mi><mi>c</mi></mfrac><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><msup><mi>e</mi><mrow><mo>−</mo><mi>c</mi><mspace width="0.167em"></mspace><mi>Δ</mi><mi>t</mi></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">B(t + \Delta t) = B(t)\,e^{-c\,\Delta t} + \frac{p}{c}\left(1 - e^{-c\,\Delta t}\right)</annotation></semantics></math></p>
 <p>where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>
 is the mass-specific consumption rate and
@@ -331,7 +335,8 @@ input so that at the current abundances the detritus is at steady state
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">params</span><span class="op">@</span><span class="va">other_params</span><span class="op">$</span><span class="va">detritus</span><span class="op">$</span><span class="va">external</span> <span class="op">&lt;-</span> <span class="va">outflow</span> <span class="op">-</span> <span class="va">production</span></span></code></pre></div>
 <p>This function is called automatically by
-<code><a href="../reference/steady.html">steady.mizerShelf()</a></code> after mizer’s own steady-state
+<code><a href="../reference/tuneSteadyState.html">tuneSteadyState.mizerShelf()</a></code> (and by the superseded
+<code><a href="../reference/steady.html">steady.mizerShelf()</a></code>) after mizer’s own steady-state
 iteration converges.</p>
 </div>
 <div class="section level3">
@@ -345,7 +350,7 @@ grams.</li>
 <li>
 <code>detritus_lifetime(params)</code> — the expected time a unit of
 detritus survives before being consumed, equal to
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mtext mathvariant="normal">consumption rate</mtext><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">B / (\text{consumption rate})</annotation></semantics></math>.</li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mi>/</mi><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="normal">consumption rate</mtext><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">B / (\text{consumption rate})</annotation></semantics></math>.</li>
 <li>
 <code>detritus_lifetime(params) &lt;- value</code> — rescales
 detritus abundance while keeping total consumption unchanged (by
@@ -393,9 +398,9 @@ carrion’s contribution to each species’ encounter rate.</li>
 at body size
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>w</mi><annotation encoding="application/x-tex">w</annotation></semantics></math>
 is</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>E</mi><mi>i</mi><mtext mathvariant="normal">carrion</mtext></msubsup><mo stretchy="false" form="prefix">(</mo><mi>w</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msub><mi>ρ</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>w</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><msub><mi>B</mi><mtext mathvariant="normal">carrion</mtext></msub></mrow><annotation encoding="application/x-tex">E_i^{\text{carrion}}(w) = \rho_i(w)\,B_{\text{carrion}}</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>E</mi><mi>i</mi><mtext mathvariant="normal">carrion</mtext></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>w</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>ρ</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>w</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><msub><mi>B</mi><mtext mathvariant="normal">carrion</mtext></msub></mrow><annotation encoding="application/x-tex">E_i^{\text{carrion}}(w) = \rho_i(w)\,B_{\text{carrion}}</annotation></semantics></math></p>
 <p>where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ρ</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>w</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\rho_i(w)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ρ</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>w</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\rho_i(w)</annotation></semantics></math>
 is a species- and size-dependent encounter rate coefficient stored in
 the component parameters. The function
 <code><a href="../reference/encounter_contribution.html">encounter_contribution()</a></code> is a generic helper that works for
@@ -587,11 +592,12 @@ encounter-rate contribution is automatically included in
 <code><a href="https://sizespectrum.org/mizer/reference/getEncounter.html" class="external-link">getEncounter()</a></code> and <code><a href="https://sizespectrum.org/mizer/reference/getDiet.html" class="external-link">getDiet()</a></code>.</p></li>
 <li><p><strong>S4 marker classes + S3 dispatch</strong> —
 <code>mizerShelf</code> and <code>mizerShelfSim</code> ensure that
-shelf-specific methods (<code>getBiomass</code>, <code>steady</code>,
-<code>scaleModel</code>, <code>addSpecies</code>,
-<code>removeSpecies</code>) are dispatched automatically, while every
-override delegates to <code><a href="https://rdrr.io/r/base/UseMethod.html" class="external-link">NextMethod()</a></code> so that the full mizer
-pipeline remains intact.</p></li>
+shelf-specific methods (<code>getBiomass</code>,
+<code>tuneSteadyState</code>, <code>scaleModel</code>,
+<code>addSpecies</code>, <code>removeSpecies</code>) are dispatched
+automatically, while every override delegates to
+<code><a href="https://rdrr.io/r/base/UseMethod.html" class="external-link">NextMethod()</a></code> so that the full mizer pipeline remains
+intact.</p></li>
 </ol>
 <p>Together, these mechanisms allow mizerShelf to add two ecologically
 important processes — benthic detritus and carrion scavenging — to any
@@ -608,7 +614,7 @@ mizer model without modifying the mizer source code.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

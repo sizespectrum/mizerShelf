@@ -7,6 +7,8 @@ from either excess gear mortality or from discards.
 
 ``` r
 carrion_human_origin(params)
+
+carrion_human_origin(params) <- value
 ```
 
 ## Arguments
@@ -14,3 +16,7 @@ carrion_human_origin(params)
 - params:
 
   A MizerParams object
+
+- value:
+
+  The desired proportion of carrion production that is of human origin.

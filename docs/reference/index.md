@@ -2,6 +2,8 @@
 
 ## Detritus
 
+- [`balance_detritus_dynamics()`](https://sizespectrum.org/mizerShelf/reference/balance_detritus_dynamics.md)
+  : Balance the detritus resource
 - [`detritus_biomass()`](https://sizespectrum.org/mizerShelf/reference/detritus_biomass.md)
   : Detritus biomass
 - [`detritus_consumption()`](https://sizespectrum.org/mizerShelf/reference/detritus_consumption.md)
@@ -30,29 +32,51 @@
 
 - [`carrion_biomass()`](https://sizespectrum.org/mizerShelf/reference/carrion_biomass.md)
   : Carrion biomass
+
 - [`carrion_consumption_ms()`](https://sizespectrum.org/mizerShelf/reference/carrion_consumption_ms.md)
   : Mass-specific carrion consumption rate
+
 - [`carrion_dynamics()`](https://sizespectrum.org/mizerShelf/reference/carrion_dynamics.md)
   : Carrion dynamics
+
 - [`carrion_human_origin()`](https://sizespectrum.org/mizerShelf/reference/carrion_human_origin.md)
+  [`` `carrion_human_origin<-`() ``](https://sizespectrum.org/mizerShelf/reference/carrion_human_origin.md)
   : Proportion of carrion production that is of human origin
+
 - [`carrion_lifetime()`](https://sizespectrum.org/mizerShelf/reference/carrion_lifetime.md)
   [`` `carrion_lifetime<-`() ``](https://sizespectrum.org/mizerShelf/reference/carrion_lifetime.md)
   : Expected carrion lifetime
+
 - [`getCarrionConsumption()`](https://sizespectrum.org/mizerShelf/reference/getCarrionConsumption.md)
   : Get carrion consumption rates
+
 - [`getCarrionProduction()`](https://sizespectrum.org/mizerShelf/reference/getCarrionProduction.md)
   : Carrion production rate
+
 - [`newDetritusCarrionParams()`](https://sizespectrum.org/mizerShelf/reference/newDetritusCarrionParams.md)
   : Create new mizer model with detritus and carrion components
+
 - [`plotCarrionConsumption()`](https://sizespectrum.org/mizerShelf/reference/plotCarrionConsumption.md)
   : Plot carrion consumption rates
+
 - [`plotCarrionProduction()`](https://sizespectrum.org/mizerShelf/reference/plotCarrionProduction.md)
   : Plot carrion production rates
+
 - [`rescale_carrion()`](https://sizespectrum.org/mizerShelf/reference/rescale_carrion.md)
   : Rescale carrion biomass without changing anything else
+
 - [`tune_carrion_detritus()`](https://sizespectrum.org/mizerShelf/reference/tune_carrion_detritus.md)
   : Tune carrion and detritus to steady state
+
+- [`rhoControl()`](https://sizespectrum.org/mizerShelf/reference/rhoControl.md)
+  [`rhoControlUI()`](https://sizespectrum.org/mizerShelf/reference/rhoControl.md)
+  : Controlling the carrion encounter rate in the tuning gadget
+
+- [`setRho()`](https://sizespectrum.org/mizerShelf/reference/setRho.md)
+  :
+
+  Set the carrion encounter rate from the `rho_carrion` species
+  parameter
 
 ## Plots
 
@@ -83,13 +107,19 @@
   : mizerShelf marker classes
 - [`encounter_contribution()`](https://sizespectrum.org/mizerShelf/reference/encounter_contribution.md)
   : Contribution of unstructured components to the encounter rate
+- [`constant_dynamics()`](https://sizespectrum.org/mizerShelf/reference/constant_dynamics.md)
+  : Keep a component's abundance constant
+- [`rescaleComponents()`](https://sizespectrum.org/mizerShelf/reference/rescaleComponents.md)
+  : Rescale carrion and detritus biomass without changing anything else
 
 ## Extended mizer methods
 
 - [`getBiomass(`*`<mizerShelf>`*`)`](https://sizespectrum.org/mizerShelf/reference/getBiomass.md)
   : Get biomass of species and components for a shelf model
-- [`steady(`*`<mizerShelf>`*`)`](https://sizespectrum.org/mizerShelf/reference/steady.md)
+- [`tuneSteadyState(`*`<mizerShelf>`*`)`](https://sizespectrum.org/mizerShelf/reference/tuneSteadyState.md)
   : Drive a shelf model to steady state
+- [`steady(`*`<mizerShelf>`*`)`](https://sizespectrum.org/mizerShelf/reference/steady.md)
+  **\[superseded\]** : Drive a shelf model to steady state (superseded)
 - [`removeSpecies(`*`<mizerShelf>`*`)`](https://sizespectrum.org/mizerShelf/reference/removeSpecies.md)
   : Remove some species from a shelf model
 - [`addSpecies(`*`<mizerShelf>`*`)`](https://sizespectrum.org/mizerShelf/reference/addSpecies.md)

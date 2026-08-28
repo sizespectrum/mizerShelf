@@ -16,12 +16,13 @@ response to species abundances and fishing effort. The package uses four
 of the five extension mechanisms described in
 `vignette("extensions", package = "mizer")`:
 
-| Extension mechanism | Used for |
-|----|----|
-| [`setRateFunction()`](https://sizespectrum.org/mizer/reference/setRateFunction.html) | Replace standard mortality with shelf mortality that includes excess gear mortality |
-| Resource dynamics override | Implement detritus dynamics in place of the default semi-chemostat resource |
-| [`setComponent()`](https://sizespectrum.org/mizer/reference/setComponent.html) | Add carrion as a scalar dynamical component that contributes to the encounter rate |
-| S4 subclassing + S3 dispatch | Define `mizerShelf`/`mizerShelfSim` marker classes for shelf-specific plotting, scaling, and species manipulation |
+| Extension mechanism                                                                                  | Used for                                                                                                          |
+|------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|
+| `.onLoad` + [`registerExtension()`](https://sizespectrum.org/mizer/reference/registerExtension.html) | Register the package with mizer so params objects know which extensions they need                                 |
+| [`setRateFunction()`](https://sizespectrum.org/mizer/reference/setRateFunction.html)                 | Replace standard mortality with shelf mortality that includes excess gear mortality                               |
+| Resource dynamics override                                                                           | Implement detritus dynamics in place of the default semi-chemostat resource                                       |
+| [`setComponent()`](https://sizespectrum.org/mizer/reference/setComponent.html)                       | Add carrion as a scalar dynamical component that contributes to the encounter rate                                |
+| S4 subclassing + S3 dispatch                                                                         | Define `mizerShelf`/`mizerShelfSim` marker classes for shelf-specific plotting, scaling, and species manipulation |
 
 All four mechanisms are wired together inside
 [`newDetritusCarrionParams()`](https://sizespectrum.org/mizerShelf/reference/newDetritusCarrionParams.md),
@@ -42,6 +43,32 @@ a user calls a mizer generic on a `mizerShelf` object. The classes are
 marker classes in the sense described in
 `vignette("extensions", package = "mizer")`.
 
+### Registration via `.onLoad`
+
+For mizer to recognise mizerShelf as an extension, the package must
+register itself when it is loaded. This happens automatically via
+`.onLoad` in `R/mizerShelf-package.R`:
+
+``` r
+.onLoad <- function(libname, pkgname) {
+    mizer::registerExtension(pkgname, requirement = "sizespectrum/mizerShelf")
+}
+```
+
+[`registerExtension()`](https://sizespectrum.org/mizer/reference/registerExtension.html)
+adds an entry to mizer’s internal registry of known extensions. The
+`requirement` argument records the GitHub repository
+(`"sizespectrum/mizerShelf"`) so that mizer can warn users if they load
+a `params` object that needs mizerShelf but the package is not
+installed.
+
+This registration is what makes the subsequent call to
+[`getRegisteredExtensions()`](https://sizespectrum.org/mizer/reference/getRegisteredExtensions.html)
+inside
+[`newDetritusCarrionParams()`](https://sizespectrum.org/mizerShelf/reference/newDetritusCarrionParams.md)
+return `"mizerShelf"` — it is not a scan of installed packages but a
+lookup of packages that have explicitly announced themselves to mizer.
+
 [`newDetritusCarrionParams()`](https://sizespectrum.org/mizerShelf/reference/newDetritusCarrionParams.md)
 records the extension in `params@extensions` and coerces the result to
 the `mizerShelf` marker class:
@@ -49,7 +76,6 @@ the `mizerShelf` marker class:
 ``` r
 params@extensions <- getRegisteredExtensions()
 params <- coerceToExtensionClass(params)
-
 ```
 
 Recording the extension in `params@extensions` is what allows mizer to
@@ -67,14 +93,15 @@ sim object to `mizerShelfSim`.
 The following S3 methods are dispatched on `mizerShelf` or
 `mizerShelfSim`:
 
-| Method | What it adds |
-|----|----|
-| [`getBiomass.mizerShelf()`](https://sizespectrum.org/mizerShelf/reference/getBiomass.md) | Adds detritus and carrion biomasses to the species biomasses |
-| `getBiomass.mizerShelfSim()` | Same, as a time series |
-| [`steady.mizerShelf()`](https://sizespectrum.org/mizerShelf/reference/steady.md) | Calls [`tune_carrion_detritus()`](https://sizespectrum.org/mizerShelf/reference/tune_carrion_detritus.md) after convergence |
-| [`scaleModel.mizerShelf()`](https://sizespectrum.org/mizerShelf/reference/scaleModel.md) | Adjusts carrion encounter rates and external detritus input when rescaling abundances |
-| [`removeSpecies.mizerShelf()`](https://sizespectrum.org/mizerShelf/reference/removeSpecies.md) | Updates the carrion encounter-rate matrix `rho` |
-| [`addSpecies.mizerShelf()`](https://sizespectrum.org/mizerShelf/reference/addSpecies.md) | Computes the initial `rho_carrion` for new species |
+| Method                                                                                             | What it adds                                                                                                                |
+|----------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
+| [`getBiomass.mizerShelf()`](https://sizespectrum.org/mizerShelf/reference/getBiomass.md)           | Adds detritus and carrion biomasses to the species biomasses                                                                |
+| `getBiomass.mizerShelfSim()`                                                                       | Same, as a time series                                                                                                      |
+| [`tuneSteadyState.mizerShelf()`](https://sizespectrum.org/mizerShelf/reference/tuneSteadyState.md) | Calls [`tune_carrion_detritus()`](https://sizespectrum.org/mizerShelf/reference/tune_carrion_detritus.md) after convergence |
+| [`steady.mizerShelf()`](https://sizespectrum.org/mizerShelf/reference/steady.md)                   | The same, under the name that mizer has superseded                                                                          |
+| [`scaleModel.mizerShelf()`](https://sizespectrum.org/mizerShelf/reference/scaleModel.md)           | Adjusts carrion encounter rates and external detritus input when rescaling abundances                                       |
+| [`removeSpecies.mizerShelf()`](https://sizespectrum.org/mizerShelf/reference/removeSpecies.md)     | Updates the carrion encounter-rate matrix `rho`                                                                             |
+| [`addSpecies.mizerShelf()`](https://sizespectrum.org/mizerShelf/reference/addSpecies.md)           | Computes the initial `rho_carrion` for new species                                                                          |
 
 Each of these methods calls
 [`NextMethod()`](https://rdrr.io/r/base/UseMethod.html) so that it first
@@ -149,11 +176,9 @@ replacing only the update step.
 ### The detritus ODE
 
 The detritus spectrum is always held at a fixed power-law shape; only
-its overall biomass $`B`$ is dynamical. The biomass satisfies
+its overall biomass $B$ is dynamical. The biomass satisfies
 
-``` math
-\frac{dB}{dt} = \text{production} - \text{consumption} \cdot B + \text{external}
-```
+$$\frac{dB}{dt} = \text{production} - \text{consumption} \cdot B + \text{external}$$
 
 where:
 
@@ -170,11 +195,9 @@ where:
 solves this ODE analytically within each time step to avoid the
 instabilities of a simple Euler step:
 
-``` math
-B(t + \Delta t) = B(t)\,e^{-c\,\Delta t} + \frac{p}{c}\left(1 - e^{-c\,\Delta t}\right)
-```
+$$B(t + \Delta t) = B(t)\, e^{- c\,\Delta t} + \frac{p}{c}\left( 1 - e^{- c\,\Delta t} \right)$$
 
-where $`c`$ is the mass-specific consumption rate and $`p`$ is the
+where $c$ is the mass-specific consumption rate and $p$ is the
 production rate. The shape of the spectrum is then scaled to the new
 biomass:
 
@@ -208,7 +231,9 @@ params@other_params$detritus$external <- outflow - production
 ```
 
 This function is called automatically by
-[`steady.mizerShelf()`](https://sizespectrum.org/mizerShelf/reference/steady.md)
+[`tuneSteadyState.mizerShelf()`](https://sizespectrum.org/mizerShelf/reference/tuneSteadyState.md)
+(and by the superseded
+[`steady.mizerShelf()`](https://sizespectrum.org/mizerShelf/reference/steady.md))
 after mizer’s own steady-state iteration converges.
 
 ### User-facing controls
@@ -218,7 +243,7 @@ Two getter/setter pairs make it easy to calibrate the detritus:
 - `detritus_biomass(params)` — total detritus biomass in grams.
 - `detritus_lifetime(params)` — the expected time a unit of detritus
   survives before being consumed, equal to
-  $`B / (\text{consumption rate})`$.
+  $B/\left( \text{consumption rate} \right)$.
 - `detritus_lifetime(params) <- value` — rescales detritus abundance
   while keeping total consumption unchanged (by adjusting
   `interaction_resource`).
@@ -256,14 +281,12 @@ step:
 
 ### Encounter contribution
 
-The contribution of carrion to the encounter rate of species $`i`$ at
-body size $`w`$ is
+The contribution of carrion to the encounter rate of species $i$ at body
+size $w$ is
 
-``` math
-E_i^{\text{carrion}}(w) = \rho_i(w)\,B_{\text{carrion}}
-```
+$$E_{i}^{\text{carrion}}(w) = \rho_{i}(w)\, B_{\text{carrion}}$$
 
-where $`\rho_i(w)`$ is a species- and size-dependent encounter rate
+where $\rho_{i}(w)$ is a species- and size-dependent encounter rate
 coefficient stored in the component parameters. The function
 [`encounter_contribution()`](https://sizespectrum.org/mizerShelf/reference/encounter_contribution.md)
 is a generic helper that works for any scalar other-component:
@@ -282,12 +305,10 @@ size.
 
 ### Carrion dynamics
 
-The carrion biomass $`B`$ satisfies the same ODE structure as the
+The carrion biomass $B$ satisfies the same ODE structure as the
 detritus:
 
-``` math
-\frac{dB}{dt} = \text{production} - \text{consumption} \cdot B
-```
+$$\frac{dB}{dt} = \text{production} - \text{consumption} \cdot B$$
 
 - **production**
   ([`getCarrionProduction()`](https://sizespectrum.org/mizerShelf/reference/getCarrionProduction.md))
@@ -433,7 +454,7 @@ newDetritusCarrionParams <- function(species_params,
     # 4. Marker class: enables S3 dispatch for shelf-specific methods
     params <- setColours(params,
                          c(Detritus = "forestgreen", carrion = "peru"))
-                         
+
     params@extensions <- getRegisteredExtensions()
     params <- coerceToExtensionClass(params)
 }
@@ -473,7 +494,7 @@ working together:
 
 4.  **S4 marker classes + S3 dispatch** — `mizerShelf` and
     `mizerShelfSim` ensure that shelf-specific methods (`getBiomass`,
-    `steady`, `scaleModel`, `addSpecies`, `removeSpecies`) are
+    `tuneSteadyState`, `scaleModel`, `addSpecies`, `removeSpecies`) are
     dispatched automatically, while every override delegates to
     [`NextMethod()`](https://rdrr.io/r/base/UseMethod.html) so that the
     full mizer pipeline remains intact.

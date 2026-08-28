@@ -101,7 +101,8 @@ p_bio <- mizer::plotBiomass(sim_s, species = target)
 yield <- plotYield(sim_s, species = target, return_data = TRUE)
 yield_initial <- data.frame(Year = rep(-1, length(target)),
                             Yield = getYield(NWMed_params)[target],
-                            Species = target)
+                            Species = target,
+                            Legend = target)
 p_yield <- plotDataFrame(rbind(yield_initial, yield), NWMed_params,
                          ylab = "Yield [g/yr]")
 
@@ -117,9 +118,23 @@ yield over time:
 plotlyBiomassRelative(sim_s, species = target)
 ```
 
+    ## Warning: `plotlyBiomassRelative()` was deprecated in mizerExperimental 3.0.0.
+    ## ℹ Please use `mizer::plotRelative()` instead.
+    ## ℹ For example `plotRelative(getBiomass(sim_original), getBiomass(sim))`.
+    ## This warning is displayed once per session.
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
 ``` r
 plotlyYieldRelative(sim_s, NWMed_params, species = target)
 ```
+
+    ## Warning: `plotlyYieldRelative()` was deprecated in mizerExperimental 3.0.0.
+    ## ℹ Please use `mizer::plotRelative()` instead.
+    ## ℹ For example `plotRelative(getYield(object_original), getYield(sim))`.
+    ## This warning is displayed once per session.
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
 
 Here is the relative change in biomass of the non-target species:
 
@@ -179,7 +194,8 @@ p_bio <- mizer::plotBiomass(sim_e, species = target)
 yield <- plotYield(sim_e, species = target, return_data = TRUE)
 yield_initial <- data.frame(Year = rep(-1, length(target)),
                             Yield = getYield(NWMed_params)[target],
-                            Species = target)
+                            Species = target,
+                            Legend = target)
 p_yield <- plotDataFrame(rbind(yield_initial, yield), NWMed_params,
                          ylab = "Yield [g/yr]")
 

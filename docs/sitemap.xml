@@ -6,14 +6,17 @@
 <url><loc>https://sizespectrum.org/mizerShelf/articles/model_description.html</loc></url>
 <url><loc>https://sizespectrum.org/mizerShelf/authors.html</loc></url>
 <url><loc>https://sizespectrum.org/mizerShelf/index.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/news/index.html</loc></url>
 <url><loc>https://sizespectrum.org/mizerShelf/reference/NWMed_catch.html</loc></url>
 <url><loc>https://sizespectrum.org/mizerShelf/reference/NWMed_params.html</loc></url>
 <url><loc>https://sizespectrum.org/mizerShelf/reference/addSpecies.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/balance_detritus_dynamics.html</loc></url>
 <url><loc>https://sizespectrum.org/mizerShelf/reference/carrion_biomass.html</loc></url>
 <url><loc>https://sizespectrum.org/mizerShelf/reference/carrion_consumption_ms.html</loc></url>
 <url><loc>https://sizespectrum.org/mizerShelf/reference/carrion_dynamics.html</loc></url>
 <url><loc>https://sizespectrum.org/mizerShelf/reference/carrion_human_origin.html</loc></url>
 <url><loc>https://sizespectrum.org/mizerShelf/reference/carrion_lifetime.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/constant_dynamics.html</loc></url>
 <url><loc>https://sizespectrum.org/mizerShelf/reference/detritus_biomass.html</loc></url>
 <url><loc>https://sizespectrum.org/mizerShelf/reference/detritus_consumption.html</loc></url>
 <url><loc>https://sizespectrum.org/mizerShelf/reference/detritus_dynamics.html</loc></url>
@@ -21,7 +24,6 @@
 <url><loc>https://sizespectrum.org/mizerShelf/reference/encounter_contribution.html</loc></url>
 <url><loc>https://sizespectrum.org/mizerShelf/reference/gearMort.html</loc></url>
 <url><loc>https://sizespectrum.org/mizerShelf/reference/getBiomass.html</loc></url>
-<url><loc>https://sizespectrum.org/mizerShelf/reference/getBiomass.mizerShelfSim.html</loc></url>
 <url><loc>https://sizespectrum.org/mizerShelf/reference/getCarrionConsumption.html</loc></url>
 <url><loc>https://sizespectrum.org/mizerShelf/reference/getCarrionProduction.html</loc></url>
 <url><loc>https://sizespectrum.org/mizerShelf/reference/getDetritusConsumption.html</loc></url>
@@ -30,7 +32,6 @@
 <url><loc>https://sizespectrum.org/mizerShelf/reference/mizerShelf-class.html</loc></url>
 <url><loc>https://sizespectrum.org/mizerShelf/reference/mizerShelf-package.html</loc></url>
 <url><loc>https://sizespectrum.org/mizerShelf/reference/newDetritusCarrionParams.html</loc></url>
-<url><loc>https://sizespectrum.org/mizerShelf/reference/plotBiomass.html</loc></url>
 <url><loc>https://sizespectrum.org/mizerShelf/reference/plotCarrionConsumption.html</loc></url>
 <url><loc>https://sizespectrum.org/mizerShelf/reference/plotCarrionProduction.html</loc></url>
 <url><loc>https://sizespectrum.org/mizerShelf/reference/plotDeath.html</loc></url>
@@ -38,11 +39,15 @@
 <url><loc>https://sizespectrum.org/mizerShelf/reference/plotDetritusProduction.html</loc></url>
 <url><loc>https://sizespectrum.org/mizerShelf/reference/plotYieldMinusDiscards.html</loc></url>
 <url><loc>https://sizespectrum.org/mizerShelf/reference/removeSpecies.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/rescaleComponents.html</loc></url>
 <url><loc>https://sizespectrum.org/mizerShelf/reference/rescale_carrion.html</loc></url>
 <url><loc>https://sizespectrum.org/mizerShelf/reference/rescale_detritus.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/rhoControl.html</loc></url>
 <url><loc>https://sizespectrum.org/mizerShelf/reference/scaleModel.html</loc></url>
 <url><loc>https://sizespectrum.org/mizerShelf/reference/seMort.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/setRho.html</loc></url>
 <url><loc>https://sizespectrum.org/mizerShelf/reference/steady.html</loc></url>
+<url><loc>https://sizespectrum.org/mizerShelf/reference/tuneSteadyState.html</loc></url>
 <url><loc>https://sizespectrum.org/mizerShelf/reference/tune_carrion_detritus.html</loc></url>
 </urlset>
 

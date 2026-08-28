@@ -14,15 +14,15 @@
 Source:
 [`inst/CITATION`](https://github.com/sizespectrum/mizerShelf/blob/HEAD/inst/CITATION)
 
-Delius G, de Juan S, Maynou F (2022). *mizerShelf: Mizer Models with
+Delius G, de Juan S, Maynou F (2026). *mizerShelf: Mizer Models with
 Carrion and Detritus Components suitable for continental shelf
-ecosystems*. R package version 1.0.1,
+ecosystems*. R package version 1.1.0,
 <https://sizespectrum.org/mizerShelf/>.
 
     @Manual{,
       title = {mizerShelf: Mizer Models with Carrion and Detritus Components suitable for continental shelf ecosystems},
       author = {Gustav Delius and Silvia {de Juan} and Francesc Maynou},
-      year = {2022},
-      note = {R package version 1.0.1},
+      year = {2026},
+      note = {R package version 1.1.0},
       url = {https://sizespectrum.org/mizerShelf/},
     }
