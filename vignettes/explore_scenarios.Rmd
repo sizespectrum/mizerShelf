@@ -97,8 +97,7 @@ p_bio <- mizer::plotBiomass(sim_s, species = target)
 yield <- plotYield(sim_s, species = target, return_data = TRUE)
 yield_initial <- data.frame(Year = rep(-1, length(target)),
                             Yield = getYield(NWMed_params)[target],
-                            Species = target,
-                            Legend = target)
+                            Species = target)
 p_yield <- plotDataFrame(rbind(yield_initial, yield), NWMed_params,
                          ylab = "Yield [g/yr]")
 
@@ -164,8 +163,7 @@ p_bio <- mizer::plotBiomass(sim_e, species = target)
 yield <- plotYield(sim_e, species = target, return_data = TRUE)
 yield_initial <- data.frame(Year = rep(-1, length(target)),
                             Yield = getYield(NWMed_params)[target],
-                            Species = target,
-                            Legend = target)
+                            Species = target)
 p_yield <- plotDataFrame(rbind(yield_initial, yield), NWMed_params,
                          ylab = "Yield [g/yr]")
 

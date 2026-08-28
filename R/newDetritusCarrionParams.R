@@ -43,6 +43,7 @@ newDetritusCarrionParams <- function(
 
     params <- recordExtension(
         params, "mizerShelf",
-        version = as.character(utils::packageVersion("mizerShelf")))
+        version = as.character(utils::packageVersion("mizerShelf")),
+        requirement = "sizespectrum/mizerShelf")
     coerceToExtensionClass(params)
 }

@@ -1,7 +1,11 @@
 #' MizerParams object for the NW Mediterranean shelf model
 #'
+#' The object was created with [newDetritusCarrionParams()] and is stored in
+#' the package's `data/` directory. R's standard lazy-loading preserves its S3
+#' class vector and extension metadata, so no load hook or active binding is
+#' needed.
 #'
-#' @format A MizerParams object
+#' @format A [mizerShelf-class] object.
 #' @source Forthcoming paper
 "NWMed_params"
 

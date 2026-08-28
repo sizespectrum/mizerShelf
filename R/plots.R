@@ -16,9 +16,9 @@
 #' plotDeath(NWMed_params, species = "Hake")
 plotDeath <- function(object, species = NULL, proportion = TRUE, return_data = FALSE)
 {
-    if (is(object, "MizerSim")) {
+    if (inherits(object, "MizerSim")) {
         params <- finalParams(object)
-    } else if (is(object, "MizerParams")) {
+    } else if (inherits(object, "MizerParams")) {
         params <- validParams(object)
     }
     # TODO: Remove this fix once core mizer makes sure a default is set

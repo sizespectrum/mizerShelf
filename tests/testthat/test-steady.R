@@ -26,7 +26,7 @@ test_that("a model moved off its steady state is recognised as such", {
 
 test_that("tuneSteadyState returns a mizerShelf object at steady state", {
     p <- tuneSteadyState(params, t_max = 5, progress_bar = FALSE)
-    expect_s4_class(p, "mizerShelf")
+    expect_s3_class(p, "mizerShelf")
     expect_true(isSteady(p))
 })
 
@@ -50,13 +50,13 @@ test_that("tuneSteadyState does not warn about the carrion component", {
 
 test_that("steady still works and tunes carrion and detritus", {
     p <- steady(params, t_max = 5, progress_bar = FALSE)
-    expect_s4_class(p, "mizerShelf")
+    expect_s3_class(p, "mizerShelf")
     expect_true(isSteady(p))
 })
 
 test_that("steady with return_sim returns a sim with tuned params", {
     sim <- steady(params, t_max = 5, return_sim = TRUE, progress_bar = FALSE)
-    expect_s4_class(sim, "mizerShelfSim")
+    expect_s3_class(sim, "mizerShelfSim")
     expect_true(isSteady(sim@params))
 })
 

@@ -5,7 +5,7 @@
 \alias{NWMed_params}
 \title{MizerParams object for the NW Mediterranean shelf model}
 \format{
-A MizerParams object
+A \link[=mizerShelf-class]{mizerShelf} object.
 }
 \source{
 Forthcoming paper
@@ -14,6 +14,9 @@ Forthcoming paper
 NWMed_params
 }
 \description{
-MizerParams object for the NW Mediterranean shelf model
+The object was created with \code{\link[=newDetritusCarrionParams]{newDetritusCarrionParams()}} and is stored in
+the package's \verb{data/} directory. R's standard lazy-loading preserves its S3
+class vector and extension metadata, so no load hook or active binding is
+needed.
 }
 \keyword{datasets}

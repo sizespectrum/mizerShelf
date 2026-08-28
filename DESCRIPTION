@@ -23,7 +23,6 @@ Depends:
     R (>= 3.5.0)
 Imports:
     lubridate,
-    methods,
     mizerEcopath,
     mizerExperimental (>= 3.3.0),
     ggplot2,

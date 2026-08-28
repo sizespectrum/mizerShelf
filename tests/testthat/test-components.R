@@ -253,7 +253,7 @@ test_that("rescaleComponents with default factors leaves params unchanged", {
 
 test_that("tune_carrion_detritus returns MizerParams", {
     p2 <- tune_carrion_detritus(params)
-    expect_s4_class(p2, "MizerParams")
+    expect_s3_class(p2, "MizerParams")
 })
 
 test_that("tune_carrion_detritus sets carrion to steady state", {
@@ -293,5 +293,5 @@ test_that("the component integrals respond to second-order bin-averaging", {
 test_that("a bin-averaged shelf model can still be projected", {
     p <- params
     second_order_w(p) <- list(flux = "upwind", bin_average = TRUE)
-    expect_s4_class(project(p, t_max = 1, t_save = 1), "mizerShelfSim")
+    expect_s3_class(project(p, t_max = 1, t_save = 1), "mizerShelfSim")
 })
