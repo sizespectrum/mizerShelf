@@ -54,6 +54,22 @@ requires.
   `plotYield(return_data = TRUE)` now returns, and the model description uses
   `reproduction_level()` in place of the deprecated `getReproductionLevel()`.
 
+- `newDetritusCarrionParams()` records the extension with
+  `mizer::recordExtension()` instead of writing the whole session registry into
+  the `extensions` slot. The object now carries a mizerShelf version stamp, and
+  records the extensions actually applied to it rather than every extension
+  package that happened to be loaded when it was built.
+
+- The agent configuration files are excluded from the package build, so
+  `R CMD check` no longer reports them as non-standard top-level and hidden
+  files.
+
+- `R CMD check` is clean. The two errors reported by the previous release
+  candidate came from mizer's dynamic marker classes living in `.GlobalEnv`,
+  where `cleanEx()` destroyed them between examples; mizer now keeps them in an
+  attached `mizer:extension-classes` environment (sizespectrum/mizer#587), so
+  there is nothing left to work around here.
+
 # mizerShelf 1.0.2
 
 Version accompanying de Juan, Delius & Maynou (2023),

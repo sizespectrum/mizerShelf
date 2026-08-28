@@ -41,6 +41,8 @@ newDetritusCarrionParams <- function(
     # Register colours for the detritus and carrion in the plot legend
     params <- setColours(params, c(Detritus = "forestgreen", carrion = "peru"))
 
-    params@extensions <- getRegisteredExtensions()
-    params <- coerceToExtensionClass(params)
+    params <- recordExtension(
+        params, "mizerShelf",
+        version = as.character(utils::packageVersion("mizerShelf")))
+    coerceToExtensionClass(params)
 }

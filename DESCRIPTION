@@ -29,7 +29,8 @@ Imports:
     ggplot2,
     plotly,
     reshape2,
-    shiny
+    shiny,
+    utils
 Suggests:
     dplyr,
     lifecycle,
