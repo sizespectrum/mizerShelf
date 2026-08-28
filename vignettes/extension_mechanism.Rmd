@@ -33,64 +33,47 @@ extension mechanisms described in `vignette("extensions", package = "mizer")`:
 
 | Extension mechanism | Used for |
 |---|---|
-| `.onLoad` + `registerExtension()` | Register the package with mizer so params objects know which extensions they need |
+| `recordExtension()` + `coerceToExtensionClass()` | Record extension requirement/version and set S3 class vector |
 | `setRateFunction()` | Replace standard mortality with shelf mortality that includes excess gear mortality |
 | Resource dynamics override | Implement detritus dynamics in place of the default semi-chemostat resource |
 | `setComponent()` | Add carrion as a scalar dynamical component that contributes to the encounter rate |
-| S4 subclassing + S3 dispatch | Define `mizerShelf`/`mizerShelfSim` marker classes for shelf-specific plotting, scaling, and species manipulation |
+| S3 extension classes + S3 dispatch | Define `mizerShelf`/`mizerShelfSim` extension classes for shelf-specific plotting, scaling, and species manipulation |
 
 All four mechanisms are wired together inside `newDetritusCarrionParams()`, which
 is the single entry point for building a shelf model.
 
-# The `mizerShelf` marker class
+# The `mizerShelf` extension classes
 
-mizerShelf defines two S4 marker subclasses:
+`MizerParams` and `MizerSim` are S3 classes. An extension package gives its
+objects a distinctive class label (such as `"mizerShelf"` and `"mizerShelfSim"`)
+by prepending it to the base class vector: `c("mizerShelf", "MizerParams")`.
+All extension-specific data lives in `other_params(params)` or in component
+parameters; the class label is simply used for S3 method dispatch.
 
-```r
-setClass("mizerShelf",    contains = "MizerParams")
-setClass("mizerShelfSim", contains = "MizerSim")
-```
-
-These classes carry no extra slots. Their purpose is to trigger S3 dispatch so
-that shelf-specific behaviour is used automatically whenever a user calls a
-mizer generic on a `mizerShelf` object. The classes are marker classes in the
-sense described in `vignette("extensions", package = "mizer")`.
-
-## Registration via `.onLoad`
-
-For mizer to recognise mizerShelf as an extension, the package must register
-itself when it is loaded. This happens automatically via `.onLoad` in
-`R/mizerShelf-package.R`:
+No formal class declaration with `setClass()` is needed. When
+`newDetritusCarrionParams()` finishes configuring the object, it calls
+`recordExtension()` and `coerceToExtensionClass()`:
 
 ```r
-.onLoad <- function(libname, pkgname) {
-    mizer::registerExtension(pkgname, requirement = "sizespectrum/mizerShelf")
-}
+params <- mizer::recordExtension(
+    params, "mizerShelf",
+    version = as.character(utils::packageVersion("mizerShelf")),
+    requirement = "sizespectrum/mizerShelf"
+)
+params <- mizer::coerceToExtensionClass(params)
 ```
 
-`registerExtension()` adds an entry to mizer's internal registry of known
-extensions. The `requirement` argument records the GitHub repository
-(`"sizespectrum/mizerShelf"`) so that mizer can warn users if they load a
-`params` object that needs mizerShelf but the package is not installed.
+`recordExtension()` records the installation requirement (which mizer can use
+to install missing packages automatically when opening saved models with
+`readParams()`) and the version stamp in `params$extensions`.
 
-This registration is what makes the subsequent call to `getRegisteredExtensions()`
-inside `newDetritusCarrionParams()` return `"mizerShelf"` — it is not a scan of
-installed packages but a lookup of packages that have explicitly announced
-themselves to mizer.
+`coerceToExtensionClass()` reads the recorded extension list and sets the S3
+class vector to `c("mizerShelf", "MizerParams")`, allowing R to dispatch to
+shelf methods automatically.
 
-`newDetritusCarrionParams()` records the extension in `params@extensions` and
-coerces the result to the `mizerShelf` marker class:
-
-```r
-params@extensions <- getRegisteredExtensions()
-params <- coerceToExtensionClass(params)
-```
-
-Recording the extension in `params@extensions` is what allows mizer to
-automatically produce a `mizerShelfSim` whenever `project()` is called:
-mizer's own `MizerSim()` constructor calls `coerceToExtensionClass()`, which
-reads `params@extensions`, sees `mizerShelf`, and coerces the new sim object
-to `mizerShelfSim`.
+`MizerSim` objects are coerced to `mizerShelfSim` automatically by `project()`:
+because the params object inside the sim carries the extension metadata,
+mizer promotes the sim to `c("mizerShelfSim", "MizerSim")`.
 
 ## Methods dispatched on `mizerShelf`
 
@@ -402,11 +385,14 @@ newDetritusCarrionParams <- function(species_params,
         encounter_fun    = "encounter_contribution",
         component_params = list(rho = rho))
 
-    # 4. Marker class: enables S3 dispatch for shelf-specific methods
+    # 4. S3 extension class: enables S3 dispatch for shelf-specific methods
     params <- setColours(params,
                          c(Detritus = "forestgreen", carrion = "peru"))
 
-    params@extensions <- getRegisteredExtensions()
+    params <- recordExtension(
+        params, "mizerShelf",
+        version = as.character(utils::packageVersion("mizerShelf")),
+        requirement = "sizespectrum/mizerShelf")
     params <- coerceToExtensionClass(params)
 }
 ```
@@ -414,7 +400,7 @@ newDetritusCarrionParams <- function(species_params,
 The order matters. The resource dynamics are set inside `newMultispeciesParams()`
 before mizer computes initial rates, so the detritus shape is consistent from
 the start. The carrion component is registered after the species parameters are
-set, so that `rho` can be computed from the initial encounter rates. The marker
+set, so that `rho` can be computed from the initial encounter rates. The extension
 class is applied last, after all the standard mizer slots have been populated.
 
 # Summary
@@ -434,7 +420,7 @@ together:
    evolves each time step and whose encounter-rate contribution is automatically
    included in `getEncounter()` and `getDiet()`.
 
-4. **S4 marker classes + S3 dispatch** — `mizerShelf` and `mizerShelfSim`
+4. **S3 extension classes + S3 dispatch** — `mizerShelf` and `mizerShelfSim`
    ensure that shelf-specific methods (`getBiomass`, `tuneSteadyState`,
    `scaleModel`,
    `addSpecies`, `removeSpecies`) are dispatched automatically, while every

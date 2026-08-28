@@ -5,7 +5,7 @@ params <- validParams(NWMed_params)
 test_that("newDetritusCarrionParams returns a MizerParams object", {
     sp <- species_params(params)[1:3, ]
     p <- newDetritusCarrionParams(sp)
-    expect_s4_class(p, "MizerParams")
+    expect_s3_class(p, "MizerParams")
 })
 
 test_that("newDetritusCarrionParams creates carrion component", {
@@ -36,7 +36,7 @@ test_that("newDetritusCarrionParams rho has correct dimensions", {
 # ---- scaleModel ----
 
 test_that("scaleModel returns MizerParams", {
-    expect_s4_class(scaleModel(params, 2), "MizerParams")
+    expect_s3_class(scaleModel(params, 2), "MizerParams")
 })
 
 test_that("scaleModel scales rho inversely", {

@@ -1,23 +1,23 @@
-#' mizerShelf marker classes
+#' mizerShelf extension classes
 #'
-#' S4 marker subclasses of [MizerParams] and [MizerSim] that enable S3 dispatch
+#' S3 extension classes for [MizerParams] and [MizerSim] that enable S3 dispatch
 #' for shelf-specific methods such as [tuneSteadyState()],
 #' [scaleModel()],
 #' [removeSpecies()], [addSpecies()], and [getBiomass()].
+#'
+#' The class names are ordinary entries in the object's S3 class vector. All
+#' extension-specific data lives in `other_params(params)` or in the component
+#' parameters of the "carrion" component (see [setComponent()]).
 #'
 #' Objects of class `mizerShelf` are created by [newDetritusCarrionParams()].
 #' Objects of class `mizerShelfSim` are returned automatically by [project()]
 #' when called on a `mizerShelf` params object.
 #'
-#' The classes are **not** defined statically. Instead mizer creates them when
-#' the package is loaded: `.onLoad()` calls [mizer::registerExtension()], which
-#' recognises mizerShelf as a dispatching extension from the S3 methods it
-#' registers for its marker class and inserts `mizerShelf` at the correct place
-#' in the S4 hierarchy relative to any other extension packages loaded in the
-#' same session. This lets mizerShelf be chained with other extensions in
-#' either load order. A static `contains = "MizerParams"` definition would fix
-#' mizerShelf as a direct sibling of every other extension and prevent such
-#' chaining, because a sealed class cannot be re-parented.
+#' No class declaration is needed. [newDetritusCarrionParams()] records the
+#' extension on the object with [mizer::recordExtension()] and then calls
+#' [mizer::coerceToExtensionClass()]. For example, the params class vector is
+#' `c("mizerShelf", "MizerParams")`; simulations created by [project()] receive
+#' `c("mizerShelfSim", "MizerSim")` automatically.
 #'
 #' @name mizerShelf-class
 #' @keywords internal

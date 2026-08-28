@@ -26,7 +26,7 @@ test_that("removeSpecies keeps all other species in rho", {
 # ---- setRho ----
 
 test_that("setRho returns MizerParams", {
-    expect_s4_class(setRho(params), "MizerParams")
+    expect_s3_class(setRho(params), "MizerParams")
 })
 
 test_that("setRho sets rho from rho_carrion species parameter", {

@@ -2,26 +2,26 @@
 % Please edit documentation in R/mizerShelf-class.R
 \name{mizerShelf-class}
 \alias{mizerShelf-class}
-\title{mizerShelf marker classes}
+\title{mizerShelf extension classes}
 \description{
-S4 marker subclasses of \link[mizer:MizerParams]{MizerParams} and \link[mizer:MizerSim]{MizerSim} that enable S3 dispatch
+S3 extension classes for \link[mizer:MizerParams]{MizerParams} and \link[mizer:MizerSim]{MizerSim} that enable S3 dispatch
 for shelf-specific methods such as \code{\link[=tuneSteadyState]{tuneSteadyState()}},
 \code{\link[=scaleModel]{scaleModel()}},
 \code{\link[=removeSpecies]{removeSpecies()}}, \code{\link[=addSpecies]{addSpecies()}}, and \code{\link[=getBiomass]{getBiomass()}}.
 }
 \details{
+The class names are ordinary entries in the object's S3 class vector. All
+extension-specific data lives in \code{other_params(params)} or in the component
+parameters of the "carrion" component (see \code{\link[mizer:setComponent]{setComponent()}}).
+
 Objects of class \code{mizerShelf} are created by \code{\link[=newDetritusCarrionParams]{newDetritusCarrionParams()}}.
 Objects of class \code{mizerShelfSim} are returned automatically by \code{\link[mizer:project]{project()}}
 when called on a \code{mizerShelf} params object.
 
-The classes are \strong{not} defined statically. Instead mizer creates them when
-the package is loaded: \code{.onLoad()} calls \code{\link[mizer:registerExtension]{mizer::registerExtension()}}, which
-recognises mizerShelf as a dispatching extension from the S3 methods it
-registers for its marker class and inserts \code{mizerShelf} at the correct place
-in the S4 hierarchy relative to any other extension packages loaded in the
-same session. This lets mizerShelf be chained with other extensions in
-either load order. A static \code{contains = "MizerParams"} definition would fix
-mizerShelf as a direct sibling of every other extension and prevent such
-chaining, because a sealed class cannot be re-parented.
+No class declaration is needed. \code{\link[=newDetritusCarrionParams]{newDetritusCarrionParams()}} records the
+extension on the object with \code{\link[mizer:recordExtension]{mizer::recordExtension()}} and then calls
+\code{\link[mizer:coerceToExtensionClass]{mizer::coerceToExtensionClass()}}. For example, the params class vector is
+\code{c("mizerShelf", "MizerParams")}; simulations created by \code{\link[mizer:project]{project()}} receive
+\code{c("mizerShelfSim", "MizerSim")} automatically.
 }
 \keyword{internal}
