@@ -300,8 +300,10 @@ registerShelfCapabilities <- function(params) {
             unchanged = list(action = "none", evolve = "consumers")
         ))
         consumer$transformations <- no_action
-        if (params$rates_funcs$Mort != "mizerMort") {
-            consumer$mortality_fun <- "mizerShelf::shelf_mortality_breakdown"
+        consumer$mortality_fun <- if (params$rates_funcs$Mort == "mizerMort") {
+            "mizer::mizerMortalityBreakdown"
+        } else {
+            "mizerShelf::shelf_mortality_breakdown"
         }
         params <- setProcess(params, "consumers", definition = consumer)
         params <- setProcess(params, "reproduction",
@@ -346,10 +348,18 @@ registerShelfCapabilities <- function(params) {
 #' Upgrade a shelf model's stored capabilities
 #' @param object An earlier shelf model after the core upgrade.
 #' @param ... Unused.
+#' Existing preview declarations, including author removals, are retained.
+#' Only older models acquire the initial standard declarations.
 #' @return The upgraded model, preserving its effective mortality law.
 #' @keywords internal
 #' @exportS3Method utils::upgrade
 upgrade.mizerShelf <- function(object, ...) {
+    version <- utils::getFromNamespace("extensionVersion", "mizer")(
+        object, "mizerShelf"
+    )
+    if (!is.na(version) && package_version(version) >= "1.2.0.9000") {
+        return(object)
+    }
     standard <- identical(object$resource_dynamics, "detritus_dynamics") &&
         identical(object$other_dynamics$carrion, "carrion_dynamics") &&
         identical(object$other_encounter$carrion, "encounter_contribution")

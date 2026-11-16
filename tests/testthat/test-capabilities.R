@@ -241,7 +241,7 @@ test_that("unknown S3 rate routes are not adopted as known equations", {
     rownames(extra) <- "Added"
     expect_error(addSpecies(adopted, extra, steady = FALSE),
                  "support|declaration")
-    expect_null(getComponent(adopted, "carrion")$autonomous)
+    expect_null(getComponent(adopted, "carrion")$definition$autonomous)
     expect_null(getProcess(adopted, "resource")$definition$autonomous)
 })
 
@@ -253,4 +253,55 @@ test_that("infeasible carrion budgets fail without changing the model", {
     before <- p
     expect_error(tune_carrion_detritus(p), "not enough carrion production")
     expect_equal(p, before)
+})
+
+
+test_that("re-adoption follows a changed known mortality provider", {
+    p <- shelf_small
+    expect_true("gear" %in% names(getMortByCause(p)$causes))
+    p <- setRateFunction(p, "Mort", "mizerMort")
+    p <- registerShelfCapabilities(p)
+    report <- getMortByCause(p)
+    expect_true(report$complete)
+    expect_false("gear" %in% names(report$causes))
+    p <- registerShelfCapabilities(setRateFunction(p, "Mort", "seMort"))
+    expect_true("gear" %in% names(getMortByCause(p)$causes))
+})
+
+
+test_that("Shelf preserves unknown carrion mortality without support", {
+    assign("review_carrion_mort", function(params, ...) {
+        params$initial_n * 0 + 0.1
+    }, envir = globalenv())
+    on.exit(rm("review_carrion_mort", envir = globalenv()))
+    p <- setComponent(shelf_small, "carrion", mort_fun = "review_carrion_mort")
+    rates <- getRates(p)
+    adopted <- registerShelfCapabilities(p)
+    expect_identical(adopted$other_mort$carrion, "review_carrion_mort")
+    expect_equal(getRates(adopted), rates, ignore_attr = TRUE)
+    expect_null(getComponent(adopted, "carrion")$definition$autonomous)
+    expect_error(tuneSteadyState(adopted, info_level = 0),
+                 "support|stationary|strategy")
+    expect_error(scaleModel(adopted, 2), "support|transformation")
+})
+
+
+test_that("preview upgrades retain authored definitions and removals", {
+    p <- setComponent(shelf_small, "carrion", convergence_fun = NULL,
+                      biomass_fun = NULL, autonomous = FALSE, tuning = NULL)
+    p <- setProcess(p, "resource", convergence_fun = NULL, autonomous = FALSE)
+    p$capabilities$tuning$shelf_budgets <- NULL
+    p$capabilities$transformations$shelf_scale_abundance <- NULL
+    old <- recordExtension(p, "mizerShelf", version = "1.2.0.9000")
+    definitions <- old$capabilities
+    upgraded <- validParams(old)
+    expect_identical(upgraded$capabilities, definitions)
+    expect_identical(upgraded$initial_n_other, old$initial_n_other)
+    expect_identical(mizer:::extensionVersion(upgraded, "mizerShelf"),
+                     "1.2.0.9001")
+    path <- tempfile(fileext = ".rds")
+    withr::defer(unlink(path))
+    saveRDS(old, path)
+    expect_identical(readParams(path)$capabilities, definitions)
+    expect_identical(upgrade.mizerShelf(upgraded), upgraded)
 })

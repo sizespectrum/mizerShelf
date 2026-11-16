@@ -9,7 +9,9 @@
 \arguments{
 \item{object}{An earlier shelf model after the core upgrade.}
 
-\item{...}{Unused.}
+\item{...}{Unused.
+Existing preview declarations, including author removals, are retained.
+Only older models acquire the initial standard declarations.}
 }
 \value{
 The upgraded model, preserving its effective mortality law.

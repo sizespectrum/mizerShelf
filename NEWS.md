@@ -1,6 +1,13 @@
-# mizerShelf 1.2.0.9000
+# mizerShelf 1.2.0.9001
 
-* Adopts the mizer 3.4.0.9011 extension-capability preview. Saved shelf models
+* Saved preview models retain their authored capability definitions and explicit
+  removals when upgraded; older models still acquire the standard declarations.
+
+* Re-registering capabilities after changing between the known `seMort` and
+  `mizerMort` providers now selects the corresponding checked mortality
+  decomposition, without retaining the previous provider's diagnostic.
+
+* Adopts the mizer 3.4.0.9012 extension-capability preview. Saved shelf models
   record their equations, convergence measures, biomass measurement, joint
   tuning strategy, temporal support and structural/scaling transformations.
 * `getBiomass()` now follows mizer's species-only default. Include detritus and
