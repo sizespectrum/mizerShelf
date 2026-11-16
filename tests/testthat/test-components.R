@@ -295,3 +295,13 @@ test_that("a bin-averaged shelf model can still be projected", {
     second_order_w(p) <- list(flux = "upwind", bin_average = TRUE)
     expect_s3_class(project(p, t_max = 1, t_save = 1), "mizerShelfSim")
 })
+
+
+test_that("standalone budget balancing rejects unverified component equations", {
+    p <- setComponent(shelf_small, "extra", initial_value = 1,
+                      dynamics_fun = "constant_dynamics")
+    before <- p
+    expect_error(tune_carrion_detritus(p),
+                 "only component.*tuneSteadyState.*coordinated")
+    expect_equal(p, before)
+})

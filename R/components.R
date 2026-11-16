@@ -20,34 +20,16 @@ encounter_contribution <- function(params, n_other, component, ...) {
     params@other_params[[component]]$rho * n_other[[component]]
 }
 
-# Fill in the rates a carrion or detritus calculation needs but was not given.
-#
-# `project()` hands the dynamics functions the complete list from `getRates()`,
-# but mizer's steady-state diagnostics (`getSteadyResidual()`, `isSteady()` and
-# the steady-state line of `summary()`) call the resource and component
-# dynamics with only the rates that the resource mortality depends on, which
-# leaves out the fishing mortality that the carrion production is calculated
-# from. Each entry is only computed when it is missing, so this costs nothing
-# on the path through `project()`.
-complete_rates <- function(rates, params, n = params@initial_n,
-                           n_pp = params@initial_n_pp,
-                           n_other = params@initial_n_other,
-                           t = 0, need = character(0)) {
-    if ("encounter" %in% need && is.null(rates$encounter)) {
-        rates$encounter <- getEncounter(params, n = n, n_pp = n_pp,
-                                        n_other = n_other, t = t)
-    }
-    if ("feeding_level" %in% need && is.null(rates$feeding_level)) {
-        rates$feeding_level <- getFeedingLevel(params, n = n, n_pp = n_pp,
-                                               n_other = n_other, t = t)
-    }
-    if ("f_mort" %in% need && is.null(rates$f_mort)) {
-        rates$f_mort <- getFMort(params, effort = params@initial_effort,
-                                 n = n, n_pp = n_pp, n_other = n_other, t = t)
-    }
-    if ("resource_mort" %in% need && is.null(rates$resource_mort)) {
-        rates$resource_mort <- getResourceMort(params, n = n, n_pp = n_pp,
-                                               n_other = n_other, t = t)
+# Callbacks receive the complete effective rate context. Selectively rebuilding
+# absent entries can bypass full-rate providers and is no longer supported.
+require_shelf_rates <- function(rates, need) {
+    missing <- need[vapply(need, function(field) {
+        is.null(rates[[field]])
+    }, logical(1))]
+    if (length(missing)) {
+        stop("Shelf calculations need the complete getRates() context; ",
+             "missing ",
+             paste(missing, collapse = ", "), ".")
     }
     rates
 }
@@ -141,7 +123,7 @@ carrion_dynamics <-
 #' @export
 carrion_consumption_ms <- function(params, n = params@initial_n,
                          rates = getRates(params)) {
-    rates <- complete_rates(rates, params, n = n, need = "feeding_level")
+    rates <- require_shelf_rates(rates, "feeding_level")
     sum(size_integral(params, n, params@other_params$carrion$rho *
                           (1 - rates$feeding_level))) +
         params@other_params$carrion$decompose
@@ -160,7 +142,7 @@ carrion_consumption_ms <- function(params, n = params@initial_n,
 #' @seealso [getCarrionProduction()], [carrion_dynamics()], [getDetritusConsumption()]
 #' @export
 getCarrionConsumption <- function(params, ...) {
-    feeding_level <- getFeedingLevel(params)
+    feeding_level <- getRates(params)$feeding_level
     consumption <- size_integral(params, params@initial_n,
                                  params@other_params$carrion$rho *
                                      (1 - feeding_level))
@@ -217,7 +199,7 @@ plotCarrionConsumption <- function(params) {
 #' @export
 getCarrionProduction <- function(params, n = params@initial_n,
                                  rates = getRates(params), ...) {
-    rates <- complete_rates(rates, params, n = n, need = "f_mort")
+    rates <- require_shelf_rates(rates, "f_mort")
     # Each contribution is the biomass killed per year, so each weighting
     # carries a factor of the body weight.
     biomass_killed <- function(mort) {
@@ -263,7 +245,7 @@ plotCarrionProduction <- function(params) {
 #' @return The detritus biomass in grams
 #' @export
 detritus_biomass <- function(params, n_pp = params@initial_n_pp) {
-    sum(n_pp * params@dw_full * params@w_full)
+    sum(n_pp * params@dw_full * bin_average_weight(params@w_full, params))
 }
 
 
@@ -303,6 +285,9 @@ detritus_biomass <- function(params, n_pp = params@initial_n_pp) {
 #' @export
 detritus_dynamics <- function(params, n, n_pp, n_other, rates, dt, ...) {
     current_biomass <- detritus_biomass(params, n_pp = n_pp)
+    if (!is.finite(current_biomass) || current_biomass <= 0) {
+        stop("Detritus dynamics require a positive biomass and stored shape.")
+    }
     consumption <- detritus_consumption(params, n_pp, rates) / current_biomass
     production <- sum(getDetritusProduction(params, n, n_other, rates))
 
@@ -313,38 +298,6 @@ detritus_dynamics <- function(params, n, n_pp, n_other, rates, dt, ...) {
         next_biomass <- current_biomass + production * dt
     }
     n_pp * next_biomass / current_biomass
-}
-
-#' Balance the detritus resource
-#'
-#' Mizer calls a `balance_<resource_dynamics>()` function whenever it restores a
-#' resource, to adjust the resource rate or the resource capacity so that the
-#' stored resource abundance is a steady state of the resource dynamics. It
-#' warns when no such function exists, because a custom resource would then
-#' silently come back off its own fixed point.
-#'
-#' [detritus_dynamics()] reads neither the resource rate `rr_pp` nor the
-#' resource capacity `cc_pp`: the detritus is held at a fixed power law whose
-#' total biomass follows a production-minus-consumption balance. There is
-#' therefore nothing for mizer to balance, and this function returns both
-#' unchanged. What does make the stored detritus abundance a steady state is
-#' the external detritus inflow `other_params(params)$detritus$external`, which
-#' is set by [tune_carrion_detritus()].
-#'
-#' @param params A `mizerShelf` params object.
-#' @param resource_rate The resource rate requested by the caller, or `NULL` to
-#'   keep the stored one.
-#' @param resource_capacity The resource capacity requested by the caller, or
-#'   `NULL` to keep the stored one.
-#' @return A list with entries `resource_rate` and `resource_capacity`.
-#' @seealso [tune_carrion_detritus()], [detritus_dynamics()]
-#' @export
-balance_detritus_dynamics <- function(params, resource_rate = NULL,
-                                      resource_capacity = NULL) {
-    list(resource_rate = if (is.null(resource_rate)) params@rr_pp
-                         else resource_rate,
-         resource_capacity = if (is.null(resource_capacity)) params@cc_pp
-                             else resource_capacity)
 }
 
 #' Detritus consumption rate
@@ -362,9 +315,9 @@ balance_detritus_dynamics <- function(params, resource_rate = NULL,
 #' @export
 detritus_consumption <- function(params, n_pp = params@initial_n_pp,
                                   rates = getRates(params)) {
-    rates <- complete_rates(rates, params, n_pp = n_pp,
-                            need = "resource_mort")
-    sum(rates$resource_mort * n_pp * params@w_full * params@dw_full)
+    rates <- require_shelf_rates(rates, "resource_mort")
+    sum(n_pp * params@dw_full *
+            bin_average_weight(rates$resource_mort * params@w_full, params))
 }
 
 #' Get detritus consumption rates by consumer species
@@ -378,12 +331,13 @@ detritus_consumption <- function(params, n_pp = params@initial_n_pp,
 #' @seealso [getDetritusProduction()], [detritus_dynamics()], [getCarrionConsumption()]
 #' @export
 getDetritusConsumption <- function(params, ...) {
-    pred_rate <- getPredRate(params)
+    pred_rate <- getRates(params)$pred_rate
     consumption <- sweep(pred_rate, 1,
                          params@species_params$interaction_resource,
                          "*")
-    consumption <- consumption %*%
-        (params@initial_n_pp * params@w_full * params@dw_full)
+    weighting <- sweep(consumption, 2, params@w_full, "*")
+    consumption <- bin_average_weight(weighting, params) %*%
+        (params@initial_n_pp * params@dw_full)
 
     return(consumption[, 1])
 }
@@ -433,8 +387,7 @@ plotDetritusConsumption <- function(params) {
 getDetritusProduction <- function(params, n = params@initial_n,
                                   n_other = params@initial_n_other,
                                   rates = getRates(params), ...) {
-    rates <- complete_rates(rates, params, n = n, n_other = n_other,
-                            need = c("encounter", "feeding_level"))
+    rates <- require_shelf_rates(rates, c("encounter", "feeding_level"))
     feces <- size_integral(
         params, n,
         sweep((1 - rates$feeding_level) * rates$encounter, 1,
@@ -603,6 +556,10 @@ rescaleComponents <- function(params, carrion_factor = 1, detritus_factor = 1) {
 
 #' Tune carrion and detritus to steady state
 #'
+#' This standalone helper supports the known Shelf providers with carrion as
+#' the only component. For composed or modified models, use [tuneSteadyState()]
+#' with declared coordinated strategies so all affected equations are checked.
+#'
 #' This first sets the rate of decomposition of carrion so that for the given
 #' abundances, the carrion is at steady state. It then sets the rate at which
 #' detritus flows in from external sources (e.g. the pelagic zone) so that for
@@ -612,10 +569,10 @@ rescaleComponents <- function(params, carrion_factor = 1, detritus_factor = 1) {
 #' decomposition rate and the external detritus inflow — so that the stored
 #' abundances become a fixed point. That is what is needed after a steady-state
 #' finder that holds the components fixed, and it is why [tuneSteadyState()]
-#' and [steady()] have mizerShelf methods that call this function:
+#' and [steady()] use the declared joint shelf tuning strategy:
 #'
 #' * [tuneSteadyState()] and [steady()] hold the carrion at its stored value
-#'   while they work, so the mizerShelf methods call this afterwards. They
+#'   while they work, then the declared balancer adjusts both budgets. They
 #'   leave the components exactly at a fixed point.
 #' * [mizer::findSteadyState()] with the default `solver = "project"`, and
 #'   [mizer::projectUntilSettled()], advance the carrion like every other state
@@ -632,44 +589,51 @@ rescaleComponents <- function(params, carrion_factor = 1, detritus_factor = 1) {
 #' @seealso [tuneSteadyState()], [carrion_lifetime()], [detritus_lifetime()]
 #' @export
 tune_carrion_detritus <- function(params) {
-    # carrion
-    params@other_params$carrion$decompose <- 0
-    cin <- sum(getCarrionProduction(params)) / params@initial_n_other$carrion
-    cout <- carrion_consumption_ms(params)
-    if (cin < cout) {
-        stop("There is not enough carrion production.")
+    params <- validParams(params)
+    standard <- identical(params$resource_dynamics, "detritus_dynamics") &&
+        identical(params$other_dynamics$carrion, "carrion_dynamics") &&
+        identical(params$other_encounter$carrion, "encounter_contribution")
+    if (!standard || !shelf_known_rates(params) ||
+            !setequal(names(params$initial_n_other), "carrion")) {
+        stop("Standalone shelf balancing requires the known Shelf providers ",
+             "with carrion as the only component. Use tuneSteadyState() with ",
+             "declared coordinated strategies for composed or modified models.")
     }
-    params@other_params$carrion$decompose <- cin - cout
-    # detritus
-    params@other_params$detritus$external <- 0
-    production <- sum(getDetritusProduction(params))
-    outflow <- detritus_consumption(params)
-    params@other_params$detritus$external <- outflow - production
-    params
-}
-
-#' Scale model parameters
-#'
-#' Extends [mizer::scaleModel()] for `mizerShelf` objects: adjusts the
-#' carrion encounter rates and the external detritus input before delegating
-#' to the base method.
-#'
-#' @param params A `mizerShelf` params object.
-#' @param factor A numeric value by which to scale the model.
-#' @param ... Passed to [mizer::scaleModel()].
-#' @return A `mizerShelf` params object with scaled parameters.
-#' @method scaleModel mizerShelf
-#' @export
-#' @name scaleModel
-#'
-#' @examples
-#' params <- scaleModel(NWMed_params, 0.5)
-scaleModel.mizerShelf <- function(params, factor, ...) {
-    p <- NextMethod()
-    p@other_params[["carrion"]]$rho <- p@other_params[["carrion"]]$rho / factor
-    p@species_params$rho_carrion <- p@species_params$rho_carrion / factor
-    p@other_params$detritus$external <- p@other_params$detritus$external * factor
-    p
+    rates <- getRates(params)
+    state <- list(n = params$initial_n, n_pp = params$initial_n_pp,
+                  n_other = params$initial_n_other)
+    targets <- shelf_tuning_targets(params, state$n, state$n_pp, state$n_other,
+                                    rates)
+    result <- shelf_balance(params, state$n, state$n_pp, state$n_other, rates,
+                            targets)
+    actual_rates <- getRates(result)
+    actual <- shelf_equation_rates(result, state$n, state$n_pp, state$n_other,
+                                   actual_rates)
+    equal <- function(x, y) {
+        if (is.list(x) || is.list(y)) {
+            if (!is.list(x) || !is.list(y) || !identical(names(x), names(y)) ||
+                    length(x) != length(y)) return(FALSE)
+            return(all(vapply(seq_along(x), function(i) {
+                equal(x[[i]], y[[i]])
+            }, logical(1))))
+        }
+        if (!is.numeric(x) || !is.numeric(y) ||
+                !identical(dim(x), dim(y)) ||
+                !identical(dimnames(x), dimnames(y)) ||
+                !identical(names(x), names(y)) || length(x) != length(y)) {
+            return(FALSE)
+        }
+        all(is.finite(x)) && all(is.finite(y)) &&
+            all(abs(x - y) <= 1e-12 + 1e-8 * abs(x))
+    }
+    if (!equal(actual, targets) ||
+            !equal(shelf_consumer_rates(params, rates),
+                   shelf_consumer_rates(result, actual_rates)) ||
+            !equal(state, list(n = result$initial_n, n_pp = result$initial_n_pp,
+                               n_other = result$initial_n_other))) {
+        stop("Shelf balancing did not preserve the captured state and rates.")
+    }
+    result
 }
 
 #' Keep a component's abundance constant

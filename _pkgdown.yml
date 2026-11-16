@@ -34,20 +34,14 @@ reference:
 - title: Mortality
 - contents:
   - matches("Mort")
+  - shelf_mortality_breakdown
 - title: Others
 - contents:
   - mizerShelf-class
   - encounter_contribution
   - constant_dynamics
   - rescaleComponents
-- title: Extended mizer methods
-- contents:
-  - getBiomass
-  - tuneSteadyState
-  - steady
-  - removeSpecies
-  - addSpecies
-  - scaleModel
+  - shelf_capabilities
 - title: Example model
 - contents:
   - matches("NWMed")

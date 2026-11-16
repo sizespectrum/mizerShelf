@@ -28,20 +28,26 @@ test_that("plotDetritusProduction returns a ggplot object", {
 
 test_that("plotBiomass with return_data returns a data frame", {
     sim <- project(params, t_max = 2, t_per = 1)
-    df <- plotBiomass(sim, return_data = TRUE)
+    include <- c("species", "resource", "component:carrion")
+    df <- plotBiomass(sim, include = include,
+                      return_data = TRUE)
     expect_s3_class(df, "data.frame")
 })
 
 test_that("plotBiomass data includes Detritus", {
     sim <- project(params, t_max = 2, t_per = 1)
-    df <- plotBiomass(sim, return_data = TRUE)
-    expect_true("Detritus" %in% df$Species)
+    include <- c("species", "resource", "component:carrion")
+    df <- plotBiomass(sim, include = include,
+                      return_data = TRUE)
+    expect_true("resource" %in% df$Species)
 })
 
 test_that("plotBiomass data includes carrion", {
     sim <- project(params, t_max = 2, t_per = 1)
-    df <- plotBiomass(sim, return_data = TRUE)
-    expect_true("carrion" %in% df$Species)
+    include <- c("species", "resource", "component:carrion")
+    df <- plotBiomass(sim, include = include,
+                      return_data = TRUE)
+    expect_true("component:carrion/biomass" %in% df$Species)
 })
 
 test_that("plotBiomass errors when tlim is not increasing", {
@@ -52,7 +58,8 @@ test_that("plotBiomass errors when tlim is not increasing", {
 
 test_that("plotBiomass returns a ggplot object", {
     sim <- project(params, t_max = 2, t_per = 1)
-    expect_s3_class(plotBiomass(sim), "ggplot")
+    include <- c("species", "resource", "component:carrion")
+    expect_s3_class(plotBiomass(sim, include = include), "ggplot")
 })
 
 # ---- plotDeath ----
@@ -67,9 +74,9 @@ test_that("plotDeath data has expected columns", {
     expect_named(df, c("w", "value", "Cause", "Prey"))
 })
 
-test_that("plotDeath data includes Gear cause", {
+test_that("shipped model death data omits unapplied gear mortality", {
     df <- plotDeath(params, species = "Hake", return_data = TRUE)
-    expect_true("Gear" %in% df$Cause)
+    expect_false("Gear" %in% df$Cause)
 })
 
 test_that("plotDeath returns a ggplot object", {
@@ -93,4 +100,12 @@ test_that("plotYieldMinusDiscards data has Year, Yield, Species columns", {
 test_that("plotYieldMinusDiscards returns a ggplot object", {
     sim <- project(params, t_max = 2, t_per = 1)
     expect_s3_class(plotYieldMinusDiscards(sim), "ggplot")
+})
+
+test_that("shelf death plots retain the simulation final-state meaning", {
+    simulation <- project(shelf_small, t_max = 0.02, dt = 0.01, t_save = 0.01,
+                          progress_bar = FALSE, info_level = 0)
+    expected <- mizerExperimental::plotDeath(finalParams(simulation),
+                                             return_data = TRUE)
+    expect_equal(plotDeath(simulation, return_data = TRUE), expected)
 })
