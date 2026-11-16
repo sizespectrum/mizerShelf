@@ -8,425 +8,123 @@ vignette: >
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 library(mizer)
 library(mizerShelf)
-params <- NWMed_params
+params <- validParams(NWMed_params)
 ```
 
-# Overview
+mizerShelf adds a dynamic detritus spectrum and a scalar carrion biomass.
+Detritus uses the resource state; carrion is a registered component that adds
+`rho * carrion_biomass` to consumer encounter rates. The extension class records
+its package version and enables upgrading saved models. Ordinary mizer methods
+now use the capabilities stored in the model for projection, measurements,
+settling, tuning and structural changes.
 
-mizerShelf is an extension package for mizer that adds two extra ecosystem
-components to a standard multispecies size-spectrum model:
+## Equations and stepping
 
-- **detritus** — particulate organic matter that settles to the seafloor and
-  provides food for small benthic organisms and juvenile fish,
-- **carrion** — fresh animal tissue from natural deaths, fishing gear mortality,
-  and discards that is consumed by scavengers before decomposing into detritus.
+Both budgets have the form
 
-Both components are dynamical: their biomasses change over time in response to
-species abundances and fishing effort. The package uses four of the five
-extension mechanisms described in `vignette("extensions", package = "mizer")`:
+\[
+\frac{dB}{dt} = P - c B.
+\]
 
-| Extension mechanism | Used for |
-|---|---|
-| `recordExtension()` + `coerceToExtensionClass()` | Record extension requirement/version and set S3 class vector |
-| `setRateFunction()` | Replace standard mortality with shelf mortality that includes excess gear mortality |
-| Resource dynamics override | Implement detritus dynamics in place of the default semi-chemostat resource |
-| `setComponent()` | Add carrion as a scalar dynamical component that contributes to the encounter rate |
-| S3 extension classes + S3 dispatch | Define `mizerShelf`/`mizerShelfSim` extension classes for shelf-specific plotting, scaling, and species manipulation |
+Carrion production includes external consumer mortality, excess gear mortality
+and discards. Its losses include consumption and decomposition. Detritus inputs
+include unassimilated food, decomposing carrion and a signed external inflow;
+consumers remove detritus. Detritus preserves its current spectrum shape while
+changing total biomass. Its equations require positive biomass: the model does
+not invent a spectrum shape at an empty stock. New models start with zero
+decomposition and external detritus inflow, and an external-mortality carrion
+fraction of one; calibration then sets the two budget parameters.
 
-All four mechanisms are wired together inside `newDetritusCarrionParams()`, which
-is the single entry point for building a shelf model.
+The component and resource declarations supply exact equations separately from
+their exponential step functions. Those steps handle fast losses without
+claiming a higher coupled integration order. Every callback receives the complete
+effective rate list, including fishing mortality. No selective getter fallback
+reconstructs missing rates.
 
-# The `mizerShelf` extension classes
+## Measurements and plots
 
-`MizerParams` and `MizerSim` are S3 classes. An extension package gives its
-objects a distinctive class label (such as `"mizerShelf"` and `"mizerShelfSim"`)
-by prepending it to the base class vector: `c("mizerShelf", "MizerParams")`.
-All extension-specific data lives in `other_params(params)` or in component
-parameters; the class label is simply used for S3 method dispatch.
+Biomass measurement is separate from convergence assessment. Carrion declares
+one biomass series, and mizer integrates the resource over the full size grid.
+The default getter returns consumer species, consistently with other mizer
+models. Select extra measurements explicitly:
 
-No formal class declaration with `setClass()` is needed. When
-`newDetritusCarrionParams()` finishes configuring the object, it calls
-`recordExtension()` and `coerceToExtensionClass()`:
-
-```r
-params <- mizer::recordExtension(
-    params, "mizerShelf",
-    version = as.character(utils::packageVersion("mizerShelf")),
-    requirement = "sizespectrum/mizerShelf"
-)
-params <- mizer::coerceToExtensionClass(params)
+```{r biomass}
+b <- getBiomass(params, include = c("species", "resource", "component:carrion"))
+names(b)
 ```
 
-`recordExtension()` records the installation requirement (which mizer can use
-to install missing packages automatically when opening saved models with
-`readParams()`) and the version stamp in `params$extensions`.
-
-`coerceToExtensionClass()` reads the recorded extension list and sets the S3
-class vector to `c("mizerShelf", "MizerParams")`, allowing R to dispatch to
-shelf methods automatically.
-
-`MizerSim` objects are coerced to `mizerShelfSim` automatically by `project()`:
-because the params object inside the sim carries the extension metadata,
-mizer promotes the sim to `c("mizerShelfSim", "MizerSim")`.
-
-## Methods dispatched on `mizerShelf`
-
-The following S3 methods are dispatched on `mizerShelf` or `mizerShelfSim`:
-
-| Method | What it adds |
-|---|---|
-| `getBiomass.mizerShelf()` | Adds detritus and carrion biomasses to the species biomasses |
-| `getBiomass.mizerShelfSim()` | Same, as a time series |
-| `tuneSteadyState.mizerShelf()` | Calls `tune_carrion_detritus()` after convergence |
-| `steady.mizerShelf()` | The same, under the name that mizer has superseded |
-| `scaleModel.mizerShelf()` | Adjusts carrion encounter rates and external detritus input when rescaling abundances |
-| `removeSpecies.mizerShelf()` | Updates the carrion encounter-rate matrix `rho` |
-| `addSpecies.mizerShelf()` | Computes the initial `rho_carrion` for new species |
-
-Each of these methods calls `NextMethod()` so that it first runs the standard
-mizer behaviour and then makes only the shelf-specific adjustments.
-
-### Example: `getBiomass`
-
-The standard `getBiomass()` returns only species biomasses. The shelf version
-appends the detritus and carrion biomasses:
-
-```r
-getBiomass.mizerShelf <- function(object, ...) {
-    params <- object
-    b <- NextMethod()                               # standard species biomasses
-    d_biomass <- sum(params@initial_n_pp *
-                     params@dw_full * params@w_full) # integrate resource spectrum
-    b <- c(b, Detritus = d_biomass)
-    scalar_other <- Filter(
-        function(x) is.numeric(x) && length(x) == 1,
-        params@initial_n_other)
-    if (length(scalar_other) > 0) b <- c(b, unlist(scalar_other))
-    b
-}
-```
-
-Because `plotBiomass()` calls `getBiomass()` internally, this single override
-makes biomass plots show detritus and carrion alongside fish species without any
-further changes.
-
-```{r getBiomass-example}
-getBiomass(NWMed_params)[1:3]
-```
-
-```{r plotBiomass-example, fig.width=7, fig.height=4}
-sim <- project(NWMed_params, t_max = 3, t_save = 0.5, progress_bar = FALSE)
-plotBiomass(sim, species = c("Nut clam", "Detritus"))
-```
-
-# Detritus: overriding the resource dynamics
-
-Mizer's standard resource spectrum follows a semi-chemostat towards a carrying
-capacity. mizerShelf replaces this with `detritus_dynamics()`, which is
-registered via the `resource_dynamics` argument to `newMultispeciesParams()`:
-
-```r
-params <- newMultispeciesParams(
-    species_params = species_params,
-    resource_dynamics = "detritus_dynamics",
-    ...
-)
-```
-
-This is the lightest-weight way to change the resource because it reuses all of
-mizer's resource infrastructure — the size grid, the resource abundance array
-`n_pp`, the `resource_mort` rate, and so on — while replacing only the update
-step.
-
-## The detritus ODE
-
-The detritus spectrum is always held at a fixed power-law shape; only its
-overall biomass $B$ is dynamical. The biomass satisfies
-
-$$\frac{dB}{dt} = \text{production} - \text{consumption} \cdot B + \text{external}$$
-
-where:
-
-- **production** comes from unassimilated food (faeces), decomposing carrion,
-  and an external input from the pelagic zone
-  (`getDetritusProduction()`),
-- **consumption** is the total rate at which species feed on detritus
-  (`detritus_consumption()`), proportional to the current biomass,
-- **external** is a tunable constant that represents sedimentation from
-  pelagic waters, stored in `other_params(params)$detritus$external`.
-
-`detritus_dynamics()` solves this ODE analytically within each time step to
-avoid the instabilities of a simple Euler step:
-
-$$B(t + \Delta t) = B(t)\,e^{-c\,\Delta t} + \frac{p}{c}\left(1 - e^{-c\,\Delta t}\right)$$
-
-where $c$ is the mass-specific consumption rate and $p$ is the production rate.
-The shape of the spectrum is then scaled to the new biomass:
-
-```r
-detritus_dynamics <- function(params, n, n_pp, n_other, rates, dt, ...) {
-    current_biomass <- detritus_biomass(params, n_pp = n_pp)
-    consumption     <- detritus_consumption(params, n_pp, rates) / current_biomass
-    production      <- sum(getDetritusProduction(params, n, n_other, rates))
-    if (consumption) {
-        et           <- exp(-consumption * dt)
-        next_biomass <- current_biomass * et + production / consumption * (1 - et)
-    } else {
-        next_biomass <- current_biomass + production * dt
-    }
-    n_pp * next_biomass / current_biomass
-}
-```
-
-The function receives `n_pp` (the current resource spectrum), not the initial
-spectrum, so the update is applied to whatever state the simulation is
-currently in.
-
-## Steady-state tuning
-
-`tune_carrion_detritus()` adjusts the external detritus input so that at the
-current abundances the detritus is at steady state (`dB/dt = 0`):
-
-```r
-params@other_params$detritus$external <- outflow - production
-```
-
-This function is called automatically by `tuneSteadyState.mizerShelf()` (and by
-the superseded `steady.mizerShelf()`) after mizer's own steady-state iteration
-converges.
-
-## User-facing controls
-
-Two getter/setter pairs make it easy to calibrate the detritus:
-
-- `detritus_biomass(params)` — total detritus biomass in grams.
-- `detritus_lifetime(params)` — the expected time a unit of detritus survives
-  before being consumed, equal to $B / (\text{consumption rate})$.
-- `detritus_lifetime(params) <- value` — rescales detritus abundance while
-  keeping total consumption unchanged (by adjusting `interaction_resource`).
-
-```{r detritus-lifetime}
-detritus_lifetime(params)
-```
-
-# Carrion: adding a new dynamical component
-
-Carrion is not naturally represented by any existing mizer structure: it is a
-scalar total biomass (not size-structured), produced by mortality and consumed
-by scavengers with a species- and size-dependent encounter rate. It is
-registered as an *other* component via `setComponent()`:
-
-```r
-params <- setComponent(
-    params, "carrion",
-    initial_value  = 1,
-    dynamics_fun   = "carrion_dynamics",
-    encounter_fun  = "encounter_contribution",
-    component_params = list(rho = rho))
-```
-
-The three arguments name the functions that mizer will call at each time step:
-
-- `dynamics_fun = "carrion_dynamics"` — updates the carrion biomass.
-- `encounter_fun = "encounter_contribution"` — adds the carrion's contribution
-  to each species' encounter rate.
-- `component_params` stores the `rho` matrix (species × size) and a
-  decomposition rate in `other_params(params)$carrion`.
-
-## Encounter contribution
-
-The contribution of carrion to the encounter rate of species $i$ at body size
-$w$ is
-
-$$E_i^{\text{carrion}}(w) = \rho_i(w)\,B_{\text{carrion}}$$
-
-where $\rho_i(w)$ is a species- and size-dependent encounter rate coefficient
-stored in the component parameters. The function `encounter_contribution()` is
-a generic helper that works for any scalar other-component:
-
-```r
-encounter_contribution <- function(params, n_other, component, ...) {
-    params@other_params[[component]]$rho * n_other[[component]]
-}
-```
-
-The `rho` matrix is initialised in `newDetritusCarrionParams()` so that each
-species has enough food from all sources (fish prey, detritus, and carrion) to
-reach a feeding level of `f0` at maximum body size.
-
-## Carrion dynamics
-
-The carrion biomass $B$ satisfies the same ODE structure as the detritus:
-
-$$\frac{dB}{dt} = \text{production} - \text{consumption} \cdot B$$
-
-- **production** (`getCarrionProduction()`) comes from three sources:
-  - a fraction `ext_prop` of natural (non-predation) mortality,
-  - excess gear mortality (`gearMort()`), i.e. animals killed by the gear
-    but not landed,
-  - discards — landed animals that are thrown back.
-- **consumption** (`carrion_consumption_ms()`) includes active consumption by
-  fish scavenging carrion plus bacterial decomposition.
-
-As with detritus, the ODE is solved analytically within each time step:
-
-```r
-carrion_dynamics <- function(params, n, n_other, rates, dt, ...) {
-    consumption <- carrion_consumption_ms(params, n, rates)
-    production  <- sum(getCarrionProduction(params, n, rates))
-    if (consumption) {
-        et <- exp(-consumption * dt)
-        return(n_other$carrion * et + production / consumption * (1 - et))
-    }
-    return(n_other$carrion + production * dt)
-}
-```
-
-## Production and consumption breakdown
-
-The package provides functions to inspect where carrion comes from and where it
-goes:
-
-```{r carrion-production, fig.width=5, fig.height=5}
-plotCarrionProduction(params)
-```
-
-```{r carrion-consumption, fig.width=5, fig.height=5}
-plotCarrionConsumption(params)
-```
-
-## User-facing controls
-
-- `carrion_lifetime(params)` — expected lifespan of carrion in years.
-- `carrion_lifetime(params) <- value` — rescales the carrion biomass and its
-  encounter-rate coefficients while keeping total consumption unchanged.
-- `carrion_human_origin(params)` — fraction of carrion production that comes
-  from fishing (gear mortality + discards).
-- `carrion_human_origin(params) <- value` — adjusts `ext_prop` (the fraction
-  of natural mortality that produces carrion) to hit the target.
-
-```{r carrion-lifetime}
-carrion_lifetime(params)
-carrion_human_origin(params)
-```
-
-# The custom mortality rate
-
-Standard mizer fishing mortality accounts only for fish that are extracted from
-the water. Continental shelf fisheries also kill animals that remain on the
-seabed after contact with bottom-trawl gear. mizerShelf captures this
-distinction with a custom mortality function registered via `setRateFunction()`:
-
-```r
-params <- setRateFunction(params, "Mort", "seMort")
-```
-
-`seMort()` calls the standard `mizerMort()` and adds the excess gear mortality
-on top:
-
-```r
-seMort <- function(params, n, n_pp, n_other, t, f_mort, pred_mort, ...) {
-    mizerMort(params, n, n_pp, n_other, t, f_mort, pred_mort, ...) +
-        gearMort(params, f_mort = f_mort)
-}
-```
-
-`gearMort()` returns `max(gear_mort - f_mort, 0)`, where `gear_mort` is a
-species parameter giving the total rate at which animals die due to gear
-contact. When fishing mortality is below this cap, the remainder enters total
-mortality and also enters the carrion production (via `getCarrionProduction()`).
-When fishing mortality exceeds `gear_mort`, excess gear mortality is zero.
-
-The custom rate function receives and returns exactly the same array shape as
-`mizerMort()` (species × size), so it is a drop-in replacement that adds
-one ecological process without changing anything else.
-
-# How the pieces fit together in `newDetritusCarrionParams()`
-
-All four extension mechanisms are wired up inside a single constructor:
-
-```r
-newDetritusCarrionParams <- function(species_params,
-                                     w_min_detritus = NA,
-                                     w_max_detritus = 1,
-                                     n = 0.7, ...) {
-    # 1. Detritus: override resource dynamics
-    params <- newMultispeciesParams(
-        species_params   = species_params,
-        min_w_pp         = w_min_detritus,
-        w_pp_cutoff      = w_max_detritus,
-        n = n, p = n,
-        resource_dynamics = "detritus_dynamics",
-        ...)
-
-    # Initialise rho so each species can reach feeding level f0 at max size
-    f0  <- set_species_param_default(params@species_params, "f0", 0.6)$f0
-    ic  <- set_species_param_default(
-               params@species_params, "interaction_carrion", 1)$interaction_carrion
-    E   <- getEncounter(params)[, length(params@w)] /
-               (params@w[length(params@w)] ^ n)
-    rho <- pmax(0, f0 * params@species_params$h / (1 - f0) - E) * ic
-    params@species_params$rho_carrion <- rho
-    rho <- outer(params@species_params$rho_carrion, params@w ^ n)
-
-    # 2. Mortality: custom rate function adds excess gear mortality
-    params <- setRateFunction(params, "Mort", "seMort")
-
-    # 3. Carrion: scalar dynamical component
-    params <- setComponent(
-        params, "carrion", initial_value = 1,
-        dynamics_fun     = "carrion_dynamics",
-        encounter_fun    = "encounter_contribution",
-        component_params = list(rho = rho))
-
-    # 4. S3 extension class: enables S3 dispatch for shelf-specific methods
-    params <- setColours(params,
-                         c(Detritus = "forestgreen", carrion = "peru"))
-
-    params <- recordExtension(
-        params, "mizerShelf",
-        version = as.character(utils::packageVersion("mizerShelf")),
-        requirement = "sizespectrum/mizerShelf")
-    params <- coerceToExtensionClass(params)
-}
-```
-
-The order matters. The resource dynamics are set inside `newMultispeciesParams()`
-before mizer computes initial rates, so the detritus shape is consistent from
-the start. The carrion component is registered after the species parameters are
-set, so that `rho` can be computed from the initial encounter rates. The extension
-class is applied last, after all the standard mizer slots have been populated.
-
-# Summary
-
-mizerShelf illustrates all four of the core mizer extension mechanisms working
-together:
-
-1. **Resource dynamics override** — detritus reuses mizer's resource spectrum
-   infrastructure with a custom ODE that tracks total biomass and rescales the
-   spectrum shape.
-
-2. **`setRateFunction()`** — the custom `seMort()` adds excess gear mortality to
-   the standard mortality calculation with a single-line wrapper around
-   `mizerMort()`.
-
-3. **`setComponent()`** — carrion is a scalar dynamical variable whose biomass
-   evolves each time step and whose encounter-rate contribution is automatically
-   included in `getEncounter()` and `getDiet()`.
-
-4. **S3 extension classes + S3 dispatch** — `mizerShelf` and `mizerShelfSim`
-   ensure that shelf-specific methods (`getBiomass`, `tuneSteadyState`,
-   `scaleModel`,
-   `addSpecies`, `removeSpecies`) are dispatched automatically, while every
-   override delegates to `NextMethod()` so that the full mizer pipeline remains
-   intact.
-
-Together, these mechanisms allow mizerShelf to add two ecologically important
-processes — benthic detritus and carrion scavenging — to any mizer model
-without modifying the mizer source code.
+The stable IDs of the extra series are `resource` and
+`component:carrion/biomass`. Their labels and styles travel with the measurement.
+`plotBiomass(params, include = ...)` follows the same measurement-and-plot path.
+Carrion is unstructured, so it does not advertise size or length filters; an
+explicit unsupported filter produces an unavailable measurement with a reason.
+
+`plotDeath()` delegates to the checked mortality diagnostic. For a simulation,
+it retains mizerShelf's established final-state meaning. The cause list is
+checked against the actual total mortality, rather than adding a cause that the
+dynamical equations do not use.
+
+The shipped `NWMed_params` has historically used `mizerMort`, although carrion
+production counts gear kills. This scientific discrepancy is preserved during
+upgrading. New constructor models use `seMort`, and their decomposition includes
+excess gear mortality. Changing the shipped mortality law would be a separate
+model change, not a migration.
+
+## Settling and tuning
+
+Whole-model convergence assesses consumers, detritus and carrion separately.
+The two shelf measures report biomass rates and tolerances in grams per year.
+`findSteadyState(solver = "project")` and `projectUntilSettled()` evolve the
+components and assess those equations without changing parameters.
+
+`tuneSteadyState()` uses the stored `shelf_budgets` joint strategy. It holds both
+shelf states fixed while consumers settle, then adjusts only the carrion
+`decompose` coefficient and detritus `external` inflow. The target constructor
+records separate source and loss fluxes. The balancer solves those budgets
+analytically, and mizer independently verifies the targets, unchanged state,
+allowed parameter paths and every effective consumer equation rate. The final
+whole-model assessment uses the restored physical equations.
+
+Negative decomposition is infeasible and produces an error. No generic
+numerical fallback or consumer repair follows a failed balance.
+`tune_carrion_detritus()` remains an explicit helper for balancing just the two
+budgets at the supplied state, with independent rate and state checks. It is
+restricted to the known Shelf provider family with carrion as its only component.
+For composed or modified models, use `tuneSteadyState()` with declared coordinated
+strategies so mizer verifies every affected owner's equations.
+
+`rr_pp` and `cc_pp` do not appear in the detritus budget. The former no-op
+`balance_detritus_dynamics()` has been removed. Use
+`setResource(..., balance = FALSE)` for resource parameter edits, then invoke
+budget calibration explicitly when appropriate.
+
+## Species, grids and units
+
+Declared transformation hooks run after core dimension bookkeeping and before
+any rate construction or initial-state evaluation. They resize and rename
+`rho` using explicit species/grid maps and preserve old overlapping values.
+There is no late repair after `addSpecies()` or `removeSpecies()`.
+
+For added species, provide `rho_carrion` to specify carrion encounter. Missing
+values now default to zero, with an explanatory message; they are no longer
+inferred by a late feeding-level calculation. `steady = FALSE` performs only the
+structural operation. `steady = TRUE` selects mizer's normal new-species steady
+initialisation. The constructor still derives its initial `rho_carrion` from
+feeding level and encounter when building a new model.
+
+The same declarations cover species reordering, renaming, removal, grid changes,
+abundance scaling and rate scaling. They update `rho`, its scalar coefficients,
+component biomass and budget parameters according to their units. Missing
+required extension support is an error before the original model is changed.
+
+## Scope of stability analysis
+
+The stored declarations distinguish autonomous dynamics from prescribed inputs.
+Carrion is dynamic even when its rate happens to be zero. The current mizer
+Jacobian does not include dynamic component coordinates, so whole-model stability
+is reported as incomplete. An explicitly conditional analysis may hold carrion
+fixed; the result records that restriction. Genuine zero modes in the detritus
+shape are retained rather than being inferred to be prescribed coordinates.

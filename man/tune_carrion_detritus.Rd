@@ -13,20 +13,24 @@ tune_carrion_detritus(params)
 An updated MizerParams object
 }
 \description{
+This standalone helper supports the known Shelf providers with carrion as
+the only component. For composed or modified models, use \code{\link[mizer:tuneSteadyState]{tuneSteadyState()}}
+with declared coordinated strategies so all affected equations are checked.
+}
+\details{
 This first sets the rate of decomposition of carrion so that for the given
 abundances, the carrion is at steady state. It then sets the rate at which
 detritus flows in from external sources (e.g. the pelagic zone) so that for
 the given abundances the detritus is at steady state.
-}
-\details{
+
 Note that this reaches a steady state by changing \emph{parameters} — the carrion
 decomposition rate and the external detritus inflow — so that the stored
 abundances become a fixed point. That is what is needed after a steady-state
-finder that holds the components fixed, and it is why \code{\link[=tuneSteadyState]{tuneSteadyState()}}
-and \code{\link[=steady]{steady()}} have mizerShelf methods that call this function:
+finder that holds the components fixed, and it is why \code{\link[mizer:tuneSteadyState]{tuneSteadyState()}}
+and \code{\link[mizer:steady]{steady()}} use the declared joint shelf tuning strategy:
 \itemize{
-\item \code{\link[=tuneSteadyState]{tuneSteadyState()}} and \code{\link[=steady]{steady()}} hold the carrion at its stored value
-while they work, so the mizerShelf methods call this afterwards. They
+\item \code{\link[mizer:tuneSteadyState]{tuneSteadyState()}} and \code{\link[mizer:steady]{steady()}} hold the carrion at its stored value
+while they work, then the declared balancer adjusts both budgets. They
 leave the components exactly at a fixed point.
 \item \code{\link[mizer:findSteadyState]{mizer::findSteadyState()}} with the default \code{solver = "project"}, and
 \code{\link[mizer:projectUntilSettled]{mizer::projectUntilSettled()}}, advance the carrion like every other state
@@ -40,5 +44,5 @@ so.
 }
 }
 \seealso{
-\code{\link[=tuneSteadyState]{tuneSteadyState()}}, \code{\link[=carrion_lifetime]{carrion_lifetime()}}, \code{\link[=detritus_lifetime]{detritus_lifetime()}}
+\code{\link[mizer:tuneSteadyState]{tuneSteadyState()}}, \code{\link[=carrion_lifetime]{carrion_lifetime()}}, \code{\link[=detritus_lifetime]{detritus_lifetime()}}
 }

@@ -56,3 +56,16 @@ test_that("seMort is non-negative", {
                  params@initial_n_other, 0, rates$f_mort, rates$pred_mort)
     expect_true(all(sm >= 0))
 })
+
+test_that("seMort decomposition reports its actual gear mortality", {
+    p <- shelf_small
+    report <- getMortByCause(p)
+    expect_true(report$complete)
+    expect_equal(report$causes$gear, gearMort(p, getRates(p)$f_mort),
+                 ignore_attr = TRUE)
+    expect_equal(Reduce(`+`, report$causes), report$total, ignore_attr = TRUE)
+    expect_true(all(report$residual == 0 | abs(report$residual) < 1e-12))
+    split <- getMortByCause(p, predation_by_species = TRUE)
+    expect_true(split$complete)
+    expect_equal(Reduce(`+`, split$causes), split$total, ignore_attr = TRUE)
+})

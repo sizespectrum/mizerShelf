@@ -7,43 +7,47 @@
 #' @param ... Extra parameters to be passed to [newMultispeciesParams()]
 #' @return A `mizerShelf` object
 #' @export
-newDetritusCarrionParams <- function(
-        species_params,
-        w_min_detritus = NA, w_max_detritus = 1,
-        n = 0.7, ...) {
+newDetritusCarrionParams <- function(species_params,
+                                     w_min_detritus = NA, w_max_detritus = 1,
+                                     n = 0.7, ...) {
 
-    params <- newMultispeciesParams(
-        species_params = species_params,
-        min_w_pp = w_min_detritus,
-        w_pp_cutoff = w_max_detritus,
-        n = n, p = n,
-        resource_dynamics = "detritus_dynamics",
-        ...)
+    params <- newMultispeciesParams(species_params = species_params,
+                                    min_w_pp = w_min_detritus,
+                                    w_pp_cutoff = w_max_detritus,
+                                    n = n, p = n,
+                                    resource_dynamics = "detritus_dynamics",
+                                    ...)
 
     # Determine the necessary carrion encounter rates so that at maximum
     # size the species have feeding level f0
-    f0 <- set_species_param_default(params@species_params, "f0", 0.6)$f0
-    ic <- set_species_param_default(params@species_params, "interaction_carrion", 1)$interaction_carrion
-    E <- getEncounter(params)[, length(params@w)] /
+    params <- set_species_param_default(params, "f0", 0.6)
+    params <- set_species_param_default(params, "interaction_carrion", 1)
+    params <- set_species_param_default(params, "gear_mort", 0)
+    params <- set_species_param_default(params, "discard", 0)
+    f0 <- params$species_params$f0
+    ic <- params$species_params$interaction_carrion
+    encounter <- getEncounter(params)[, length(params@w)] /
         (params@w[length(params@w)] ^ n)
-    rho <- pmax(0, f0 * params@species_params$h / (1 - f0) - E) * ic
+    rho <- pmax(0, f0 * params@species_params$h / (1 - f0) - encounter) * ic
     params@species_params$rho_carrion <- rho
     rho <- outer(params@species_params$rho_carrion, params@w ^ n)
+    dimnames(rho) <- dimnames(params$initial_n)
 
     params <- setRateFunction(params, "Mort", "seMort")
 
-    params <- setComponent(
-        params, "carrion", initial_value = 1,
-        dynamics_fun = "carrion_dynamics",
-        encounter_fun = "encounter_contribution",
-        component_params = list(rho = rho))
+    params <- setComponent(params, "carrion", initial_value = 1,
+                           dynamics_fun = "carrion_dynamics",
+                           encounter_fun = "encounter_contribution",
+                           component_params = list(rho = rho, decompose = 0,
+                                                   ext_prop = 1))
+    params$other_params$detritus <- list(external = 0)
 
     # Register colours for the detritus and carrion in the plot legend
     params <- setColours(params, c(Detritus = "forestgreen", carrion = "peru"))
 
-    params <- recordExtension(
-        params, "mizerShelf",
-        version = as.character(utils::packageVersion("mizerShelf")),
-        requirement = "sizespectrum/mizerShelf")
-    coerceToExtensionClass(params)
+    params <- recordExtension(params, "mizerShelf",
+                              version = as.character(utils::packageVersion(
+                                  "mizerShelf"
+                              )), requirement = "sizespectrum/mizerShelf")
+    registerShelfCapabilities(coerceToExtensionClass(params))
 }

@@ -55,3 +55,26 @@ cut_lognormal_pred_kernel <- function(ppmr, beta, sigma) {
     phi[ppmr > rr] <- 0
     return(phi)
 }
+
+#' Checked mortality decomposition for the shelf mortality provider
+#'
+#' Adds excess gear mortality only when the effective provider is `seMort`.
+#' The historical bundled model uses `mizerMort` and receives no extra cause.
+#' The outer mizer diagnostic checks the final decomposition against the total.
+#' @param params A shelf model.
+#' @param rates The complete effective rates.
+#' @param ... State, time and diagnostic options supplied by mizer.
+#' @return A raw cause list for [mizer::getMortByCause()].
+#' @export
+shelf_mortality_breakdown <- function(params, rates, ...) {
+    result <- mizer::mizerMortalityBreakdown(params, rates = rates, ...)
+    if (!params$rates_funcs$Mort %in% c("seMort", "mizerShelf::seMort")) {
+        stop("Shelf mortality decomposition requires the seMort provider.")
+    }
+    result$causes$gear <- gearMort(params, rates$f_mort)
+    result$metadata <- rbind(result$metadata, data.frame(
+        id = "gear", label = "Gear", owner = "consumers",
+        colour = "brown", linetype = "solid"
+    ))
+    result
+}

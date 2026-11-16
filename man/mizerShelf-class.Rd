@@ -5,9 +5,8 @@
 \title{mizerShelf extension classes}
 \description{
 S3 extension classes for \link[mizer:MizerParams]{MizerParams} and \link[mizer:MizerSim]{MizerSim} that enable S3 dispatch
-for shelf-specific methods such as \code{\link[=tuneSteadyState]{tuneSteadyState()}},
-\code{\link[=scaleModel]{scaleModel()}},
-\code{\link[=removeSpecies]{removeSpecies()}}, \code{\link[=addSpecies]{addSpecies()}}, and \code{\link[=getBiomass]{getBiomass()}}.
+for extension upgrading. Measurements, tuning and structural changes
+use stored capabilities; they share mizer's ordinary methods.
 }
 \details{
 The class names are ordinary entries in the object's S3 class vector. All
